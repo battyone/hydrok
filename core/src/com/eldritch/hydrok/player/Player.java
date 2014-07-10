@@ -1,4 +1,4 @@
-package com.eldritch.hydrok.agent;
+package com.eldritch.hydrok.player;
 
 import java.util.EnumMap;
 

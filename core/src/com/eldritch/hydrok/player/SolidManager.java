@@ -1,4 +1,4 @@
-package com.eldritch.hydrok.agent;
+package com.eldritch.hydrok.player;
 
 import static com.eldritch.hydrok.util.Settings.SCALE;
 
@@ -14,15 +14,15 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.World;
-import com.eldritch.hydrok.agent.Player.PhaseManager;
+import com.eldritch.hydrok.player.Player.PhaseManager;
 
-public class GasManager implements PhaseManager {
+public class SolidManager implements PhaseManager {
 	private final Body body;
 	private final TextureRegion texture;
 	private final float width;
 	private final float height;
 	
-	public GasManager(World world) {
+	public SolidManager(World world) {
 		texture = new TextureRegion(new Texture("sprite/solid.png"));
 		
 		// First we create a body definition
@@ -45,7 +45,7 @@ public class GasManager implements PhaseManager {
 		// Create a fixture definition to apply our shape to
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = circle;
-		fixtureDef.density = 0.25f;
+		fixtureDef.density = 0.5f;
 		fixtureDef.friction = 0.7f;
 		fixtureDef.restitution = 0.3f; // Make it bounce a little bit
 
@@ -67,8 +67,6 @@ public class GasManager implements PhaseManager {
 	
 	@Override
 	public void update(float delta) {
-		Vector2 pos = body.getPosition();
-		body.applyLinearImpulse(0, 0.10f, pos.x, pos.y, true);
 	}
 	
 	@Override

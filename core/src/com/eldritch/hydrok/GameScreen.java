@@ -4,8 +4,13 @@ import static com.eldritch.hydrok.util.Settings.SCALE;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -15,16 +20,21 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.eldritch.hydrok.agent.Player;
-import com.eldritch.hydrok.agent.Player.Phase;
+import com.eldritch.hydrok.player.Player;
+import com.eldritch.hydrok.player.Player.Phase;
 
 public class GameScreen extends AbstractScreen {
+	public static final AssetManager textureManager = new AssetManager();
+	
 	private TiledMap map;
 	private OrthographicCamera camera;
 	private Player player;
 	private World world;
 	private OrthogonalTiledMapRenderer renderer;
+	
 	private Box2DDebugRenderer debugRenderer;
+	private BitmapFont font;
+	private SpriteBatch batch;
 
 	public GameScreen(HydrokGame game) {
 		super(game);
@@ -50,6 +60,8 @@ public class GameScreen extends AbstractScreen {
 		createBox();
 
 		debugRenderer = new Box2DDebugRenderer();
+		font = new BitmapFont();
+		batch = new SpriteBatch();
 	}
 	
 	@Override
@@ -82,6 +94,9 @@ public class GameScreen extends AbstractScreen {
 		renderer.render();
 		player.render(renderer);
 		
+		// debug
+		drawFps();
+		
 		debugRenderer.render(world, camera.combined);
 		world.step(delta, 6, 2);
 	}
@@ -108,5 +123,25 @@ public class GameScreen extends AbstractScreen {
 		
 		// Clean up after ourselves
 		groundBox.dispose();
+	}
+	
+	private void drawFps() {
+	    batch.begin();
+        font.draw(batch,
+                "FPS: " + Gdx.graphics.getFramesPerSecond(),
+                10, getHeight() - 10);
+        batch.end();
+	}
+	
+	public static TextureRegion[][] getRegions(String assetName, int w, int h) {
+		return TextureRegion.split(getTexture(assetName), w, h);
+	}
+	
+	public static Texture getTexture(String assetName) {
+	    if (!textureManager.isLoaded(assetName, Texture.class)) {
+            textureManager.load(assetName, Texture.class);
+            textureManager.finishLoading();
+        }
+	    return textureManager.get(assetName, Texture.class);
 	}
 }

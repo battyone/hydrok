@@ -1,8 +1,8 @@
-package com.eldritch.hydrok.agent;
+package com.eldritch.hydrok.player;
 
 import static com.eldritch.hydrok.util.Settings.SCALE;
 
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -10,20 +10,28 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.World;
-import com.eldritch.hydrok.agent.Player.PhaseManager;
+import com.badlogic.gdx.utils.Array;
+import com.eldritch.hydrok.GameScreen;
+import com.eldritch.hydrok.player.Player.PhaseManager;
 
-public class SolidManager implements PhaseManager {
+public class GasManager implements PhaseManager {
 	private final Body body;
-	private final TextureRegion texture;
+	private final Animation animation;
 	private final float width;
 	private final float height;
+	private float stateTime = 0;
 	
-	public SolidManager(World world) {
-		texture = new TextureRegion(new Texture("sprite/solid.png"));
+	public GasManager(World world) {
+		TextureRegion[][] regions = GameScreen.getRegions("sprite/gas.png", 64, 64);
+		Array<TextureRegion> allRegions = new Array<TextureRegion>();
+		for (TextureRegion[] region : regions) {
+			allRegions.addAll(region);
+		}
+        animation = new Animation(0.15f, allRegions);
+        animation.setPlayMode(Animation.PlayMode.LOOP);
 		
 		// First we create a body definition
 		BodyDef bodyDef = new BodyDef();
@@ -45,18 +53,18 @@ public class SolidManager implements PhaseManager {
 		// Create a fixture definition to apply our shape to
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = circle;
-		fixtureDef.density = 0.5f;
+		fixtureDef.density = 0.25f;
 		fixtureDef.friction = 0.7f;
 		fixtureDef.restitution = 0.3f; // Make it bounce a little bit
 
 		// Create our fixture and attach it to the body
-		Fixture fixture = body.createFixture(fixtureDef);
+		body.createFixture(fixtureDef);
 
 		// rendering dimensions
 //		width = SCALE * texture.getWidth();
 //		height = SCALE * texture.getHeight();
-		width = circle.getRadius() * 2;
-		height = circle.getRadius() * 2;
+		width = circle.getRadius() * 4;
+		height = circle.getRadius() * 4;
 		
 		// Remember to dispose of any shapes after you're done with them!
 		// BodyDef and FixtureDef don't need disposing, but shapes do.
@@ -67,16 +75,18 @@ public class SolidManager implements PhaseManager {
 	
 	@Override
 	public void update(float delta) {
+		stateTime += delta;
+		Vector2 pos = body.getPosition();
+		body.applyLinearImpulse(0, 0.10f, pos.x, pos.y, true);
 	}
 	
 	@Override
 	public void render(OrthogonalTiledMapRenderer renderer) {
 		Vector2 position = body.getPosition();
-		
 		Batch batch = renderer.getSpriteBatch();
 		batch.begin();
-		batch.draw(texture, position.x - width / 2, position.y - height / 2, width / 2, height / 2,
-				width, height, 1f, 1f, (float) (body.getAngle() * 180 / Math.PI));
+		batch.draw(animation.getKeyFrame(stateTime),
+				position.x - width / 2, position.y - height / 2, width, height);
 		batch.end();
 	}
 
@@ -87,6 +97,7 @@ public class SolidManager implements PhaseManager {
 	
 	@Override
 	public void setActive(boolean active) {
+		stateTime = 0;
 		body.setActive(active);
 	}
 }
