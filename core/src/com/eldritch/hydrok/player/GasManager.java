@@ -18,6 +18,8 @@ import com.eldritch.hydrok.GameScreen;
 import com.eldritch.hydrok.player.Player.PhaseManager;
 
 public class GasManager implements PhaseManager {
+	private static final int MAX_VELOCITY = 7;
+	
 	private final Body body;
 	private final Animation animation;
 	private final float width;
@@ -76,8 +78,12 @@ public class GasManager implements PhaseManager {
 	@Override
 	public void update(float delta) {
 		stateTime += delta;
-		Vector2 pos = body.getPosition();
-		body.applyLinearImpulse(0, 0.10f, pos.x, pos.y, true);
+		
+		// apply upwards impulse, but only if max velocity is not reached yet
+		Vector2 pos = getBody().getPosition();
+		if (getBody().getLinearVelocity().y < MAX_VELOCITY) {
+			body.applyLinearImpulse(0, 0.10f, pos.x, pos.y, true);
+		}
 	}
 	
 	@Override

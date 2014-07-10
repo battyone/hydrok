@@ -10,13 +10,14 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.World;
 import com.eldritch.hydrok.player.Player.PhaseManager;
 
 public class SolidManager implements PhaseManager {
+	private static final int MAX_VELOCITY = 7;
+	
 	private final Body body;
 	private final TextureRegion texture;
 	private final float width;
@@ -67,6 +68,11 @@ public class SolidManager implements PhaseManager {
 	
 	@Override
 	public void update(float delta) {
+		// apply right impulse, but only if max velocity is not reached yet
+		Vector2 pos = getBody().getPosition();
+		if (getBody().getLinearVelocity().x < MAX_VELOCITY) {
+			getBody().applyLinearImpulse(0.25f, 0, pos.x, pos.y, true);
+		}
 	}
 	
 	@Override

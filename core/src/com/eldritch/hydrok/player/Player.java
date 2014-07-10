@@ -8,8 +8,6 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 
 public class Player {
-	private static final int MAX_VELOCITY = 7;
-	
 	private final EnumMap<Phase, PhaseManager> managers;
 	private Phase phase = Phase.Solid;
 
@@ -22,12 +20,6 @@ public class Player {
 	}
 
 	public void update(float delta) {
-		// apply right impulse, but only if max velocity is not reached yet
-		Vector2 pos = getBody().getPosition();
-		if (getBody().getLinearVelocity().x < MAX_VELOCITY) {
-			getBody().applyLinearImpulse(0.25f, 0, pos.x, pos.y, true);
-		}
-
 		managers.get(phase).update(delta);
 	}
 
