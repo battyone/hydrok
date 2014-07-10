@@ -58,17 +58,17 @@ public class GameScreen extends AbstractScreen {
 		Gdx.gl.glClearColor(0.7f, 0.7f, 1.0f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
-		Vector2 vel = this.player.body.getLinearVelocity();
-		Vector2 pos = this.player.body.getPosition();
+		Vector2 vel = this.player.getBody().getLinearVelocity();
+		Vector2 pos = this.player.getBody().getPosition();
 
 		// apply left impulse, but only if max velocity is not reached yet
 		if (Gdx.input.isKeyPressed(Keys.A) && vel.x > -MAX_VELOCITY) {          
-		     this.player.body.applyLinearImpulse(-0.25f, 0, pos.x, pos.y, true);
+		     this.player.getBody().applyLinearImpulse(-0.25f, 0, pos.x, pos.y, true);
 		}
 
 		// apply right impulse, but only if max velocity is not reached yet
 		if (Gdx.input.isKeyPressed(Keys.D) && vel.x < MAX_VELOCITY) {
-		     this.player.body.applyLinearImpulse(0.25f, 0, pos.x, pos.y, true);
+		     this.player.getBody().applyLinearImpulse(0.25f, 0, pos.x, pos.y, true);
 		}
 		
 		// set the tile map renderer view based on what the
@@ -95,7 +95,7 @@ public class GameScreen extends AbstractScreen {
 		// Set the polygon shape as a box which is twice the size of our view
 		// port and 20 high
 		// (setAsBox takes half-width and half-height as arguments)
-		groundBox.setAsBox(camera.viewportWidth, 10.0f * SCALE);
+		groundBox.setAsBox(camera.viewportWidth, 32.0f * SCALE);
 		// Create a fixture from our polygon shape and add it to our ground body
 		groundBody.createFixture(groundBox, 0.0f);
 		// Clean up after ourselves
