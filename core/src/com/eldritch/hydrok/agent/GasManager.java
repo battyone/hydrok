@@ -16,13 +16,13 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.World;
 import com.eldritch.hydrok.agent.Player.PhaseManager;
 
-public class SolidManager implements PhaseManager {
+public class GasManager implements PhaseManager {
 	private final Body body;
 	private final TextureRegion texture;
 	private final float width;
 	private final float height;
 	
-	public SolidManager(World world) {
+	public GasManager(World world) {
 		texture = new TextureRegion(new Texture("sprite/solid.png"));
 		
 		// First we create a body definition
@@ -67,6 +67,8 @@ public class SolidManager implements PhaseManager {
 	
 	@Override
 	public void update(float delta) {
+		Vector2 pos = body.getPosition();
+		body.applyLinearImpulse(0, 0.17f, pos.x, pos.y, true);
 	}
 	
 	@Override

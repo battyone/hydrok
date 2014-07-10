@@ -16,10 +16,9 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.eldritch.hydrok.agent.Player;
+import com.eldritch.hydrok.agent.Player.Phase;
 
 public class GameScreen extends AbstractScreen {
-	private static final int MAX_VELOCITY = 7;
-	
 	private TiledMap map;
 	private OrthographicCamera camera;
 	private Player player;
@@ -58,27 +57,33 @@ public class GameScreen extends AbstractScreen {
 		Gdx.gl.glClearColor(0.7f, 0.7f, 1.0f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
-		Vector2 vel = this.player.getBody().getLinearVelocity();
-		Vector2 pos = this.player.getBody().getPosition();
-
-		// apply left impulse, but only if max velocity is not reached yet
-		if (Gdx.input.isKeyPressed(Keys.A) && vel.x > -MAX_VELOCITY) {          
-		     this.player.getBody().applyLinearImpulse(-0.25f, 0, pos.x, pos.y, true);
+		if (Gdx.input.isKeyPressed(Keys.A)) {    
+			player.setPhase(Phase.Gas);
+		}
+		
+		if (Gdx.input.isKeyPressed(Keys.S)) {  
+			player.setPhase(Phase.Solid);
 		}
 
-		// apply right impulse, but only if max velocity is not reached yet
-		if (Gdx.input.isKeyPressed(Keys.D) && vel.x < MAX_VELOCITY) {
-		     this.player.getBody().applyLinearImpulse(0.25f, 0, pos.x, pos.y, true);
+		if (Gdx.input.isKeyPressed(Keys.D)) {
 		}
+		
+		// updates
+		player.update(delta);
+		
+		Vector2 position = player.getPosition();
+		camera.position.x = position.x + 12;
+        camera.position.y = position.y;
+        camera.update();
 		
 		// set the tile map renderer view based on what the
 		// camera sees and render the map
 		renderer.setView(camera);
 		renderer.render();
-		player.render(delta, renderer);
+		player.render(renderer);
 		
 		debugRenderer.render(world, camera.combined);
-		world.step(1 / 60f, 6, 2);
+		world.step(delta, 6, 2);
 	}
 	
 	private void createBox() {
@@ -92,12 +97,15 @@ public class GameScreen extends AbstractScreen {
 
 		// Create a polygon shape
 		PolygonShape groundBox = new PolygonShape();
+		
 		// Set the polygon shape as a box which is twice the size of our view
 		// port and 20 high
 		// (setAsBox takes half-width and half-height as arguments)
-		groundBox.setAsBox(camera.viewportWidth, 32.0f * SCALE);
+		groundBox.setAsBox(300, 32.0f * SCALE);
+		
 		// Create a fixture from our polygon shape and add it to our ground body
 		groundBody.createFixture(groundBox, 0.0f);
+		
 		// Clean up after ourselves
 		groundBox.dispose();
 	}
