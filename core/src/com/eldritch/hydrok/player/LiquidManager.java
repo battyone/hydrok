@@ -16,14 +16,14 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.World;
 import com.eldritch.hydrok.player.Player.PhaseManager;
 
-public class SolidManager implements PhaseManager {
+public class LiquidManager implements PhaseManager {
 	private final Body body;
 	private final TextureRegion texture;
 	private final float width;
 	private final float height;
 	
-	public SolidManager(World world) {
-		texture = new TextureRegion(new Texture("sprite/solid.png"));
+	public LiquidManager(World world) {
+		texture = new TextureRegion(new Texture("sprite/liquid.png"));
 		
 		// First we create a body definition
 		BodyDef bodyDef = new BodyDef();
@@ -45,7 +45,7 @@ public class SolidManager implements PhaseManager {
 		// Create a fixture definition to apply our shape to
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = circle;
-		fixtureDef.density = 0.5f;
+		fixtureDef.density = 0.35f;
 		fixtureDef.friction = 0.7f;
 		fixtureDef.restitution = 0.3f; // Make it bounce a little bit
 
@@ -75,8 +75,7 @@ public class SolidManager implements PhaseManager {
 		
 		Batch batch = renderer.getSpriteBatch();
 		batch.begin();
-		batch.draw(texture, position.x - width / 2, position.y - height / 2, width / 2, height / 2,
-				width, height, 1f, 1f, (float) (body.getAngle() * 180 / Math.PI));
+		batch.draw(texture, position.x - width / 2, position.y - height / 2, width, height);
 		batch.end();
 	}
 

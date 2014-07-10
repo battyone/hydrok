@@ -16,6 +16,7 @@ public class Player {
 	public Player(World world) {
 		managers = new EnumMap<Phase, PhaseManager>(Phase.class);
 		managers.put(Phase.Solid, new SolidManager(world));
+		managers.put(Phase.Liquid, new LiquidManager(world));
 		managers.put(Phase.Gas, new GasManager(world));
 		managers.get(phase).setActive(true);
 	}

@@ -78,6 +78,7 @@ public class GameScreen extends AbstractScreen {
 		}
 
 		if (Gdx.input.isKeyPressed(Keys.D)) {
+			player.setPhase(Phase.Liquid);
 		}
 		
 		// updates
