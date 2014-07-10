@@ -45,7 +45,7 @@ public class GasManager implements PhaseManager {
 		// Create a fixture definition to apply our shape to
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = circle;
-		fixtureDef.density = 0.5f;
+		fixtureDef.density = 0.25f;
 		fixtureDef.friction = 0.7f;
 		fixtureDef.restitution = 0.3f; // Make it bounce a little bit
 
@@ -68,7 +68,7 @@ public class GasManager implements PhaseManager {
 	@Override
 	public void update(float delta) {
 		Vector2 pos = body.getPosition();
-		body.applyLinearImpulse(0, 0.17f, pos.x, pos.y, true);
+		body.applyLinearImpulse(0, 0.10f, pos.x, pos.y, true);
 	}
 	
 	@Override

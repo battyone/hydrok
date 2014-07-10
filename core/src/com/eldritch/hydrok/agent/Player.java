@@ -52,6 +52,7 @@ public class Player {
 		this.phase = phase;
 		
 		next.getBody().setTransform(last.getBody().getPosition(), last.getBody().getAngle());
+		next.getBody().setLinearVelocity(last.getBody().getLinearVelocity());
 		last.setActive(false);
 		next.setActive(true);
 	}
