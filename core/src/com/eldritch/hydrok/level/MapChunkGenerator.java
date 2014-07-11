@@ -11,6 +11,11 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.World;
 import com.eldritch.hydrok.HydrokGame;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -27,13 +32,15 @@ public class MapChunkGenerator {
 				}
 			});
 
-	public TiledMap generate(int width, int height) {
+	public TiledMap generate(World world, int worldX, int worldY, int width, int height) {
 		TiledMap map = new TiledMap();
-		map.getLayers().add(generateBackground(width, height));
+		map.getLayers().add(generateBackground(world, worldX, worldY, width, height));
 		return map;
 	}
 
-	private TiledMapTileLayer generateBackground(int width, int height) {
+	private TiledMapTileLayer generateBackground(World world, int worldX, int worldY,
+			int width, int height) {
+		
 		TiledMapTileLayer layer = new TiledMapTileLayer(width, height,
 				TILE_WIDTH, TILE_HEIGHT);
 		for (int x = 0; x < layer.getWidth(); x++) {
@@ -42,10 +49,35 @@ public class MapChunkGenerator {
 					Cell cell = new Cell();
 					cell.setTile(getTile("grass/mid"));
 					layer.setCell(x, y, cell);
+					createBox(worldX + x, worldY + y, world);
 				}
 			}
 		}
 		return layer;
+	}
+	
+	private void createBox(int x, int y, World world) {
+		// Create our body definition
+		BodyDef groundBodyDef = new BodyDef();
+		// Set its world position
+		groundBodyDef.position.set(new Vector2(x, y));
+
+		// Create a body from the defintion and add it to the world
+		Body groundBody = world.createBody(groundBodyDef);
+
+		// Create a polygon shape
+		PolygonShape groundBox = new PolygonShape();
+		
+		// Set the polygon shape as a box which is twice the size of our view
+		// port and 20 high
+		// (setAsBox takes half-width and half-height as arguments)
+		groundBox.setAsBox(1, 1);
+		
+		// Create a fixture from our polygon shape and add it to our ground body
+		groundBody.createFixture(groundBox, 0.0f);
+		
+		// Clean up after ourselves
+		groundBox.dispose();
 	}
 	
 	private StaticTiledMapTile getTile(String key) {

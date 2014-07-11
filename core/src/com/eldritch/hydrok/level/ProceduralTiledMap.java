@@ -5,23 +5,27 @@ import static com.eldritch.hydrok.util.Settings.TILE_HEIGHT;
 
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.physics.box2d.World;
 
 public class ProceduralTiledMap extends TiledMap {
 	private static final int L = 3;
 	
 	private final TiledMap[][] chunks = new TiledMap[L][L];
 	private final MapChunkGenerator generator = new MapChunkGenerator();
+	private final World world;
 	private final int chunkWidth;
 	private final int chunkHeight;
 	
-	public ProceduralTiledMap(int width, int height) {
+	public ProceduralTiledMap(World world, int width, int height) {
+		this.world = world;
 		this.chunkWidth = width;
 		this.chunkHeight = height;
 		
 		// generate initial chunk setup
 		for (int i = 0; i < chunks.length; i++) {
 			for (int j = 0; j < chunks[i].length; j++) {
-				chunks[i][j] = generator.generate(width, height);
+				chunks[i][j] = generator.generate(
+						world, i * chunkWidth, j * chunkWidth, width, height);
 			}
 		}
 		

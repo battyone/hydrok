@@ -43,8 +43,11 @@ public class GameScreen extends AbstractScreen {
 	@Override
 	public void show() {
 		super.show();
+
+		world = new World(new Vector2(0, -10), true);
+		player = new Player(world, 1, 5);
 		
-		map = new ProceduralTiledMap(20, 20);
+		map = new ProceduralTiledMap(world, 5, 5);
 		renderer = new OrthogonalTiledMapRenderer(map, SCALE);
 
 //		float w = Gdx.graphics.getWidth();
@@ -54,10 +57,6 @@ public class GameScreen extends AbstractScreen {
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, w, h);
 		camera.update();
-
-		world = new World(new Vector2(0, -10), true);
-		player = new Player(world);
-		createBox();
 
 		debugRenderer = new Box2DDebugRenderer();
 		font = new BitmapFont();
@@ -100,30 +99,6 @@ public class GameScreen extends AbstractScreen {
 		
 		debugRenderer.render(world, camera.combined);
 		world.step(delta, 6, 2);
-	}
-	
-	private void createBox() {
-		// Create our body definition
-		BodyDef groundBodyDef = new BodyDef();
-		// Set its world position
-		groundBodyDef.position.set(new Vector2(0, 0));
-
-		// Create a body from the defintion and add it to the world
-		Body groundBody = world.createBody(groundBodyDef);
-
-		// Create a polygon shape
-		PolygonShape groundBox = new PolygonShape();
-		
-		// Set the polygon shape as a box which is twice the size of our view
-		// port and 20 high
-		// (setAsBox takes half-width and half-height as arguments)
-		groundBox.setAsBox(300, 32.0f * SCALE);
-		
-		// Create a fixture from our polygon shape and add it to our ground body
-		groundBody.createFixture(groundBox, 0.0f);
-		
-		// Clean up after ourselves
-		groundBox.dispose();
 	}
 	
 	private void drawFps() {

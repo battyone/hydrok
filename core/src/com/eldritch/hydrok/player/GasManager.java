@@ -26,7 +26,7 @@ public class GasManager implements PhaseManager {
 	private final float height;
 	private float stateTime = 0;
 	
-	public GasManager(World world) {
+	public GasManager(World world, int x, int y) {
 		TextureRegion[][] regions = GameScreen.getRegions("sprite/gas.png", 64, 64);
 		Array<TextureRegion> allRegions = new Array<TextureRegion>();
 		for (TextureRegion[] region : regions) {
@@ -43,7 +43,7 @@ public class GasManager implements PhaseManager {
 		bodyDef.type = BodyType.DynamicBody;
 		
 		// Set our body's starting position in the world
-		bodyDef.position.set(3, 10);
+		bodyDef.position.set(x, y);
 
 		// Create our body in the world using our body definition
 		body = world.createBody(bodyDef);

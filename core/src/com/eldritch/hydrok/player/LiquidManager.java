@@ -23,7 +23,7 @@ public class LiquidManager implements PhaseManager {
 	private final float width;
 	private final float height;
 	
-	public LiquidManager(World world) {
+	public LiquidManager(World world, int x, int y) {
 		texture = new TextureRegion(new Texture("sprite/liquid.png"));
 		
 		// First we create a body definition
@@ -34,7 +34,7 @@ public class LiquidManager implements PhaseManager {
 		bodyDef.type = BodyType.DynamicBody;
 		
 		// Set our body's starting position in the world
-		bodyDef.position.set(3, 10);
+		bodyDef.position.set(x, y);
 
 		// Create our body in the world using our body definition
 		body = world.createBody(bodyDef);

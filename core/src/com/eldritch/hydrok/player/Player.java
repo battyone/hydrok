@@ -11,11 +11,11 @@ public class Player {
 	private final EnumMap<Phase, PhaseManager> managers;
 	private Phase phase = Phase.Solid;
 
-	public Player(World world) {
+	public Player(World world, int x, int y) {
 		managers = new EnumMap<Phase, PhaseManager>(Phase.class);
-		managers.put(Phase.Solid, new SolidManager(world));
-		managers.put(Phase.Liquid, new LiquidManager(world));
-		managers.put(Phase.Gas, new GasManager(world));
+		managers.put(Phase.Solid, new SolidManager(world, x, y));
+		managers.put(Phase.Liquid, new LiquidManager(world, x, y));
+		managers.put(Phase.Gas, new GasManager(world, x ,y));
 		managers.get(phase).setActive(true);
 	}
 
