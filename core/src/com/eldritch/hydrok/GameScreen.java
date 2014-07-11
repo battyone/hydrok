@@ -45,7 +45,7 @@ public class GameScreen extends AbstractScreen {
 		super.show();
 
 		world = new World(new Vector2(0, -10), true);
-		player = new Player(world, 1, 5);
+		player = new Player(world, 1, 3);
 		
 		map = new ProceduralTiledMap(world, 5, 5);
 		renderer = new OrthogonalTiledMapRenderer(map, SCALE);

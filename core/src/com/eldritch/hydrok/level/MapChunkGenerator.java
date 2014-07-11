@@ -60,7 +60,7 @@ public class MapChunkGenerator {
 		// Create our body definition
 		BodyDef groundBodyDef = new BodyDef();
 		// Set its world position
-		groundBodyDef.position.set(new Vector2(x, y));
+		groundBodyDef.position.set(new Vector2(x + 0.5f, y + 0.5f));
 
 		// Create a body from the defintion and add it to the world
 		Body groundBody = world.createBody(groundBodyDef);
@@ -68,10 +68,8 @@ public class MapChunkGenerator {
 		// Create a polygon shape
 		PolygonShape groundBox = new PolygonShape();
 		
-		// Set the polygon shape as a box which is twice the size of our view
-		// port and 20 high
-		// (setAsBox takes half-width and half-height as arguments)
-		groundBox.setAsBox(1, 1);
+		// setAsBox takes half-width and half-height as arguments
+		groundBox.setAsBox(0.5f, 0.5f);
 		
 		// Create a fixture from our polygon shape and add it to our ground body
 		groundBody.createFixture(groundBox, 0.0f);
