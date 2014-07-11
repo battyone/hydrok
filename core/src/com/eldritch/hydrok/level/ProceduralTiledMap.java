@@ -3,6 +3,7 @@ package com.eldritch.hydrok.level;
 import static com.eldritch.hydrok.util.Settings.TILE_WIDTH;
 import static com.eldritch.hydrok.util.Settings.TILE_HEIGHT;
 
+import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
@@ -53,6 +54,11 @@ public class ProceduralTiledMap extends TiledMap {
 		if (lastX < chunkX) {
 			// right
 			for (int i = 0; i < chunks.length; i++) {
+				// destroy the first column
+				for (MapLayer layer : chunks[i][0].getLayers()) {
+					((ChunkLayer) layer).destroy();
+				}
+				
 				for (int j = 0; j < chunks[i].length - 1; j++) {
 					// shift left
 					chunks[i][j] = chunks[i][j + 1];

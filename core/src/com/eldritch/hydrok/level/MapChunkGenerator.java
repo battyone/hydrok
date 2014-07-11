@@ -41,22 +41,21 @@ public class MapChunkGenerator {
 	private TiledMapTileLayer generateBackground(World world, int worldX, int worldY,
 			int width, int height) {
 		
-		TiledMapTileLayer layer = new TiledMapTileLayer(width, height,
-				TILE_WIDTH, TILE_HEIGHT);
+		ChunkLayer layer = new ChunkLayer(world, width, height, TILE_WIDTH, TILE_HEIGHT);
 		for (int x = 0; x < layer.getWidth(); x++) {
 			for (int y = 0; y < layer.getHeight(); y++) {
 				if (y == 0) {
 					Cell cell = new Cell();
 					cell.setTile(getTile("grass/mid"));
 					layer.setCell(x, y, cell);
-					createBox(worldX + x, worldY + y, world);
+					layer.addBody(createBox(worldX + x, worldY + y, world));
 				}
 			}
 		}
 		return layer;
 	}
 	
-	private void createBox(int x, int y, World world) {
+	private Body createBox(int x, int y, World world) {
 		// Create our body definition
 		BodyDef groundBodyDef = new BodyDef();
 		// Set its world position
@@ -76,6 +75,8 @@ public class MapChunkGenerator {
 		
 		// Clean up after ourselves
 		groundBox.dispose();
+		
+		return groundBody;
 	}
 	
 	private StaticTiledMapTile getTile(String key) {
