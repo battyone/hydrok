@@ -31,7 +31,8 @@ public class ProceduralTiledMap extends TiledMap {
 		for (int i = 0; i < chunks.length; i++) {
 			for (int j = 0; j < chunks[i].length; j++) {
 				chunks[i][j] = generator.generate(
-						world, j * chunkWidth, i * chunkHeight, chunkWidth, chunkHeight);
+						world, j * chunkWidth - chunkWidth, i * chunkHeight - chunkHeight,
+						chunkWidth, chunkHeight);
 			}
 		}
 		
@@ -60,8 +61,11 @@ public class ProceduralTiledMap extends TiledMap {
 				// regen last column
 				int j = chunks.length - 1;
 				chunks[i][j] = generator.generate(
-						world, (chunkX + j) * chunkWidth, (chunkY + i) * chunkHeight,
-						chunkWidth, chunkHeight);
+						world,
+						(chunkX + j) * chunkWidth - chunkWidth,
+						(chunkY + i) * chunkHeight - chunkHeight,
+						chunkWidth,
+						chunkHeight);
 			}
 			
 			// reset min x position
@@ -92,6 +96,9 @@ public class ProceduralTiledMap extends TiledMap {
 			// adjust for shifting
 			x -= minX;
 			y -= minY;
+			
+			x += chunkWidth;
+			y += chunkHeight;
 			
 			// get relevant chunk
 			int chunkX = x / chunkWidth;
