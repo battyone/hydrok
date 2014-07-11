@@ -56,6 +56,7 @@ public class GameScreen extends AbstractScreen {
 		float h = 20;
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, w, h);
+		camera.zoom = 0.4f;
 		camera.update();
 
 		debugRenderer = new Box2DDebugRenderer();
@@ -84,7 +85,7 @@ public class GameScreen extends AbstractScreen {
 		player.update(delta);
 		
 		Vector2 position = player.getPosition();
-		camera.position.x = position.x + 12;
+		camera.position.x = position.x + 5;
         camera.position.y = position.y;
         camera.update();
 		
