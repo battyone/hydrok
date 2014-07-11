@@ -44,7 +44,7 @@ public class GameScreen extends AbstractScreen {
 		world = new World(new Vector2(0, -10), true);
 		player = new Player(world, 1, 3);
 		
-		map = new ProceduralTiledMap(world, 3, 3);
+		map = new ProceduralTiledMap(world, 10, 10);
 		renderer = new ProceduralTiledMapRenderer(map, SCALE);
 
 //		float w = Gdx.graphics.getWidth();
@@ -53,8 +53,7 @@ public class GameScreen extends AbstractScreen {
 		float h = 20;
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, w, h);
-//		camera.zoom = 0.4f;
-		camera.zoom = 0.8f;
+		camera.zoom = 0.4f;
 		camera.update();
 
 		debugRenderer = new Box2DDebugRenderer();

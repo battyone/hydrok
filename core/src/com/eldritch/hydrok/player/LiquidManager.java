@@ -48,7 +48,7 @@ public class LiquidManager implements PhaseManager {
 		fixtureDef.shape = circle;
 		fixtureDef.density = 0.35f;
 		fixtureDef.friction = 0.7f;
-		fixtureDef.restitution = 0.3f; // Make it bounce a little bit
+		fixtureDef.restitution = 0.0f; // no bouncing
 
 		// Create our fixture and attach it to the body
 		body.createFixture(fixtureDef);
