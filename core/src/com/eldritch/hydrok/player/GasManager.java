@@ -50,7 +50,7 @@ public class GasManager implements PhaseManager {
 
 		// Create a circle shape and set its radius to 6
 		CircleShape circle = new CircleShape();
-		circle.setRadius(12f * SCALE);
+		circle.setRadius(16f * SCALE);
 
 		// Create a fixture definition to apply our shape to
 		FixtureDef fixtureDef = new FixtureDef();

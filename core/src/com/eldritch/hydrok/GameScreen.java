@@ -12,7 +12,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -20,6 +19,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.eldritch.hydrok.level.ProceduralTiledMap;
 import com.eldritch.hydrok.player.Player;
 import com.eldritch.hydrok.player.Player.Phase;
 
@@ -44,7 +44,7 @@ public class GameScreen extends AbstractScreen {
 	public void show() {
 		super.show();
 		
-		map = new TmxMapLoader().load("data/level1.tmx");
+		map = new ProceduralTiledMap(20, 20);
 		renderer = new OrthogonalTiledMapRenderer(map, SCALE);
 
 //		float w = Gdx.graphics.getWidth();
