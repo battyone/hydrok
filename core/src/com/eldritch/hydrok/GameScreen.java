@@ -16,6 +16,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.eldritch.hydrok.level.ProceduralTiledMap;
+import com.eldritch.hydrok.level.ProceduralTiledMapRenderer;
 import com.eldritch.hydrok.player.Player;
 import com.eldritch.hydrok.player.Player.Phase;
 
@@ -44,7 +45,7 @@ public class GameScreen extends AbstractScreen {
 		player = new Player(world, 1, 3);
 		
 		map = new ProceduralTiledMap(world, 3, 3);
-		renderer = new OrthogonalTiledMapRenderer(map, SCALE);
+		renderer = new ProceduralTiledMapRenderer(map, SCALE);
 
 //		float w = Gdx.graphics.getWidth();
 //		float h = Gdx.graphics.getHeight();
