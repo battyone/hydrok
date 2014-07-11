@@ -102,6 +102,11 @@ public class ProceduralTiledMap extends TiledMap {
 				return null;
 			}
 			
+			// check for layer existence
+			if (chunks[chunkY][chunkX].getLayers().getCount() <= index) {
+				return null;
+			}
+			
 			// return the cell within chunk
 			TiledMapTileLayer layer = (TiledMapTileLayer) 
 					chunks[chunkY][chunkX].getLayers().get(index);
