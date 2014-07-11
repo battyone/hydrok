@@ -71,7 +71,7 @@ public class SolidManager implements PhaseManager {
 		// apply right impulse, but only if max velocity is not reached yet
 		Vector2 pos = getBody().getPosition();
 		if (getBody().getLinearVelocity().x < MAX_VELOCITY) {
-//			getBody().applyLinearImpulse(0.25f, 0, pos.x, pos.y, true);
+			getBody().applyLinearImpulse(0.25f, 0, pos.x, pos.y, true);
 		}
 	}
 	
