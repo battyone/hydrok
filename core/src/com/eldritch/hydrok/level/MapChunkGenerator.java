@@ -48,7 +48,9 @@ public class MapChunkGenerator {
 					Cell cell = new Cell();
 					cell.setTile(getTile("grass/mid"));
 					layer.setCell(x, y, cell);
-					layer.addBody(createBox(worldX + x, worldY + y, world));
+					if (x % 2 == 0) {
+						layer.addBody(createBox(worldX + x, worldY + y, world));
+					}
 				}
 			}
 		}

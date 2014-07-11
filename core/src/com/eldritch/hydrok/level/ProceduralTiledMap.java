@@ -81,8 +81,54 @@ public class ProceduralTiledMap extends TiledMap {
 		// check for vertical crossing
 		if (lastY < chunkY) {
 			// up
+			for (int j = 0; j < chunks.length; j++) {
+				// destroy the first row
+				for (MapLayer layer : chunks[0][j].getLayers()) {
+					((ChunkLayer) layer).destroy();
+				}
+				
+				for (int i = 0; i < chunks.length - 1; i++) {
+					// shift down
+					chunks[i][j] = chunks[i + 1][j];
+				}
+				
+				// regen last row
+				int i = chunks.length - 1;
+				chunks[i][j] = generator.generate(
+						world,
+						(chunkX + j) * chunkWidth - chunkWidth,
+						(chunkY + i) * chunkHeight - chunkHeight,
+						chunkWidth,
+						chunkHeight);
+			}
+			
+			// reset min y position
+			minY = chunkY * chunkHeight;
 		} else if (lastY > chunkY) {
 			// down
+			for (int j = 0; j < chunks.length; j++) {
+				// destroy the last row
+				for (MapLayer layer : chunks[chunks.length - 1][j].getLayers()) {
+					((ChunkLayer) layer).destroy();
+				}
+				
+				for (int i = chunks.length - 1; i >= 1; i--) {
+					// shift up
+					chunks[i][j] = chunks[i - 1][j];
+				}
+				
+				// regen first row
+				int i = 0;
+				chunks[i][j] = generator.generate(
+						world,
+						(chunkX + j) * chunkWidth - chunkWidth,
+						(chunkY + i) * chunkHeight - chunkHeight,
+						chunkWidth,
+						chunkHeight);
+			}
+			
+			// reset min y position
+			minY = chunkY * chunkHeight;
 		}
 		
 		// reset the last position
