@@ -1,0 +1,12 @@
+
+tiles-atlas.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+grass/mid
+  rotate: false
+  xy: 504, 576
+  size: 70, 70
+  orig: 70, 70
+  offset: 0, 0
+  index: 0
