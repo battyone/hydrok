@@ -3,6 +3,7 @@ package com.eldritch.hydrok.level;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
@@ -18,6 +19,12 @@ public class ChunkLayer extends TiledMapTileLayer {
 	
 	public void addBody(Body body) {
 		bodies.add(body);
+	}
+	
+	public void addCell(TiledMapTile tile, int x, int y) {
+		Cell cell = new Cell();
+		cell.setTile(tile);
+		setCell(x, y, cell);
 	}
 	
 	public void destroy() {

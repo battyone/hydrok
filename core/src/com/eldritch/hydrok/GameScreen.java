@@ -98,7 +98,7 @@ public class GameScreen extends AbstractScreen {
 		// debug
 		drawFps();
 		
-//		debugRenderer.render(world, camera.combined);
+		debugRenderer.render(world, camera.combined);
 		world.step(delta, 6, 2);
 	}
 	

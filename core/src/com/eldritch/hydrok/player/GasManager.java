@@ -18,7 +18,7 @@ import com.eldritch.hydrok.GameScreen;
 import com.eldritch.hydrok.player.Player.PhaseManager;
 
 public class GasManager implements PhaseManager {
-	private static final int MAX_VELOCITY = 7;
+	private static final int MAX_VELOCITY = 3;
 	
 	private final Body body;
 	private final Animation animation;
