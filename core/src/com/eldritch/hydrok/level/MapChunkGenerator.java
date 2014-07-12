@@ -44,7 +44,9 @@ public class MapChunkGenerator {
                 }
             });
 
-    public TiledMap generate(World world, int worldX, int worldY, int width, int height) {
+    public TiledMap generate(TiledMap[][] chunks, int chunkX, int chunkY,
+            World world, int worldX, int worldY, int width, int height) {
+        
         TiledMap map = new TiledMap();
         map.getLayers().add(generateBackground(world, worldX, worldY, width, height));
         return map;

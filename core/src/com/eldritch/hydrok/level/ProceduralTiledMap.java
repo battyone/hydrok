@@ -31,14 +31,24 @@ public class ProceduralTiledMap extends TiledMap {
 		// generate initial chunk setup: [0, 0] is bottom left
 		for (int i = 0; i < chunks.length; i++) {
 			for (int j = 0; j < chunks[i].length; j++) {
-				chunks[i][j] = generator.generate(
-						world, j * chunkWidth - chunkWidth, i * chunkHeight - chunkHeight,
-						chunkWidth, chunkHeight);
+			    chunks[i][j] = generate(i, j, 0, 0);
 			}
 		}
 		
 		// add index layers
 		getLayers().add(new ProceduralLayer(0, width * L, height * L, TILE_WIDTH, TILE_HEIGHT));
+	}
+	
+	private TiledMap generate(int i, int j, int chunkX, int chunkY) {
+	    return generator.generate(
+	            chunks,
+	            i,
+	            j,
+                world,
+                (chunkX + j) * chunkWidth - chunkWidth,
+                (chunkY + i) * chunkHeight - chunkHeight,
+                chunkWidth,
+                chunkHeight);
 	}
 	
 	public void update(Player player) {
@@ -66,12 +76,7 @@ public class ProceduralTiledMap extends TiledMap {
 				
 				// regen last column
 				int j = chunks.length - 1;
-				chunks[i][j] = generator.generate(
-						world,
-						(chunkX + j) * chunkWidth - chunkWidth,
-						(chunkY + i) * chunkHeight - chunkHeight,
-						chunkWidth,
-						chunkHeight);
+				chunks[i][j] = generate(i, j, chunkX, chunkY);
 			}
 			
 			// reset min x position
@@ -94,12 +99,7 @@ public class ProceduralTiledMap extends TiledMap {
 				
 				// regen last row
 				int i = chunks.length - 1;
-				chunks[i][j] = generator.generate(
-						world,
-						(chunkX + j) * chunkWidth - chunkWidth,
-						(chunkY + i) * chunkHeight - chunkHeight,
-						chunkWidth,
-						chunkHeight);
+				chunks[i][j] = generate(i, j, chunkX, chunkY);
 			}
 			
 			// reset min y position
@@ -119,12 +119,7 @@ public class ProceduralTiledMap extends TiledMap {
 				
 				// regen first row
 				int i = 0;
-				chunks[i][j] = generator.generate(
-						world,
-						(chunkX + j) * chunkWidth - chunkWidth,
-						(chunkY + i) * chunkHeight - chunkHeight,
-						chunkWidth,
-						chunkHeight);
+				chunks[i][j] = generate(i, j, chunkX, chunkY);
 			}
 			
 			// reset min y position
