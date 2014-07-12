@@ -19,6 +19,7 @@ import com.eldritch.hydrok.level.ProceduralTiledMap;
 import com.eldritch.hydrok.level.ProceduralTiledMapRenderer;
 import com.eldritch.hydrok.player.Player;
 import com.eldritch.hydrok.player.Player.Phase;
+import com.eldritch.hydrok.util.HydrokContactListener;
 
 public class GameScreen extends AbstractScreen {
 	public static final AssetManager textureManager = new AssetManager();
@@ -27,6 +28,7 @@ public class GameScreen extends AbstractScreen {
 	private OrthographicCamera camera;
 	private Player player;
 	private World world;
+	private HydrokContactListener contactListener;
 	private OrthogonalTiledMapRenderer renderer;
 	
 	private Box2DDebugRenderer debugRenderer;
@@ -43,6 +45,8 @@ public class GameScreen extends AbstractScreen {
 
 		world = new World(new Vector2(0, -10), true);
 		player = new Player(world, 1, 3);
+		contactListener = new HydrokContactListener();
+        world.setContactListener(contactListener);
 		
 		map = new ProceduralTiledMap(world, 10, 10);
 		renderer = new ProceduralTiledMapRenderer(map, SCALE);
@@ -80,7 +84,7 @@ public class GameScreen extends AbstractScreen {
 		}
 		
 		// updates
-		player.update(delta);
+		player.update(delta, contactListener.isGrounded());
 		map.update(player);
 		
 		Vector2 position = player.getPosition();

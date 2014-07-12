@@ -55,6 +55,7 @@ public class LiquidManager implements PhaseManager {
 
 		// Create our fixture and attach it to the body
 		Fixture fixture = body.createFixture(fixtureDef);
+		fixture.setUserData("player");
 		
 		// set collision masks
 		Filter filter = fixture.getFilterData();
@@ -76,10 +77,10 @@ public class LiquidManager implements PhaseManager {
 	}
 	
 	@Override
-	public void update(float delta) {
-		// apply right impulse, but only if max velocity is not reached yet
+	public void update(float delta, boolean grounded) {
+		// apply right impulse, but only if on the ground max velocity is not reached yet
 		Vector2 pos = getBody().getPosition();
-		if (getBody().getLinearVelocity().x < MAX_VELOCITY) {
+		if (grounded && getBody().getLinearVelocity().x < MAX_VELOCITY) {
 			getBody().applyLinearImpulse(0.010f, 0, pos.x, pos.y, true);
 		}
 	}

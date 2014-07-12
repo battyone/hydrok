@@ -19,8 +19,8 @@ public class Player {
 		managers.get(phase).setActive(true);
 	}
 
-	public void update(float delta) {
-		managers.get(phase).update(delta);
+	public void update(float delta, boolean grounded) {
+		managers.get(phase).update(delta, grounded);
 	}
 
 	public void render(OrthogonalTiledMapRenderer renderer) {
@@ -55,7 +55,7 @@ public class Player {
 	}
 
 	public static interface PhaseManager {
-		void update(float delta);
+		void update(float delta, boolean grounded);
 
 		void render(OrthogonalTiledMapRenderer renderer);
 

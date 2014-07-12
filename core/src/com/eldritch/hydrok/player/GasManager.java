@@ -64,6 +64,7 @@ public class GasManager implements PhaseManager {
 
 		// Create our fixture and attach it to the body
 		Fixture fixture = body.createFixture(fixtureDef);
+		fixture.setUserData("player");
 		
 		// set collision masks
 		Filter filter = fixture.getFilterData();
@@ -85,7 +86,7 @@ public class GasManager implements PhaseManager {
 	}
 	
 	@Override
-	public void update(float delta) {
+	public void update(float delta, boolean grounded) {
 		stateTime += delta;
 		
 		// apply upwards impulse, but only if max velocity is not reached yet
