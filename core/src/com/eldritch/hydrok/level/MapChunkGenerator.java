@@ -12,7 +12,13 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.ChainShape;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.eldritch.hydrok.HydrokGame;
 import com.eldritch.hydrok.level.WorldCell.Type;
 import com.google.common.cache.CacheBuilder;
@@ -27,6 +33,7 @@ public class MapChunkGenerator {
     private final World world;
     private final int width;
     private final int height;
+    Array<Vector2> vertices = new Array<Vector2>();
 
     private final LoadingCache<String, StaticTiledMapTile> tiles = CacheBuilder.newBuilder().build(
             new CacheLoader<String, StaticTiledMapTile>() {
@@ -45,6 +52,12 @@ public class MapChunkGenerator {
         this.width = width;
         this.height = height;
     }
+    
+    public void removeVertices(int count) {
+        if (count > 0) {
+            vertices.removeRange(0, count - 1);
+        }
+    }
 
     public TiledMap generate(int chunkI, int chunkJ, int worldX, int worldY) {
         TiledMap map = new TiledMap();
@@ -53,6 +66,8 @@ public class MapChunkGenerator {
     }
 
     private TiledMapTileLayer generateBackground(int chunkI, int chunkJ, int worldX, int worldY) {
+        int vertexCount = 0;
+        
         ChunkLayer layer = new ChunkLayer(world, width, height, TILE_WIDTH, TILE_HEIGHT);
         for (int x = 0; x < layer.getWidth(); x++) {
             for (int y = 0; y < layer.getHeight(); y++) {
@@ -61,21 +76,25 @@ public class MapChunkGenerator {
                     WorldCell cell = new WorldCell(getTile("grass/mid"), worldX + x, worldY + y,
                             world, Type.Terrain);
                     layer.setCell(x, y, cell);
+                    vertices.add(new Vector2(x + worldX, y + worldY + 1));
+                    vertexCount++;
                 }
                 
                 WorldCell left = getLeft(layer, x, y, chunkI, chunkJ, 0);
                 if (left != null) {
                     // add variation to the terrain
                     WorldCell cell;
-                    if (Math.random() < 0.25 && left.getSlope() < 1) {
-                        cell = new WorldCell(getTile("grass/hill-right1"), worldX + x,
-                                worldY + y, world, Type.Terrain, -1);
-                    } else {
+//                    if (Math.random() < 0.25 && left.getSlope() < 1) {
+//                        cell = new WorldCell(getTile("grass/hill-right1"), worldX + x,
+//                                worldY + y, world, Type.Terrain, -1);
+//                    } else {
                         cell = new WorldCell(getTile("grass/mid"), worldX + x,
                                 worldY + y, world, Type.Terrain);
-                    }
+//                    }
                     layer.setCell(x, y, cell);
                     left.setNext(cell);
+                    vertices.add(new Vector2(x + worldX, y + worldY + 1));
+                    vertexCount++;
                 } else if (worldY > 0) {
                     // sky
                     if (Math.random() < 0.025) {
@@ -88,6 +107,28 @@ public class MapChunkGenerator {
                 }
             }
         }
+        
+        // check for terrain
+        if (vertexCount >= 2) {
+            // create the body
+            BodyDef bdef = new BodyDef();
+            bdef.type = BodyType.StaticBody;
+            bdef.position.set(worldX, worldY);
+            
+            ChainShape chain = new ChainShape();
+            chain.createChain((Vector2[]) vertices.toArray(Vector2.class));
+            
+            FixtureDef fd = new FixtureDef();
+            fd.friction = 0;
+            fd.shape = chain;
+            fd.filter.categoryBits = 0x0001;
+            fd.filter.maskBits = Type.Terrain.getMaskBits();
+            world.createBody(bdef).createFixture(fd);
+            chain.dispose();
+            
+            layer.setVertexCount(vertexCount);
+        }
+        
         return layer;
     }
 

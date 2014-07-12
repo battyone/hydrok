@@ -55,7 +55,9 @@ public class ProceduralTiledMap extends TiledMap {
             for (int i = L - 1; i >= 0; i--) {
                 // destroy the first column
                 for (MapLayer layer : chunks[i][0].getLayers()) {
-                    ((ChunkLayer) layer).destroy();
+                    ChunkLayer chunk = (ChunkLayer) layer;
+                    chunk.destroy();
+                    generator.removeVertices(chunk.getVertexCount());
                 }
 
                 for (int j = 0; j < chunks[i].length - 1; j++) {

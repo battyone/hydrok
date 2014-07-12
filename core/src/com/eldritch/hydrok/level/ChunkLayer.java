@@ -10,10 +10,19 @@ import com.badlogic.gdx.physics.box2d.World;
 public class ChunkLayer extends TiledMapTileLayer {
     private final Set<Body> bodies = new HashSet<Body>();
     private final World world;
+    private int vertexCount = 0;
 
     public ChunkLayer(World world, int width, int height, int tileWidth, int tileHeight) {
         super(width, height, tileWidth, tileHeight);
         this.world = world;
+    }
+    
+    public void setVertexCount(int vertexCount) {
+        this.vertexCount = vertexCount;
+    }
+    
+    public int getVertexCount() {
+        return vertexCount;
     }
 
     public void addBody(Body body) {
@@ -31,7 +40,7 @@ public class ChunkLayer extends TiledMapTileLayer {
 
     public void setCell(int x, int y, WorldCell cell) {
         super.setCell(x, y, cell);
-        addBody(cell.getBody());
+//        addBody(cell.getBody());
     }
 
     @Override
