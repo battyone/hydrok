@@ -57,7 +57,6 @@ public class MapChunkGenerator {
     public void removeVertices(int count) {
         if (count > 0) {
             vertices.removeRange(0, count - 1);
-            System.out.println("size " + vertices.size);
         }
     }
 
@@ -69,7 +68,6 @@ public class MapChunkGenerator {
 
     private TiledMapTileLayer generateBackground(int chunkI, int chunkJ, int worldX, int worldY) {
         int vertexCount = 0;
-        
         ChunkLayer layer = new ChunkLayer(world, width, height, TILE_WIDTH, TILE_HEIGHT);
         for (int x = 0; x < layer.getWidth(); x++) {
             for (int y = 0; y < layer.getHeight(); y++) {
@@ -86,13 +84,16 @@ public class MapChunkGenerator {
                 if (left != null) {
                     // add variation to the terrain
                     WorldCell cell;
-//                    if (Math.random() < 0.25 && left.getSlope() < 1) {
-//                        cell = new WorldCell(getTile("grass/hill-right1"), worldX + x,
-//                                worldY + y, world, Type.Terrain, -1);
-//                    } else {
+                    if (Math.random() < 0.25 && left.getSlope() < 1) {
+                        cell = new WorldCell(getTile("grass/hill-right1"), worldX + x,
+                                worldY + y, world, Type.Terrain, -1);
+//                    } else if (Math.random() < 0.25 && left.getSlope() > -1) {
+//                        cell = new WorldCell(getTile("grass/hill-left1"), worldX + x,
+//                                worldY + y, world, Type.Terrain, 1);
+                    } else {
                         cell = new WorldCell(getTile("grass/mid"), worldX + x,
                                 worldY + y, world, Type.Terrain);
-//                    }
+                    }
                     layer.setCell(x, y, cell);
                     left.setNext(cell);
                     vertices.add(new Vector2(x + worldX, y + worldY + 1));
@@ -120,7 +121,6 @@ public class MapChunkGenerator {
             chain.createChain((Vector2[]) vertices.toArray(Vector2.class));
             
             FixtureDef fd = new FixtureDef();
-            fd.friction = 0;
             fd.shape = chain;
             fd.filter.categoryBits = 0x0001;
             fd.filter.maskBits = Type.Terrain.getMaskBits();
