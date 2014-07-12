@@ -45,7 +45,7 @@ public class GasManager extends AbstractPhaseManager {
 		Body body = getBody();
 		Vector2 pos = body.getPosition();
 		if (body.getLinearVelocity().y < MAX_VELOCITY) {
-		    float force = Math.max(1 / (lastGround * 10), 0.01f);
+		    float force = Math.max(1 / (lastGround * 20), 0.0515f);
 			body.applyLinearImpulse(0, force, pos.x, pos.y, true);
 		}
 	}

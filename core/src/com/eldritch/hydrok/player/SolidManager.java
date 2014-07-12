@@ -10,7 +10,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.eldritch.hydrok.util.Settings;
 
 public class SolidManager extends AbstractPhaseManager {
-	private static final int MAX_VELOCITY = 4;
+	private static final int MAX_VELOCITY = 7;
 	
 	private final TextureRegion texture;
 	
