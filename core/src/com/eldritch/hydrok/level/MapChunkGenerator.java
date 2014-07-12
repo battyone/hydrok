@@ -25,6 +25,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.eldritch.hydrok.HydrokGame;
+import com.eldritch.hydrok.level.WorldCell.Type;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -71,22 +72,25 @@ public class MapChunkGenerator {
                     if (hasLeft(chunkI, chunkJ)) {
                         // add variation to the terrain
                         if (Math.random() < 0.25) {
-                            layer.addCell(getTile("grass/hill-right1"), x, y);
-                            layer.addBody(createBox(world, worldX + x, worldY + y));
+                            WorldCell cell = new WorldCell(getTile("grass/hill-right1"),
+                                    worldX + x, worldY + y, world, Type.Terrain);
+                            layer.setCell(x, y, cell);
                         } else {
-                            layer.addCell(getTile("grass/mid"), x, y);
-                            layer.addBody(createBox(world, worldX + x, worldY + y));
+                            WorldCell cell = new WorldCell(getTile("grass/mid"),
+                                    worldX + x, worldY + y, world, Type.Terrain);
+                            layer.setCell(x, y, cell);
                         }
                     } else {
-                        layer.addCell(getTile("grass/mid"), x, y);
-                        layer.addBody(createBox(world, worldX + x, worldY + y));
+                        WorldCell cell = new WorldCell(getTile("grass/mid"),
+                                worldX + x, worldY + y, world, Type.Terrain);
+                        layer.setCell(x, y, cell);
                     }
                 } else if (worldY > 0) {
                     // sky
                     if (Math.random() < 0.025) {
-                        StaticTiledMapTile tile = getTile("object/cloud2");
-                        layer.addCell(tile, x, y);
-                        layer.addBody(createBox(world, worldX + x, worldY + y, tile, BIT_SOLID));
+                        WorldCell cell = new WorldCell(getTile("object/cloud2"),
+                                worldX + x, worldY + y, world, Type.Platform);
+                        layer.setCell(x, y, cell);
                     }
                 } else {
                     // underground
@@ -96,47 +100,6 @@ public class MapChunkGenerator {
         return layer;
     }
 
-    private Body createBox(World world, int x, int y) {
-        return createBox(world, x, y, 0.5f, 0.5f, ALL_BITS);
-    }
-
-    private Body createBox(World world, int x, int y, StaticTiledMapTile tile, short maskBits) {
-        float halfWidth = (tile.getTextureRegion().getRegionWidth() / 2.0f) * SCALE;
-        float halfHeight = (tile.getTextureRegion().getRegionHeight() / 2.0f) * SCALE;
-        return createBox(world, x, y, halfWidth, halfHeight, maskBits);
-    }
-
-    private Body createBox(World world, int x, int y, float halfWidth, float halfHeight,
-            short maskBits) {
-        // Create our body definition
-        BodyDef groundBodyDef = new BodyDef();
-        // Set its world position
-        groundBodyDef.position.set(new Vector2(x + halfWidth, y + halfHeight));
-
-        // Create a body from the defintion and add it to the world
-        Body groundBody = world.createBody(groundBodyDef);
-
-        // Create a polygon shape
-        PolygonShape groundBox = new PolygonShape();
-
-        // setAsBox takes half-width and half-height as arguments
-        groundBox.setAsBox(halfWidth, halfHeight);
-
-        // Create a fixture from our polygon shape and add it to our ground body
-        Fixture fixture = groundBody.createFixture(groundBox, 0.0f);
-        
-        // set collision masks
-        Filter filter = fixture.getFilterData();
-        filter.categoryBits = 0x0001;
-        filter.maskBits = maskBits;
-        fixture.setFilterData(filter);
-
-        // Clean up after ourselves
-        groundBox.dispose();
-
-        return groundBody;
-    }
-    
     private boolean hasLeft(int i, int j) {
         int left = j - 1;
         return left >= 0 && chunks[i][left] != null;

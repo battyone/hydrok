@@ -99,13 +99,8 @@ public class Player {
 			return;
 		}
 		
-		PhaseManager last = managers.get(this.phase);
-		PhaseManager next = managers.get(phase);
 		this.phase = phase;
-		
-//		next.getBody().setTransform(last.getBody().getPosition(), last.getBody().getAngle());
-//		next.getBody().setLinearVelocity(last.getBody().getLinearVelocity());
-		next.setActive();
+		managers.get(phase).setActive();
 	}
 	
 	public enum Phase {
