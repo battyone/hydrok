@@ -29,8 +29,7 @@ public class WorldCell extends Cell {
     public WorldCell(TiledMapTile tile, int x, int y, World world, Type type, int slope) {
         this.type = type;
         this.slope = slope;
-//        body = createBody(world, x, y, tile, type, slope);
-        body = null;
+        body = createBody(world, x, y, tile, type, slope);
         this.x = x;
         this.y = y;
         setTile(tile);
@@ -42,6 +41,10 @@ public class WorldCell extends Cell {
 
     public int getSlope() {
         return slope;
+    }
+    
+    public boolean hasBody() {
+        return body != null;
     }
     
     public Body getBody() {
@@ -66,51 +69,16 @@ public class WorldCell extends Cell {
     }
     
     private static Body createBody(World world, int x, int y, TiledMapTile tile, Type type, int slope) {
-        switch (slope) {
-            case -1:
-                return createDownwardTriangle(world, x, y, tile, type);
-            case 0:
+        switch (type) {
+            case Terrain:
+                return null;
+            case Platform:
                 return createBox(world, x, y, tile, type);
-            case 1:
             default:
-                throw new IllegalStateException("Invalid slope: " + slope);
+                throw new IllegalStateException("Unrecognized type: " + type);
         }
     }
     
-    private static Body createDownwardTriangle(World world, int x, int y, TiledMapTile tile, Type type) {
-        float width = tile.getTextureRegion().getRegionWidth() * SCALE;
-        float height = tile.getTextureRegion().getRegionHeight() * SCALE;
-        
-        BodyDef groundBodyDef = new BodyDef();
-        groundBodyDef.position.set(new Vector2(x, y));
-
-        // Create a body from the defintion and add it to the world
-        Body groundBody = world.createBody(groundBodyDef);
-
-        // Create a polygon shape
-        PolygonShape polygon = new PolygonShape();
-        Vector2[] vertices = { 
-                new Vector2(x, y),
-                new Vector2(x, y + height),
-                new Vector2(x + width, y)
-                };
-        polygon.set(vertices);
-
-        // Create a fixture from our polygon shape and add it to our ground body
-        Fixture fixture = groundBody.createFixture(polygon, 0.0f);
-
-        // set collision masks
-        Filter filter = fixture.getFilterData();
-        filter.categoryBits = 0x0001;
-        filter.maskBits = type.maskBits;
-        fixture.setFilterData(filter);
-
-        // Clean up after ourselves
-        polygon.dispose();
-
-        return groundBody;
-    }
-
     private static Body createBox(World world, int x, int y, TiledMapTile tile, Type type) {
         float halfWidth = (tile.getTextureRegion().getRegionWidth() / 2.0f) * SCALE;
         float halfHeight = (tile.getTextureRegion().getRegionHeight() / 2.0f) * SCALE;
