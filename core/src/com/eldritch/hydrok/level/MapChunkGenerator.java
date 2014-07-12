@@ -56,20 +56,31 @@ public class MapChunkGenerator {
         this.height = height;
     }
 
-    public TiledMap generate(int chunkX, int chunkY, int worldX, int worldY) {
+    public TiledMap generate(int chunkI, int chunkJ, int worldX, int worldY) {
         TiledMap map = new TiledMap();
-        map.getLayers().add(generateBackground(chunkX, chunkY, worldX, worldY));
+        map.getLayers().add(generateBackground(chunkI, chunkJ, worldX, worldY));
         return map;
     }
 
-    private TiledMapTileLayer generateBackground(int chunkX, int chunkY, int worldX, int worldY) {
+    private TiledMapTileLayer generateBackground(int chunkI, int chunkJ, int worldX, int worldY) {
         ChunkLayer layer = new ChunkLayer(world, width, height, TILE_WIDTH, TILE_HEIGHT);
         for (int x = 0; x < layer.getWidth(); x++) {
             for (int y = 0; y < layer.getHeight(); y++) {
                 if (y == 0 && worldY == 0) {
                     // ground
-                    layer.addCell(getTile("grass/mid"), x, y);
-                    layer.addBody(createBox(world, worldX + x, worldY + y));
+                    if (hasLeft(chunkI, chunkJ)) {
+                        // add variation to the terrain
+                        if (Math.random() < 0.25) {
+                            layer.addCell(getTile("grass/hill-right1"), x, y);
+                            layer.addBody(createBox(world, worldX + x, worldY + y));
+                        } else {
+                            layer.addCell(getTile("grass/mid"), x, y);
+                            layer.addBody(createBox(world, worldX + x, worldY + y));
+                        }
+                    } else {
+                        layer.addCell(getTile("grass/mid"), x, y);
+                        layer.addBody(createBox(world, worldX + x, worldY + y));
+                    }
                 } else if (worldY > 0) {
                     // sky
                     if (Math.random() < 0.025) {
@@ -124,6 +135,33 @@ public class MapChunkGenerator {
         groundBox.dispose();
 
         return groundBody;
+    }
+    
+    private boolean hasLeft(int i, int j) {
+        int left = j - 1;
+        return left >= 0 && chunks[i][left] != null;
+    }
+    
+    private TiledMap getLeft(int i, int j) {
+        return chunks[i][j - 1];
+    }
+    
+    private boolean hasUp(int i, int j) {
+        int up = j + 1;
+        return up < chunks.length && chunks[up][j] != null;
+    }
+    
+    private TiledMap getUp(int i, int j) {
+        return chunks[i + 1][j];
+    }
+    
+    private boolean hasDown(int i, int j) {
+        int down = j - 1;
+        return down >= 0 && chunks[down][j] != null;
+    }
+    
+    private TiledMap getDown(int i, int j) {
+        return chunks[i - 1][j];
     }
 
     private StaticTiledMapTile getTile(String key) {
