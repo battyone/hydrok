@@ -103,7 +103,11 @@ public class MapChunkGenerator {
                 WorldCell up = getCell(layer, x, y + 1, chunkI, chunkJ, 0);
                 if (up != null) {
                     if (up.getType() == Type.Terrain || up.getType() == Type.Filler) {
-                        WorldCell cell = new WorldCell(getTile("grass/center"), worldX + x, worldY + y,
+                        StaticTiledMapTile tile = getTile("grass/center");
+                        if (up.getSlope() < 0) {
+                            tile = getTile("grass/hill-right2");
+                        }
+                        WorldCell cell = new WorldCell(tile, worldX + x, worldY + y,
                                 world, Type.Filler);
                         layer.setCell(x, y, cell);
                     }
