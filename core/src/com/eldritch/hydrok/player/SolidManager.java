@@ -1,79 +1,22 @@
 package com.eldritch.hydrok.player;
 
-import static com.eldritch.hydrok.util.Settings.SCALE;
-
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.Filter;
-import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.World;
-import com.eldritch.hydrok.player.Player.PhaseManager;
 import com.eldritch.hydrok.util.Settings;
 
-public class SolidManager implements PhaseManager {
+public class SolidManager extends AbstractPhaseManager {
 	private static final int MAX_VELOCITY = 4;
 	
-	private final Body body;
 	private final TextureRegion texture;
-	private final float width;
-	private final float height;
 	
 	public SolidManager(World world, int x, int y) {
+	    super(world, x, y, 0.5f, 0.3f, Settings.BIT_SOLID);
 		texture = new TextureRegion(new Texture("sprite/solid.png"));
-		
-		// First we create a body definition
-		BodyDef bodyDef = new BodyDef();
-		
-		// We set our body to dynamic, for something like ground which doesn't
-		// move we would set it to StaticBody
-		bodyDef.type = BodyType.DynamicBody;
-		
-		// Set our body's starting position in the world
-		bodyDef.position.set(x, y);
-
-		// Create our body in the world using our body definition
-		body = world.createBody(bodyDef);
-
-		// Create a circle shape and set its radius to 6
-		CircleShape circle = new CircleShape();
-		circle.setRadius(22f * SCALE);
-
-		// Create a fixture definition to apply our shape to
-		FixtureDef fixtureDef = new FixtureDef();
-		fixtureDef.shape = circle;
-		fixtureDef.density = 0.5f;
-		fixtureDef.friction = 0.7f;
-		fixtureDef.restitution = 0.3f; // Make it bounce a little bit
-
-		// Create our fixture and attach it to the body
-		Fixture fixture = body.createFixture(fixtureDef);
-		fixture.setUserData("player");
-		
-		// set collision masks
-		Filter filter = fixture.getFilterData();
-		filter.categoryBits = Settings.BIT_SOLID;
-		filter.maskBits = 0x0001;
-		fixture.setFilterData(filter);
-
-		// rendering dimensions
-//		width = SCALE * texture.getWidth();
-//		height = SCALE * texture.getHeight();
-		width = circle.getRadius() * 2;
-		height = circle.getRadius() * 2;
-		
-		// Remember to dispose of any shapes after you're done with them!
-		// BodyDef and FixtureDef don't need disposing, but shapes do.
-		circle.dispose();
-		
-		setActive(false);
 	}
 	
 	@Override
@@ -87,22 +30,16 @@ public class SolidManager implements PhaseManager {
 	
 	@Override
 	public void render(OrthogonalTiledMapRenderer renderer) {
+	    Body body = getBody();
 		Vector2 position = body.getPosition();
+		
+		float width = getWidth();
+        float height = getHeight();
 		
 		Batch batch = renderer.getSpriteBatch();
 		batch.begin();
 		batch.draw(texture, position.x - width / 2, position.y - height / 2, width / 2, height / 2,
 				width, height, 1f, 1f, (float) (body.getAngle() * 180 / Math.PI));
 		batch.end();
-	}
-
-	@Override
-	public Body getBody() {
-		return body;
-	}
-	
-	@Override
-	public void setActive(boolean active) {
-		body.setActive(active);
 	}
 }
