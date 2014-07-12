@@ -14,8 +14,8 @@ public class SolidManager extends AbstractPhaseManager {
 	
 	private final TextureRegion texture;
 	
-	public SolidManager(Body body, World world, int x, int y, float width, float height) {
-	    super(body, world, x, y, width, height, 0.5f, 0.3f, Settings.BIT_SOLID);
+	public SolidManager(Player player, World world, int x, int y, float width, float height) {
+	    super(player, world, x, y, width, height, 0.5f, 0.3f, Settings.BIT_SOLID);
 		texture = new TextureRegion(new Texture("sprite/solid.png"));
 	}
 	

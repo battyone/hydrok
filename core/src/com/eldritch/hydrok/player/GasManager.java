@@ -18,8 +18,8 @@ public class GasManager extends AbstractPhaseManager {
 	private float stateTime = 0;
 	private float lastGround = 0;
 	
-	public GasManager(Body body, World world, int x, int y, float width, float height) {
-	    super(body, world, x, y, width, height, 0.20f, 0.3f, Settings.BIT_GAS);
+	public GasManager(Player player, World world, int x, int y, float width, float height) {
+	    super(player, world, x, y, width, height, 0.20f, 0.3f, Settings.BIT_GAS);
 	    
 		TextureRegion[][] regions = GameScreen.getRegions("sprite/gas.png", 64, 64);
 		Array<TextureRegion> allRegions = new Array<TextureRegion>();

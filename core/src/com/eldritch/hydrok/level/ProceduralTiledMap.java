@@ -39,18 +39,6 @@ public class ProceduralTiledMap extends TiledMap {
 		getLayers().add(new ProceduralLayer(0, width * L, height * L, TILE_WIDTH, TILE_HEIGHT));
 	}
 	
-	private TiledMap generate(int i, int j, int chunkX, int chunkY) {
-	    return generator.generate(
-	            chunks,
-	            i,
-	            j,
-                world,
-                (chunkX + j) * chunkWidth - chunkWidth,
-                (chunkY + i) * chunkHeight - chunkHeight,
-                chunkWidth,
-                chunkHeight);
-	}
-	
 	public void update(Player player) {
 		// compare last chunk with the current chunk
 		int lastX = (int) (lastPosition.x / chunkWidth);
@@ -129,6 +117,18 @@ public class ProceduralTiledMap extends TiledMap {
 		// reset the last position
 		lastPosition.set(position);
 	}
+	
+    private TiledMap generate(int i, int j, int chunkX, int chunkY) {
+        return generator.generate(
+                chunks,
+                i,
+                j,
+                world,
+                (chunkX + j) * chunkWidth - chunkWidth,
+                (chunkY + i) * chunkHeight - chunkHeight,
+                chunkWidth,
+                chunkHeight);
+    }
 	
 	private class ProceduralLayer extends TiledMapTileLayer {
 		private final int index;

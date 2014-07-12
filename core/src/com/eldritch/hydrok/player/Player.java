@@ -20,6 +20,8 @@ public class Player {
     private final float width;
     private final float height;
 	private final EnumMap<Phase, PhaseManager> managers;
+	
+	// mutable state
 	private Phase phase = Phase.Solid;
 
 	public Player(World world, int x, int y) {
@@ -69,13 +71,14 @@ public class Player {
         
         // create phase managers
 		managers = new EnumMap<Phase, PhaseManager>(Phase.class);
-		managers.put(Phase.Solid, new SolidManager(body, world, x, y, width, height));
-		managers.put(Phase.Liquid, new LiquidManager(body, world, x, y, width, height));
-		managers.put(Phase.Gas, new GasManager(body, world, x ,y, width * 2, height * 2));
+		managers.put(Phase.Solid, new SolidManager(this, world, x, y, width, height));
+		managers.put(Phase.Liquid, new LiquidManager(this, world, x, y, width, height));
+		managers.put(Phase.Gas, new GasManager(this, world, x ,y, width * 2, height * 2));
 		managers.get(phase).setActive();
 	}
 
 	public void update(float delta, boolean grounded) {
+	    // update phase manager
 		managers.get(phase).update(delta, grounded);
 	}
 
@@ -88,7 +91,7 @@ public class Player {
 	}
 
 	public Body getBody() {
-		return managers.get(phase).getBody();
+		return body;
 	}
 	
 	public void setPhase(Phase phase) {
@@ -113,6 +116,8 @@ public class Player {
 		void update(float delta, boolean grounded);
 
 		void render(OrthogonalTiledMapRenderer renderer);
+		
+		Player getPlayer();
 
 		Body getBody();
 		
