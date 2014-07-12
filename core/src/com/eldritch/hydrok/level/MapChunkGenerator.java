@@ -62,11 +62,35 @@ public class MapChunkGenerator {
 
     public TiledMap generate(int chunkI, int chunkJ, int worldX, int worldY) {
         TiledMap map = new TiledMap();
-        map.getLayers().add(generateBackground(chunkI, chunkJ, worldX, worldY));
+        ChunkLayer background = generateTerrain(chunkI, chunkJ, worldX, worldY);
+        generateObstacles(background, chunkI, chunkJ, worldX, worldY);
+        map.getLayers().add(background);
         return map;
     }
+    
+    private void generateObstacles(ChunkLayer layer, int chunkI, int chunkJ, int worldX, int worldY) {
+        for (int x = 0; x < layer.getWidth(); x++) {
+            for (int y = 0; y < layer.getHeight(); y++) {
+                if (layer.getCell(x, y) != null) {
+                    // already has cell
+                    continue;
+                }
+                
+                if (worldY > 0) {
+                    // sky
+                    if (Math.random() < 0.025) {
+                        WorldCell cell = new WorldCell(getTile("object/cloud2"), worldX + x, worldY
+                                + y, world, Type.Platform);
+                        layer.setCell(x, y, cell);
+                    }
+                } else {
+                    // underground
+                }
+            }
+        }
+    }
 
-    private TiledMapTileLayer generateBackground(int chunkI, int chunkJ, int worldX, int worldY) {
+    private ChunkLayer generateTerrain(int chunkI, int chunkJ, int worldX, int worldY) {
         int vertexCount = 0;
         ChunkLayer layer = new ChunkLayer(world, width, height, TILE_WIDTH, TILE_HEIGHT);
         for (int x = 0; x < layer.getWidth(); x++) {
