@@ -57,8 +57,8 @@ public class GameScreen extends AbstractScreen {
 		float h = 20;
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, w, h);
-		camera.zoom = 0.4f;
-//		camera.zoom = 0.8f;
+		camera.zoom = 0.6f;
+		camera.zoom = 0.8f;
 		camera.update();
 
 		debugRenderer = new Box2DDebugRenderer();

@@ -11,7 +11,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.eldritch.hydrok.player.Player;
 
 public class ProceduralTiledMap extends TiledMap {
-    private static final int L = 3;
+    public static final int L = 3;
 
     private final TiledMap[][] chunks = new TiledMap[L][L];
     private final MapChunkGenerator generator;
@@ -28,8 +28,8 @@ public class ProceduralTiledMap extends TiledMap {
         generator = new MapChunkGenerator(chunks, world, width, height);
 
         // generate initial chunk setup: [0, 0] is bottom left
-        for (int i = 0; i < chunks.length; i++) {
-            for (int j = 0; j < chunks[i].length; j++) {
+        for (int j = 0; j < L; j++) {
+            for (int i = L -1; i >= 0; i--) {
                 chunks[i][j] = generate(i, j, 0, 0);
             }
         }

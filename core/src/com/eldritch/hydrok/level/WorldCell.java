@@ -20,6 +20,7 @@ public class WorldCell extends Cell {
     private final Body body;
     private final int x;
     private final int y;
+    private WorldCell next = null;
 
     public WorldCell(TiledMapTile tile, int x, int y, World world, Type type) {
         this(tile, x, y, world, type, 0);
@@ -44,6 +45,23 @@ public class WorldCell extends Cell {
     
     public Body getBody() {
         return body;
+    }
+    
+    public boolean hasNext() {
+        return next != null;
+    }
+    
+    public void setNext(WorldCell next) {
+        this.next = next;
+    }
+    
+    public WorldCell next() {
+        return next;
+    }
+    
+    public boolean matchesSlope(int dy) {
+        // in order to match the slope, our slope must be the inverse of the delta
+        return slope == -dy;
     }
 
     private static Body createBox(World world, int x, int y, TiledMapTile tile, Type type) {
