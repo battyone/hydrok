@@ -54,6 +54,7 @@ public class GameScreen extends AbstractScreen {
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, w, h);
 		camera.zoom = 0.4f;
+//		camera.zoom = 0.8f;
 		camera.update();
 
 		debugRenderer = new Box2DDebugRenderer();
@@ -83,8 +84,9 @@ public class GameScreen extends AbstractScreen {
 		map.update(player);
 		
 		Vector2 position = player.getPosition();
-		camera.position.x = position.x + 5;
-        camera.position.y = position.y;
+		float scale = 10 * camera.zoom / SCALE;
+        camera.position.x = Math.round((position.x + 5) * scale) / scale;
+        camera.position.y = Math.round(position.y * scale) / scale;
         camera.update();
 		
 		// set the tile map renderer view based on what the
@@ -96,7 +98,7 @@ public class GameScreen extends AbstractScreen {
 		// debug
 		drawFps();
 		
-		debugRenderer.render(world, camera.combined);
+//		debugRenderer.render(world, camera.combined);
 		world.step(delta, 6, 2);
 	}
 	

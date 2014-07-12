@@ -16,7 +16,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.eldritch.hydrok.player.Player.PhaseManager;
 
 public class SolidManager implements PhaseManager {
-	private static final int MAX_VELOCITY = 7;
+	private static final int MAX_VELOCITY = 4;
 	
 	private final Body body;
 	private final TextureRegion texture;
@@ -71,7 +71,7 @@ public class SolidManager implements PhaseManager {
 		// apply right impulse, but only if max velocity is not reached yet
 		Vector2 pos = getBody().getPosition();
 		if (getBody().getLinearVelocity().x < MAX_VELOCITY) {
-			getBody().applyLinearImpulse(0.25f, 0, pos.x, pos.y, true);
+			getBody().applyLinearImpulse(0.025f, 0, pos.x, pos.y, true);
 		}
 	}
 	

@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutionException;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
@@ -28,7 +29,11 @@ public class MapChunkGenerator {
 	private final LoadingCache<String, StaticTiledMapTile> tiles = CacheBuilder.newBuilder()
 			.build(new CacheLoader<String, StaticTiledMapTile>() {
 				public StaticTiledMapTile load(String key) {
-					return new StaticTiledMapTile(atlas.findRegion(key));
+					AtlasRegion region = atlas.findRegion(key);
+					if (region == null) {
+						return null;
+					}
+					return new StaticTiledMapTile(region);
 				}
 			});
 
@@ -45,10 +50,20 @@ public class MapChunkGenerator {
 		for (int x = 0; x < layer.getWidth(); x++) {
 			for (int y = 0; y < layer.getHeight(); y++) {
 				if (y == 0) {
-					Cell cell = new Cell();
-					cell.setTile(getTile("grass/mid"));
-					layer.setCell(x, y, cell);
-					layer.addBody(createBox(worldX + x, worldY + y, world));
+					if (worldY == 0) {
+						// ground
+						Cell cell = new Cell();
+						cell.setTile(getTile("grass/mid"));
+						layer.setCell(x, y, cell);
+						layer.addBody(createBox(worldX + x, worldY + y, world));
+					} else if (worldY > 0) {
+						// sky
+						Cell cell = new Cell();
+						cell.setTile(getTile("object/cloud2"));
+						layer.setCell(x, y, cell);
+					} else {
+						// underground
+					}
 				}
 			}
 		}
