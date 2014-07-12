@@ -29,7 +29,7 @@ public class ProceduralTiledMap extends TiledMap {
 
         // generate initial chunk setup: [0, 0] is bottom left
         for (int j = 0; j < L; j++) {
-            for (int i = L -1; i >= 0; i--) {
+            for (int i = L - 1; i >= 0; i--) {
                 chunks[i][j] = generate(i, j, 0, 0);
             }
         }
@@ -40,17 +40,19 @@ public class ProceduralTiledMap extends TiledMap {
 
     public void update(Player player) {
         // compare last chunk with the current chunk
-        int lastX = (int) (lastPosition.x / chunkWidth);
-        int lastY = (int) (lastPosition.y / chunkHeight);
-
+        int lastX = getIndex(lastPosition.x, chunkWidth);
+        int lastY = getIndex(lastPosition.y, chunkHeight);
+        
+        // compare current chunk with the position chunk
+        
         Vector2 position = player.getPosition();
-        int chunkX = (int) (position.x / chunkWidth);
-        int chunkY = (int) (position.y / chunkHeight);
+        int chunkX = getIndex(position.x, chunkWidth);
+        int currentY = getIndex(minY, chunkHeight);
 
         // check for horizontal crossing
         if (lastX < chunkX) {
             // right
-            for (int i = 0; i < chunks.length; i++) {
+            for (int i = L - 1; i >= 0; i--) {
                 // destroy the first column
                 for (MapLayer layer : chunks[i][0].getLayers()) {
                     ((ChunkLayer) layer).destroy();
@@ -63,15 +65,18 @@ public class ProceduralTiledMap extends TiledMap {
 
                 // regen last column
                 int j = chunks.length - 1;
-                chunks[i][j] = generate(i, j, chunkX, chunkY);
+                chunks[i][j] = generate(i, j, chunkX, currentY);
             }
 
             // reset min x position
             minX = chunkX * chunkWidth;
         }
+        
+        int currentX = getIndex(minX, chunkWidth);
+        int chunkY = getIndex(position.y, chunkHeight);
 
         // check for vertical crossing
-        if (lastY < chunkY) {
+        if (currentY < chunkY) {
             // up
             for (int j = 0; j < chunks.length; j++) {
                 // destroy the first row
@@ -86,17 +91,19 @@ public class ProceduralTiledMap extends TiledMap {
 
                 // regen last row
                 int i = chunks.length - 1;
-                chunks[i][j] = generate(i, j, chunkX, chunkY);
+                chunks[i][j] = generate(i, j, currentX, chunkY);
             }
 
             // reset min y position
             minY = chunkY * chunkHeight;
-        } else if (lastY > chunkY) {
+        } else if (currentY > chunkY) {
             // down
             for (int j = 0; j < chunks.length; j++) {
-                // destroy the last row
-                for (MapLayer layer : chunks[chunks.length - 1][j].getLayers()) {
-                    ((ChunkLayer) layer).destroy();
+                // destroy the last two rows
+                for (int offset = 0; offset <= 0; offset++) {
+                    for (MapLayer layer : chunks[chunks.length - 1 - offset][j].getLayers()) {
+                        ((ChunkLayer) layer).destroy();
+                    }
                 }
 
                 for (int i = chunks.length - 1; i >= 1; i--) {
@@ -104,9 +111,10 @@ public class ProceduralTiledMap extends TiledMap {
                     chunks[i][j] = chunks[i - 1][j];
                 }
 
-                // regen first row
-                int i = 0;
-                chunks[i][j] = generate(i, j, chunkX, chunkY);
+                // regen first two rows
+                for (int offset = 0; offset <= 0; offset++) {
+                    chunks[offset][j] = generate(offset, j, currentX, chunkY);
+                }
             }
 
             // reset min y position
@@ -115,6 +123,10 @@ public class ProceduralTiledMap extends TiledMap {
 
         // reset the last position
         lastPosition.set(position);
+    }
+    
+    private int getIndex(float a, int length) {
+        return (int) Math.floor(a / length);
     }
 
     private TiledMap generate(int i, int j, int chunkX, int chunkY) {
@@ -141,8 +153,8 @@ public class ProceduralTiledMap extends TiledMap {
             y += chunkHeight;
 
             // get relevant chunk
-            int chunkX = x / chunkWidth;
-            int chunkY = y / chunkHeight;
+            int chunkX = getIndex(x, chunkWidth);
+            int chunkY = getIndex(y, chunkHeight);
 
             // handle out of bounds
             if (chunkX < 0 || chunkY < 0 || chunkX >= L || chunkY >= L) {
