@@ -10,10 +10,13 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.Filter;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.World;
 import com.eldritch.hydrok.player.Player.PhaseManager;
+import com.eldritch.hydrok.util.Settings;
 
 public class SolidManager implements PhaseManager {
 	private static final int MAX_VELOCITY = 4;
@@ -51,7 +54,13 @@ public class SolidManager implements PhaseManager {
 		fixtureDef.restitution = 0.3f; // Make it bounce a little bit
 
 		// Create our fixture and attach it to the body
-		body.createFixture(fixtureDef);
+		Fixture fixture = body.createFixture(fixtureDef);
+		
+		// set collision masks
+		Filter filter = fixture.getFilterData();
+		filter.categoryBits = Settings.BIT_SOLID;
+		filter.maskBits = 0x0001;
+		fixture.setFilterData(filter);
 
 		// rendering dimensions
 //		width = SCALE * texture.getWidth();

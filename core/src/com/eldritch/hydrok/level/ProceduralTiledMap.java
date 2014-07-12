@@ -28,7 +28,7 @@ public class ProceduralTiledMap extends TiledMap {
 		this.chunkWidth = width;
 		this.chunkHeight = height;
 		
-		// generate initial chunk setup
+		// generate initial chunk setup: [0, 0] is bottom left
 		for (int i = 0; i < chunks.length; i++) {
 			for (int j = 0; j < chunks[i].length; j++) {
 				chunks[i][j] = generator.generate(

@@ -10,6 +10,34 @@ grass/mid
   orig: 70, 70
   offset: 0, 0
   index: 0
+grass/hill-left1
+  rotate: false
+  xy: 576, 144
+  size: 70, 70
+  orig: 70, 70
+  offset: 0, 0
+  index: 0
+grass/hill-left2
+  rotate: false
+  xy: 576, 72
+  size: 70, 70
+  orig: 70, 70
+  offset: 0, 0
+  index: 0
+grass/hill-right1
+  rotate: false
+  xy: 576, 0
+  size: 70, 70
+  orig: 70, 70
+  offset: 0, 0
+  index: 0
+grass/hill-right2
+  rotate: false
+  xy: 504, 864
+  size: 70, 70
+  orig: 70, 70
+  offset: 0, 0
+  index: 0
 snow/mid
   rotate: false
   xy: 144, 792
