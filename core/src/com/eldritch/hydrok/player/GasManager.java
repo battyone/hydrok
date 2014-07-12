@@ -18,8 +18,8 @@ public class GasManager extends AbstractPhaseManager {
 	private float stateTime = 0;
 	private float lastGround = 0;
 	
-	public GasManager(World world, int x, int y) {
-	    super(world, x, y, 0.20f, 0.3f, Settings.BIT_GAS);
+	public GasManager(Body body, World world, int x, int y, float width, float height) {
+	    super(body, world, x, y, width, height, 0.20f, 0.3f, Settings.BIT_GAS);
 	    
 		TextureRegion[][] regions = GameScreen.getRegions("sprite/gas.png", 64, 64);
 		Array<TextureRegion> allRegions = new Array<TextureRegion>();
@@ -54,8 +54,8 @@ public class GasManager extends AbstractPhaseManager {
 	public void render(OrthogonalTiledMapRenderer renderer) {
 		Vector2 position = getBody().getPosition();
 		
-		float width = getWidth() * 2;
-        float height = getHeight() * 2;
+		float width = getWidth();
+        float height = getHeight();
         
 		Batch batch = renderer.getSpriteBatch();
 		batch.begin();
@@ -65,8 +65,8 @@ public class GasManager extends AbstractPhaseManager {
 	}
 	
 	@Override
-	public void setActive(boolean active) {
-	    super.setActive(active);
+	public void setActive() {
+	    super.setActive();
 		stateTime = 0;
 	}
 }

@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.eldritch.hydrok.util.Settings;
 
@@ -13,8 +14,8 @@ public class LiquidManager extends AbstractPhaseManager {
 
     private final TextureRegion texture;
 
-    public LiquidManager(World world, int x, int y) {
-        super(world, x, y, 0.35f, 0.0f, Settings.BIT_LIQUID);
+    public LiquidManager(Body body, World world, int x, int y, float width, float height) {
+        super(body, world, x, y, width, height, 0.35f, 0.0f, Settings.BIT_LIQUID);
         texture = new TextureRegion(new Texture("sprite/liquid.png"));
     }
 
