@@ -13,6 +13,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.ChainShape;
@@ -56,6 +57,7 @@ public class MapChunkGenerator {
     public void removeVertices(int count) {
         if (count > 0) {
             vertices.removeRange(0, count - 1);
+            System.out.println("size " + vertices.size);
         }
     }
 
@@ -113,7 +115,6 @@ public class MapChunkGenerator {
             // create the body
             BodyDef bdef = new BodyDef();
             bdef.type = BodyType.StaticBody;
-            bdef.position.set(worldX, worldY);
             
             ChainShape chain = new ChainShape();
             chain.createChain((Vector2[]) vertices.toArray(Vector2.class));
@@ -123,9 +124,12 @@ public class MapChunkGenerator {
             fd.shape = chain;
             fd.filter.categoryBits = 0x0001;
             fd.filter.maskBits = Type.Terrain.getMaskBits();
-            world.createBody(bdef).createFixture(fd);
+            
+            Body body = world.createBody(bdef);
+            body.createFixture(fd);
             chain.dispose();
             
+            layer.addBody(body);
             layer.setVertexCount(vertexCount);
         }
         
