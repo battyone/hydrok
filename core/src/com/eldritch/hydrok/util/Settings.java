@@ -11,4 +11,5 @@ public class Settings {
 	public static final short BIT_LIQUID = 0x0004;
 	public static final short BIT_GAS = 0x0008;
 	public static final short BIT_PLASMA = 0x0010;
+	public static final short ALL_BITS = BIT_SOLID | BIT_LIQUID | BIT_GAS | BIT_PLASMA;
 }

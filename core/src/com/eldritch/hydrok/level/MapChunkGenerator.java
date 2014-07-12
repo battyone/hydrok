@@ -1,5 +1,6 @@
 package com.eldritch.hydrok.level;
 
+import static com.eldritch.hydrok.util.Settings.ALL_BITS;
 import static com.eldritch.hydrok.util.Settings.BIT_GAS;
 import static com.eldritch.hydrok.util.Settings.BIT_LIQUID;
 import static com.eldritch.hydrok.util.Settings.BIT_PLASMA;
@@ -29,8 +30,6 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
 public class MapChunkGenerator {
-    private static short ALL_BITS = BIT_SOLID | BIT_LIQUID | BIT_GAS | BIT_PLASMA;
-    
     private final TextureAtlas atlas = new TextureAtlas(
             Gdx.files.internal("image-atlases/environment.atlas"));
 
