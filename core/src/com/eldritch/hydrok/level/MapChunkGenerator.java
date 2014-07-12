@@ -32,6 +32,11 @@ import com.google.common.cache.LoadingCache;
 public class MapChunkGenerator {
     private final TextureAtlas atlas = new TextureAtlas(
             Gdx.files.internal("image-atlases/environment.atlas"));
+    
+    private final TiledMap[][] chunks;
+    private final World world;
+    private final int width;
+    private final int height;
 
     private final LoadingCache<String, StaticTiledMapTile> tiles = CacheBuilder.newBuilder().build(
             new CacheLoader<String, StaticTiledMapTile>() {
@@ -43,18 +48,21 @@ public class MapChunkGenerator {
                     return new StaticTiledMapTile(region);
                 }
             });
+    
+    public MapChunkGenerator(TiledMap[][] chunks, World world, int width, int height) {
+        this.chunks = chunks;
+        this.world = world;
+        this.width = width;
+        this.height = height;
+    }
 
-    public TiledMap generate(TiledMap[][] chunks, int chunkX, int chunkY,
-            World world, int worldX, int worldY, int width, int height) {
-        
+    public TiledMap generate(int chunkX, int chunkY, int worldX, int worldY) {
         TiledMap map = new TiledMap();
-        map.getLayers().add(generateBackground(world, worldX, worldY, width, height));
+        map.getLayers().add(generateBackground(chunkX, chunkY, worldX, worldY));
         return map;
     }
 
-    private TiledMapTileLayer generateBackground(World world, int worldX, int worldY, int width,
-            int height) {
-
+    private TiledMapTileLayer generateBackground(int chunkX, int chunkY, int worldX, int worldY) {
         ChunkLayer layer = new ChunkLayer(world, width, height, TILE_WIDTH, TILE_HEIGHT);
         for (int x = 0; x < layer.getWidth(); x++) {
             for (int y = 0; y < layer.getHeight(); y++) {
