@@ -71,6 +71,7 @@ public class WorldCell extends Cell {
     private static Body createBody(World world, int x, int y, TiledMapTile tile, Type type, int slope) {
         switch (type) {
             case Terrain:
+            case Filler:
                 return null;
             case Platform:
                 return createBox(world, x, y, tile, type);
@@ -117,7 +118,7 @@ public class WorldCell extends Cell {
     }
 
     public enum Type {
-        Terrain(ALL_BITS), Platform(BIT_SOLID);
+        Terrain(ALL_BITS), Platform(BIT_SOLID), Filler(ALL_BITS);
         
         private final short maskBits;
         

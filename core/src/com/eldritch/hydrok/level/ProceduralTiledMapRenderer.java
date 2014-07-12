@@ -41,11 +41,11 @@ public class ProceduralTiledMapRenderer extends OrthogonalTiledMapRenderer {
 		final float layerTileWidth = layer.getTileWidth() * unitScale;
 		final float layerTileHeight = layer.getTileHeight() * unitScale;
 
-		final int col1 = (int) (viewBounds.x / layerTileWidth);
-		final int col2 = (int) ((viewBounds.x + viewBounds.width + layerTileWidth) / layerTileWidth);
+		final int col1 = (int) (viewBounds.x / layerTileWidth) - 1;
+		final int col2 = (int) ((viewBounds.x + viewBounds.width + layerTileWidth) / layerTileWidth) + 1;
 
-		final int row1 = (int) (viewBounds.y / layerTileHeight);
-		final int row2 = (int) ((viewBounds.y + viewBounds.height + layerTileHeight) / layerTileHeight);
+		final int row1 = (int) (viewBounds.y / layerTileHeight) - 1;
+		final int row2 = (int) ((viewBounds.y + viewBounds.height + layerTileHeight) / layerTileHeight) + 1;
 
 		float y = row1 * layerTileHeight;
 		float xStart = col1 * layerTileWidth;

@@ -64,6 +64,7 @@ public class MapChunkGenerator {
         TiledMap map = new TiledMap();
         ChunkLayer background = generateTerrain(chunkI, chunkJ, worldX, worldY);
         generateObstacles(background, chunkI, chunkJ, worldX, worldY);
+        generateBackground(background, chunkI, chunkJ, worldX, worldY);
         map.getLayers().add(background);
         return map;
     }
@@ -85,6 +86,27 @@ public class MapChunkGenerator {
                     }
                 } else {
                     // underground
+                }
+            }
+        }
+    }
+    
+    private void generateBackground(ChunkLayer layer, int chunkI, int chunkJ, int worldX, int worldY) {
+        for (int x = 0; x < layer.getWidth(); x++) {
+            // top -> bottom
+            for (int y = layer.getHeight() - 1; y >= 0; y--) {
+                if (layer.getCell(x, y) != null) {
+                    // already has cell
+                    continue;
+                }
+                
+                WorldCell up = getCell(layer, x, y + 1, chunkI, chunkJ, 0);
+                if (up != null) {
+                    if (up.getType() == Type.Terrain || up.getType() == Type.Filler) {
+                        WorldCell cell = new WorldCell(getTile("grass/center"), worldX + x, worldY + y,
+                                world, Type.Filler);
+                        layer.setCell(x, y, cell);
+                    }
                 }
             }
         }
