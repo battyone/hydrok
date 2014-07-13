@@ -10,7 +10,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -34,7 +33,8 @@ public class MapChunkGenerator {
     private final World world;
     private final int width;
     private final int height;
-    Array<Vector2> vertices = new Array<Vector2>();
+    final Array<Vector2> vertices = new Array<Vector2>();
+    private WorldCell lastTerrain = null;
 
     private final LoadingCache<String, StaticTiledMapTile> tiles = CacheBuilder.newBuilder().build(
             new CacheLoader<String, StaticTiledMapTile>() {
@@ -107,6 +107,8 @@ public class MapChunkGenerator {
                         StaticTiledMapTile tile = getTile("grass/center");
                         if (up.getSlope() < 0) {
                             tile = getTile("grass/hill-right2");
+                        } else if (up.getSlope() > 0) {
+                            tile = getTile("grass/hill-left2");
                         }
                         WorldCell cell = new WorldCell(tile, worldX + x, worldY + y,
                                 world, Type.Filler);
@@ -116,8 +118,6 @@ public class MapChunkGenerator {
             }
         }
     }
-    
-    private WorldCell lastTerrain = null;
     
     private void generateTerrain(ChunkLayer layer, int chunkI, int chunkJ, int worldX, int worldY) {
         int vertexCount = 0;
@@ -204,99 +204,6 @@ public class MapChunkGenerator {
             layer.addBody(body);
             layer.setVertexCount(vertexCount);
         }
-    }
-
-    private ChunkLayer generateTerrain(int chunkI, int chunkJ, int worldX, int worldY) {
-        int vertexCount = 0;
-        ChunkLayer layer = new ChunkLayer(world, width, height, TILE_WIDTH, TILE_HEIGHT);
-        for (int x = 0; x < layer.getWidth(); x++) {
-            for (int y = 0; y < layer.getHeight(); y++) {
-                if (x == 0 && worldX == 0 && y == 0 && worldY == 0) {
-                    // seed the first cell
-                    WorldCell cell = new WorldCell(getTile("grass/mid"), worldX + x, worldY + y,
-                            world, Type.Terrain);
-                    layer.setCell(x, y, cell);
-                    vertices.add(new Vector2(x + worldX, y + worldY + 1));
-                    vertexCount++;
-                }
-                
-                WorldCell left = getLeft(layer, x, y, chunkI, chunkJ, 0);
-                if (left != null) {
-                    // add variation to the terrain
-                    WorldCell cell;
-                    if (Math.random() < 0.25 && left.matchesSlope(-1, worldY + y)) {
-                        cell = new WorldCell(getTile("grass/hill-right1"), worldX + x,
-                                worldY + y, world, Type.Terrain, -1);
-                    } else if (left.matchesSlope(1, worldY + y)) {
-                        cell = new WorldCell(getTile("grass/hill-left1"), worldX + x,
-                                worldY + y, world, Type.Terrain, 1);
-                    } else if (left.matchesSlope(0, worldY + y)) {
-                        cell = new WorldCell(getTile("grass/mid"), worldX + x,
-                                worldY + y, world, Type.Terrain);
-                    } else {
-                        cell = null;
-                    }
-                    
-                    // add the cell if it was set
-                    if (cell != null) {
-                        layer.setCell(x, y, cell);
-                        left.setNext(cell);
-                        vertices.add(new Vector2(x + worldX, y + worldY + 1));
-                        vertexCount++;
-                    }
-                } else if (worldY > 0) {
-                    // sky
-                    if (Math.random() < 0.025) {
-                        WorldCell cell = new WorldCell(getTile("object/cloud2"), worldX + x, worldY
-                                + y, world, Type.Platform);
-                        layer.setCell(x, y, cell);
-                    }
-                } else {
-                    // underground
-                }
-            }
-        }
-        
-        // check for terrain
-        if (vertexCount >= 2) {
-            // create the body
-            BodyDef bdef = new BodyDef();
-            bdef.type = BodyType.StaticBody;
-            
-            ChainShape chain = new ChainShape();
-            chain.createChain((Vector2[]) vertices.toArray(Vector2.class));
-            
-            FixtureDef fd = new FixtureDef();
-            fd.shape = chain;
-            fd.filter.categoryBits = 0x0001;
-            fd.filter.maskBits = Type.Terrain.getMaskBits();
-            
-            Body body = world.createBody(bdef);
-            body.createFixture(fd);
-            chain.dispose();
-            
-            layer.addBody(body);
-            layer.setVertexCount(vertexCount);
-        }
-        
-        return layer;
-    }
-    
-    private WorldCell getLeft(ChunkLayer layer, int x, int y, int chunkI, int chunkJ, int z) {
-        // begin checking all immediately left cells for a terrain piece
-        int[] offsets = { -1, 1, 0 };
-        for (int dy : offsets) {
-            // check tile contents
-            int y2 = y + dy;
-            WorldCell cell = getCell(layer, x - 1, y2, chunkI, chunkJ, z);
-            if (cell != null && !cell.hasNext() && cell.getType() == Type.Terrain) {
-                // found a valid terrain type
-                return cell;
-            }
-        }
-
-        // nothing valid found
-        return null;
     }
 
     private WorldCell getCell(ChunkLayer layer, int x, int y, int chunkI, int chunkJ, int z) {
