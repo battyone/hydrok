@@ -165,14 +165,15 @@ public class MapChunkGenerator {
                 }
                 
                 // add variation to the terrain
-                if (Math.random() < 0.25 && lastTerrain.matchesSlope(-1, worldY + y2)) {
+                if (lastTerrain.matchesSlope(-1, worldY + y2)) {
                     candidates.add(new WorldCell(getTile("grass/hill-right1"), x2, y2, worldX + x2,
                             worldY + y2, world, Type.Terrain, -1));
-                    
-                } else if (Math.random() < 0.25 && lastTerrain.matchesSlope(1, worldY + y2)) {
+                } 
+                if (lastTerrain.matchesSlope(1, worldY + y2)) {
                     candidates.add(new WorldCell(getTile("grass/hill-left1"), x2, y2, worldX + x2,
                             worldY + y2, world, Type.Terrain, 1));
-                } else if (lastTerrain.matchesSlope(0, worldY + y2)) {
+                } 
+                if (lastTerrain.matchesSlope(0, worldY + y2)) {
                     candidates.add(new WorldCell(getTile("grass/mid"), x2, y2, worldX + x2,
                             worldY + y2, world, Type.Terrain));
                 }
