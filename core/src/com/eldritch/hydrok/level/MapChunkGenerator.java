@@ -59,6 +59,12 @@ public class MapChunkGenerator {
             vertices.removeRange(0, count - 1);
         }
     }
+    
+    public void removeBackVertices(int count) {
+        if (count > 0) {
+            vertices.removeRange(vertices.size - count, vertices.size - 1);
+        }
+    }
 
     public TiledMap generate(int chunkI, int chunkJ, int worldX, int worldY) {
         TiledMap map = new TiledMap();
