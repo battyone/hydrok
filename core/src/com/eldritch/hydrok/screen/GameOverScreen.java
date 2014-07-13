@@ -9,8 +9,11 @@ import com.eldritch.hydrok.HydrokGame;
 import com.eldritch.hydrok.util.DefaultInputListener;
 
 public class GameOverScreen extends AbstractScreen {
-	public GameOverScreen(HydrokGame game) {
+    private final int distance;
+    
+	public GameOverScreen(HydrokGame game, int distance) {
 		super(game);
+		this.distance = distance;
 	}
 
 	@Override
@@ -21,8 +24,11 @@ public class GameOverScreen extends AbstractScreen {
 		Table table = super.getTable();
 		table.center();
 		
-		table.add("Game Over!!").spaceBottom(50);
+		table.add("Game Over!!").spaceBottom(20);
 		table.row();
+		
+		table.add("Distance: " + distance).spaceBottom(50);
+        table.row();
 
 		// register the button "start game"
 		TextButton startGameButton = new TextButton("Try Again?", getSkin());

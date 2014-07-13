@@ -120,7 +120,7 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 		// check for game over
 		terminator.update(delta);
 		if (terminator.isGameOver()) {
-		    game.setScreen(new GameOverScreen(game));
+		    game.setScreen(new GameOverScreen(game, (int) player.getPosition().x));
 		}
 		
 		Vector2 position = player.getPosition();
@@ -149,8 +149,11 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
                 "Elevation: " + (int) Math.round(player.getPosition().y),
                 10, getHeight() - 10);
         font.draw(batch,
-                "Distance: " + (int) Math.round(player.getPosition().x - terminator.getPosition().x),
+                "Distance: " + (int) Math.round(player.getPosition().x),
                 10, getHeight() - 30);
+        font.draw(batch,
+                "Danger: " + (int) Math.round(player.getPosition().x - terminator.getPosition().x),
+                10, getHeight() - 50);
         batch.end();
     }
 	
