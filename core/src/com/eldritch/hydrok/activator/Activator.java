@@ -28,12 +28,14 @@ public interface Activator {
     int getY();
     
     public static abstract class AbstractActivator implements Activator {
+        private final Phase phase;
         private final TiledMapTile tile;
         private final Body body;
         private final int x;
         private final int y;
         
-        public AbstractActivator(String asset, int x, int y, World world) {
+        public AbstractActivator(Phase phase, String asset, int x, int y, World world) {
+            this.phase = phase;
             this.x = x;
             this.y = y;
             
@@ -58,6 +60,15 @@ public interface Activator {
         }
         
         @Override
+        public void activate(Player player) {
+            if (player.getPhase() != phase) {
+                player.setPhase(phase);
+            } else {
+                handleNoTransition(player);
+            }
+        }
+        
+        @Override
         public Body getBody() {
             return body;
         }
@@ -76,38 +87,43 @@ public interface Activator {
         public int getY() {
             return y;
         }
+        
+        protected abstract void handleNoTransition(Player player);
     }
     
     public static class WaterDroplet extends AbstractActivator {
         public WaterDroplet(int x, int y, World world) {
-            super("water-droplet", x, y, world);
+            super(Phase.Liquid, "water-droplet", x, y, world);
         }
         
         @Override
-        public void activate(Player player) {
-            player.setPhase(Phase.Liquid);
+        public void handleNoTransition(Player player) {
+            player.addAccelerant();
+            player.addCoolant();
         }
     }
     
     public static class IceShard extends AbstractActivator {
         public IceShard(int x, int y, World world) {
-            super("ice-shard", x, y, world);
+            super(Phase.Solid, "ice-shard", x, y, world);
         }
         
         @Override
-        public void activate(Player player) {
-            player.setPhase(Phase.Solid);
+        public void handleNoTransition(Player player) {
+            player.addCoolant();
+            player.addCoolant();
         }
     }
     
     public static class Fireball extends AbstractActivator {
         public Fireball(int x, int y, World world) {
-            super("fireball", x, y, world);
+            super(Phase.Gas, "fireball", x, y, world);
         }
         
         @Override
-        public void activate(Player player) {
-            player.setPhase(Phase.Gas);
+        public void handleNoTransition(Player player) {
+            player.addAccelerant();
+            player.addAccelerant();
         }
     }
 }

@@ -126,8 +126,11 @@ public class GameScreen extends AbstractScreen {
                 "Elevation: " + (int) Math.round(player.getPosition().y),
                 10, getHeight() - 10);
         font.draw(batch,
-                "Coolants: " + player.getCoolants(),
+                "Accelerants: " + player.getAccelerants(),
                 10, getHeight() - 30);
+        font.draw(batch,
+                "Coolants: " + player.getCoolants(),
+                10, getHeight() - 50);
         batch.end();
     }
 	

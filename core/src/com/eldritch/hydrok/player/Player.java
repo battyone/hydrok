@@ -20,14 +20,16 @@ public class Player {
     private final float width;
     private final float height;
 	private final EnumMap<Phase, PhaseManager> managers;
+	private int accelerants;
 	private int coolants;
 	float lastGround = 0;
 	
 	// mutable state
 	private Phase phase = Phase.Solid;
 
-	public Player(World world, int x, int y, int coolants) {
-	    this.coolants = coolants;
+	public Player(World world, int x, int y, int transitions) {
+	    this.accelerants = transitions;
+	    this.coolants = transitions;
 	    
 	    // First we create a body definition
         BodyDef bodyDef = new BodyDef();
@@ -111,6 +113,14 @@ public class Player {
 	    return coolants;
 	}
 	
+	public void addAccelerant() {
+        accelerants++;
+    }
+    
+    public int getAccelerants() {
+        return accelerants;
+    }
+	
 	public void transition(Phase nextPhase) {
 	    int delta = nextPhase.getTemperature() - phase.getTemperature();
 	    if (delta < 0) {
@@ -119,6 +129,12 @@ public class Player {
 	            return;
 	        }
 	        coolants += delta;
+	    } else if (delta > 0) {
+	        // same things for accelerants
+	        if (accelerants - delta < 0) {
+                return;
+            }
+	        accelerants -= delta;
 	    }
 	    
 	    // transition
@@ -132,6 +148,10 @@ public class Player {
 		
 		this.phase = phase;
 		managers.get(phase).setActive();
+	}
+	
+	public Phase getPhase() {
+	    return phase;
 	}
 	
 	public enum Phase {
