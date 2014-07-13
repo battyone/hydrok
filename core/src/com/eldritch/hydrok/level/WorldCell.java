@@ -34,6 +34,14 @@ public class WorldCell extends Cell {
         this.y = y;
         setTile(tile);
     }
+    
+    public int getX() {
+        return x;
+    }
+    
+    public int getY() {
+        return y;
+    }
 
     public Type getType() {
         return type;
@@ -63,9 +71,17 @@ public class WorldCell extends Cell {
         return next;
     }
     
-    public boolean matchesSlope(int dy) {
-        // in order to match the slope, our slope must be the inverse of the delta
-        return slope == -dy;
+    public boolean matchesSlope(int otherSlope, int otherY) {
+        int dy = otherY - y;
+        if (otherSlope > 0) {
+            // going uphill
+//            System.out.println(String.format("slope: %d, dy: %d", slope, dy));
+            return slope >= 0 && otherSlope == dy;
+        } else if (slope > 0) {
+            // was going uphill
+            return (otherSlope > 0 && otherSlope == dy) || dy == 0;
+        }
+        return slope == dy;
     }
     
     private static Body createBody(World world, int x, int y, TiledMapTile tile, Type type, int slope) {

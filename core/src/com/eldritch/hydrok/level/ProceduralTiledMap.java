@@ -51,6 +51,7 @@ public class ProceduralTiledMap extends TiledMap {
 
         // check for horizontal crossing
         if (lastX < chunkX) {
+            System.out.println("RIGHT");
             // right
             for (int i = L - 1; i >= 0; i--) {
                 // destroy the first column
@@ -79,6 +80,7 @@ public class ProceduralTiledMap extends TiledMap {
 
         // check for vertical crossing
         if (currentY < chunkY) {
+            System.out.println("UP");
             // up
             for (int j = 0; j < chunks.length; j++) {
                 // destroy the first row
@@ -99,6 +101,7 @@ public class ProceduralTiledMap extends TiledMap {
             // reset min y position
             minY = chunkY * chunkHeight;
         } else if (currentY > chunkY) {
+            System.out.println("DOWN");
             // down
             for (int j = 0; j < chunks.length; j++) {
                 // destroy the last two rows

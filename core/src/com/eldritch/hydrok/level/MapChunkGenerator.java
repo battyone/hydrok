@@ -62,7 +62,8 @@ public class MapChunkGenerator {
 
     public TiledMap generate(int chunkI, int chunkJ, int worldX, int worldY) {
         TiledMap map = new TiledMap();
-        ChunkLayer background = generateTerrain(chunkI, chunkJ, worldX, worldY);
+        ChunkLayer background = new ChunkLayer(world, width, height, TILE_WIDTH, TILE_HEIGHT);
+        generateTerrain(background, chunkI, chunkJ, worldX, worldY);
         generateObstacles(background, chunkI, chunkJ, worldX, worldY);
         generateBackground(background, chunkI, chunkJ, worldX, worldY);
         map.getLayers().add(background);
@@ -115,6 +116,95 @@ public class MapChunkGenerator {
             }
         }
     }
+    
+    private WorldCell lastTerrain = null;
+    
+    private void generateTerrain(ChunkLayer layer, int chunkI, int chunkJ, int worldX, int worldY) {
+        int vertexCount = 0;
+        if (lastTerrain == null && worldX == 0 && worldY == 0) {
+            // seed the first cell
+            lastTerrain = new WorldCell(getTile("grass/mid"), 0, 0, world, Type.Terrain);
+            layer.setCell(0, 0, lastTerrain);
+            vertices.add(new Vector2(0, 1));
+            vertexCount++;
+        }
+        
+        // add terrain until no longer able to
+        boolean canContinue = lastTerrain != null;
+        while (canContinue) {
+            int x = lastTerrain.getX() - worldX;
+            int y = lastTerrain.getY() - worldY;
+            
+            int x2 = x + 1;
+            if (x2 < 0 || x2 >= layer.getWidth()) {
+                // x-coordinate out of bounds
+                canContinue = false;
+                break;
+            }
+            
+            int[] offsets = { -1, 1, 0 };
+            canContinue = false;
+            for (int dy : offsets) {
+                int y2 = y + dy;
+                if (y2 < 0 || y2 >= layer.getHeight()) {
+                    // y-coordinate out of bounds
+                    continue;
+                }
+                
+                // add variation to the terrain
+                WorldCell cell;
+                int vy = 1;
+                if (Math.random() < 0.25 && lastTerrain.matchesSlope(-1, worldY + y2)) {
+                    cell = new WorldCell(getTile("grass/hill-right1"), worldX + x2,
+                            worldY + y2, world, Type.Terrain, -1);
+                    
+                } else if (Math.random() < 0.25 && lastTerrain.matchesSlope(1, worldY + y2)) {
+                    cell = new WorldCell(getTile("grass/hill-left1"), worldX + x2,
+                            worldY + y2, world, Type.Terrain, 1);
+                    vy = 0;
+                } else if (lastTerrain.matchesSlope(0, worldY + y2)) {
+                    cell = new WorldCell(getTile("grass/mid"), worldX + x2,
+                            worldY + y2, world, Type.Terrain);
+                } else {
+                    cell = null;
+                }
+                
+                // add the cell if it was set
+                if (cell != null) {
+                    layer.setCell(x2, y2, cell);
+                    lastTerrain.setNext(cell);
+                    vertices.add(new Vector2(x2 + worldX, y2 + worldY + vy));
+                    vertexCount++;
+                    
+                    lastTerrain = cell;
+                    canContinue = true;
+                    break;
+                }
+            }
+        }
+        
+        // check for terrain
+        if (vertexCount >= 2) {
+            // create the body
+            BodyDef bdef = new BodyDef();
+            bdef.type = BodyType.StaticBody;
+            
+            ChainShape chain = new ChainShape();
+            chain.createChain((Vector2[]) vertices.toArray(Vector2.class));
+            
+            FixtureDef fd = new FixtureDef();
+            fd.shape = chain;
+            fd.filter.categoryBits = 0x0001;
+            fd.filter.maskBits = Type.Terrain.getMaskBits();
+            
+            Body body = world.createBody(bdef);
+            body.createFixture(fd);
+            chain.dispose();
+            
+            layer.addBody(body);
+            layer.setVertexCount(vertexCount);
+        }
+    }
 
     private ChunkLayer generateTerrain(int chunkI, int chunkJ, int worldX, int worldY) {
         int vertexCount = 0;
@@ -134,20 +224,26 @@ public class MapChunkGenerator {
                 if (left != null) {
                     // add variation to the terrain
                     WorldCell cell;
-                    if (Math.random() < 0.25 && left.getSlope() < 1) {
+                    if (Math.random() < 0.25 && left.matchesSlope(-1, worldY + y)) {
                         cell = new WorldCell(getTile("grass/hill-right1"), worldX + x,
                                 worldY + y, world, Type.Terrain, -1);
-//                    } else if (Math.random() < 0.25 && left.getSlope() > -1) {
-//                        cell = new WorldCell(getTile("grass/hill-left1"), worldX + x,
-//                                worldY + y, world, Type.Terrain, 1);
-                    } else {
+                    } else if (left.matchesSlope(1, worldY + y)) {
+                        cell = new WorldCell(getTile("grass/hill-left1"), worldX + x,
+                                worldY + y, world, Type.Terrain, 1);
+                    } else if (left.matchesSlope(0, worldY + y)) {
                         cell = new WorldCell(getTile("grass/mid"), worldX + x,
                                 worldY + y, world, Type.Terrain);
+                    } else {
+                        cell = null;
                     }
-                    layer.setCell(x, y, cell);
-                    left.setNext(cell);
-                    vertices.add(new Vector2(x + worldX, y + worldY + 1));
-                    vertexCount++;
+                    
+                    // add the cell if it was set
+                    if (cell != null) {
+                        layer.setCell(x, y, cell);
+                        left.setNext(cell);
+                        vertices.add(new Vector2(x + worldX, y + worldY + 1));
+                        vertexCount++;
+                    }
                 } else if (worldY > 0) {
                     // sky
                     if (Math.random() < 0.025) {
@@ -185,15 +281,15 @@ public class MapChunkGenerator {
         
         return layer;
     }
-
+    
     private WorldCell getLeft(ChunkLayer layer, int x, int y, int chunkI, int chunkJ, int z) {
         // begin checking all immediately left cells for a terrain piece
-        for (int dy = -1; dy <= 1; dy++) {
+        int[] offsets = { -1, 1, 0 };
+        for (int dy : offsets) {
             // check tile contents
             int y2 = y + dy;
             WorldCell cell = getCell(layer, x - 1, y2, chunkI, chunkJ, z);
-            if (cell != null && !cell.hasNext() &&
-                    cell.getType() == Type.Terrain && cell.matchesSlope(dy)) {
+            if (cell != null && !cell.hasNext() && cell.getType() == Type.Terrain) {
                 // found a valid terrain type
                 return cell;
             }
@@ -227,33 +323,6 @@ public class MapChunkGenerator {
         int tileX = x - (chunkX - chunkJ) * width;
         int tileY = y - (chunkY - chunkI) * height;
         return layer.getCell(tileX, tileY);
-    }
-
-    private boolean hasLeft(int i, int j) {
-        int left = j - 1;
-        return left >= 0 && chunks[i][left] != null;
-    }
-
-    private TiledMap getLeft(int i, int j) {
-        return chunks[i][j - 1];
-    }
-
-    private boolean hasUp(int i, int j) {
-        int up = j + 1;
-        return up < chunks.length && chunks[up][j] != null;
-    }
-
-    private TiledMap getUp(int i, int j) {
-        return chunks[i + 1][j];
-    }
-
-    private boolean hasDown(int i, int j) {
-        int down = j - 1;
-        return down >= 0 && chunks[down][j] != null;
-    }
-
-    private TiledMap getDown(int i, int j) {
-        return chunks[i - 1][j];
     }
 
     private StaticTiledMapTile getTile(String key) {
