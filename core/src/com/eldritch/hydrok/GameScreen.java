@@ -101,7 +101,7 @@ public class GameScreen extends AbstractScreen {
 		map.update(player);
 		
 		Vector2 position = player.getPosition();
-		float scale = 10 * camera.zoom / SCALE;
+		float scale = 25 * camera.zoom / SCALE;
         camera.position.x = Math.round((position.x + 5) * scale) / scale;
         camera.position.y = Math.round(position.y * scale) / scale;
         camera.update();
