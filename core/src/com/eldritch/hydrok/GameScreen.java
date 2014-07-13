@@ -17,6 +17,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.eldritch.hydrok.activator.Terminator;
 import com.eldritch.hydrok.level.ProceduralTiledMap;
 import com.eldritch.hydrok.level.ProceduralTiledMapRenderer;
 import com.eldritch.hydrok.player.Player;
@@ -32,6 +33,7 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 	private World world;
 	private HydrokContactListener contactListener;
 	private OrthogonalTiledMapRenderer renderer;
+	private Terminator terminator;
 	
 	private Box2DDebugRenderer debugRenderer;
 	private BitmapFont font;
@@ -47,11 +49,15 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 
 		world = new World(new Vector2(0, -10), true);
 		player = new Player(world, 11, 3);
+		
 		contactListener = new HydrokContactListener(player);
         world.setContactListener(contactListener);
 		
 		map = new ProceduralTiledMap(world, 10, 10);
 		renderer = new ProceduralTiledMapRenderer(map, SCALE);
+		
+		// game ends when terminator hits the player
+		terminator = new Terminator(world, map);
 
 		float w = 30;
 		float h = 20;
@@ -109,6 +115,7 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 		// updates
 		player.update(delta, contactListener.isGrounded());
 		map.update(player);
+		terminator.update(delta);
 		
 		Vector2 position = player.getPosition();
 		float scale = 50 * camera.zoom / SCALE;

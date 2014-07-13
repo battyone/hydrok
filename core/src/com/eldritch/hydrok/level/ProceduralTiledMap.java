@@ -37,6 +37,30 @@ public class ProceduralTiledMap extends TiledMap {
         // add index layers
         getLayers().add(new ProceduralLayer(0, width * L, height * L, TILE_WIDTH, TILE_HEIGHT));
     }
+    
+    public int getX() {
+        return minX;
+    }
+    
+    public int getY() {
+        return minY;
+    }
+    
+    public int getMinX() {
+        return minX - chunkWidth / 2;
+    }
+    
+    public int getMinY() {
+        return minY - chunkHeight / 2;
+    }
+    
+    public int getWidth() {
+        return L * chunkWidth;
+    }
+    
+    public int getHeight() {
+        return L * chunkHeight;
+    }
 
     public void update(Player player) {
         // compare current chunk with the position chunk
