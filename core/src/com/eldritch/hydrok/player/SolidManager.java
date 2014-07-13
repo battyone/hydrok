@@ -10,7 +10,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.eldritch.hydrok.util.Settings;
 
 public class SolidManager extends AbstractPhaseManager {
-	private static final int MAX_VELOCITY = 7;
+	private static final int MAX_VELOCITY = 8;
 	
 	private final TextureRegion texture;
 	
@@ -24,7 +24,7 @@ public class SolidManager extends AbstractPhaseManager {
 		// apply right impulse, but only if on the ground and max velocity is not reached yet
 		Vector2 pos = getBody().getPosition();
 		if (grounded && getBody().getLinearVelocity().x < MAX_VELOCITY) {
-			getBody().applyLinearImpulse(0.025f, 0, pos.x, pos.y, true);
+			getBody().applyLinearImpulse(0.15f, 0, pos.x, pos.y, true);
 		}
 	}
 	

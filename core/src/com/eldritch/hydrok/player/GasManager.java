@@ -16,7 +16,6 @@ public class GasManager extends AbstractPhaseManager {
 	
 	private final Animation animation;
 	private float stateTime = 0;
-	private float lastGround = 0;
 	
 	public GasManager(Player player, World world, int x, int y, float width, float height) {
 	    super(player, world, x, y, width, height, 0.20f, 0.3f, Settings.BIT_GAS);
@@ -35,17 +34,13 @@ public class GasManager extends AbstractPhaseManager {
 	
 	@Override
 	public void update(float delta, boolean grounded) {
-	    if (grounded && stateTime == 0) {
-            lastGround = 0;
-        }
 		stateTime += delta;
-		lastGround += delta;
 		
 		// apply upwards impulse, but only if max velocity is not reached yet
 		Body body = getBody();
 		Vector2 pos = body.getPosition();
 		if (body.getLinearVelocity().y < MAX_VELOCITY) {
-		    float force = Math.max(1 / (lastGround * 20), 0.0515f);
+		    float force = Math.max(1 / (getPlayer().lastGround * 20), 0.0515f);
 			body.applyLinearImpulse(0, force, pos.x, pos.y, true);
 		}
 	}

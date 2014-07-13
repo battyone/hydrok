@@ -48,6 +48,9 @@ public class ProceduralTiledMap extends TiledMap {
         Vector2 position = player.getPosition();
         int chunkX = getIndex(position.x, chunkWidth);
         int currentY = getIndex(minY, chunkHeight);
+        
+        int currentX = getIndex(minX, chunkWidth);
+        int chunkY = getIndex(position.y, chunkHeight);
 
         // check for horizontal crossing
         if (lastX < chunkX) {
@@ -73,13 +76,7 @@ public class ProceduralTiledMap extends TiledMap {
 
             // reset min x position
             minX = chunkX * chunkWidth;
-        }
-        
-        int currentX = getIndex(minX, chunkWidth);
-        int chunkY = getIndex(position.y, chunkHeight);
-
-        // check for vertical crossing
-        if (currentY < chunkY) {
+        } else if (currentY < chunkY) {
             System.out.println("UP");
             // up
             for (int j = 0; j < chunks.length; j++) {

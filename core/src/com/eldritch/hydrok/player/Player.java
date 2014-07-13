@@ -20,6 +20,7 @@ public class Player {
     private final float width;
     private final float height;
 	private final EnumMap<Phase, PhaseManager> managers;
+	float lastGround = 0;
 	
 	// mutable state
 	private Phase phase = Phase.Solid;
@@ -78,6 +79,11 @@ public class Player {
 	}
 
 	public void update(float delta, boolean grounded) {
+	    if (grounded && phase != Phase.Gas) {
+            lastGround = 0;
+        }
+	    lastGround += delta;
+	    
 	    // update phase manager
 		managers.get(phase).update(delta, grounded);
 	}
