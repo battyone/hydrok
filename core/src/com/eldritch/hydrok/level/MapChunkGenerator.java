@@ -21,6 +21,8 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.eldritch.hydrok.HydrokGame;
 import com.eldritch.hydrok.collectable.Collectable;
+import com.eldritch.hydrok.collectable.Collectable.Fireball;
+import com.eldritch.hydrok.collectable.Collectable.IceShard;
 import com.eldritch.hydrok.collectable.Collectable.WaterDroplet;
 import com.eldritch.hydrok.level.WorldCell.Type;
 import com.google.common.cache.CacheBuilder;
@@ -73,8 +75,8 @@ public class MapChunkGenerator {
         ChunkLayer background = new ChunkLayer(world, width, height, TILE_WIDTH, TILE_HEIGHT);
         generateTerrain(background, chunkI, chunkJ, worldX, worldY);
         generateObstacles(background, chunkI, chunkJ, worldX, worldY);
-        generateCollectables(background, chunkI, chunkJ, worldX, worldY);
         generateBackground(background, chunkI, chunkJ, worldX, worldY);
+        generateCollectables(background, chunkI, chunkJ, worldX, worldY);
         map.getLayers().add(background);
         return map;
     }
@@ -88,9 +90,23 @@ public class MapChunkGenerator {
                 }
                 
                 WorldCell down = getCell(layer, x, y - 1, chunkI, chunkJ, 0);
-                if (down != null) {
+                if (down != null && down.getType() == Type.Terrain) {
+                    if (Math.random() < 0.1) {
+                        Collectable c = new Fireball(x + worldX, y + worldY, world);
+                        WorldCell cell = new WorldCell(c.getTile(), x, y, c.getX(), c.getY(), world, Type.Collectable);
+                        layer.setCell(x, y, cell);
+                        layer.addBody(c.getBody());
+                    }
+                } else if (down != null && down.getType() == Type.Platform) {
                     if (Math.random() < 0.1) {
                         Collectable c = new WaterDroplet(x + worldX, y + worldY, world);
+                        WorldCell cell = new WorldCell(c.getTile(), x, y, c.getX(), c.getY(), world, Type.Collectable);
+                        layer.setCell(x, y, cell);
+                        layer.addBody(c.getBody());
+                    }
+                } else if (down == null) {
+                    if (Math.random() < 0.025) {
+                        Collectable c = new IceShard(x + worldX, y + worldY, world);
                         WorldCell cell = new WorldCell(c.getTile(), x, y, c.getX(), c.getY(), world, Type.Collectable);
                         layer.setCell(x, y, cell);
                         layer.addBody(c.getBody());
