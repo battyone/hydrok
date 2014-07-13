@@ -87,7 +87,7 @@ public class MapChunkGenerator {
                 if (worldY > 0) {
                     // sky
                     if (Math.random() < 0.025) {
-                        WorldCell cell = new WorldCell(getTile("object/cloud2"), worldX + x, worldY
+                        WorldCell cell = new WorldCell(getTile("object/cloud2"), x, y, worldX + x, worldY
                                 + y, world, Type.Platform);
                         layer.setCell(x, y, cell);
                     }
@@ -116,7 +116,7 @@ public class MapChunkGenerator {
                         } else if (up.getSlope() > 0) {
                             tile = getTile("grass/hill-left2");
                         }
-                        WorldCell cell = new WorldCell(tile, worldX + x, worldY + y,
+                        WorldCell cell = new WorldCell(tile, x, y, worldX + x, worldY + y,
                                 world, Type.Filler);
                         layer.setCell(x, y, cell);
                     }
@@ -131,7 +131,7 @@ public class MapChunkGenerator {
         }
         
         // allowed to be within, just below, or just above
-        int localY = lastTerrain.getY() - worldY;
+        int localY = lastTerrain.getWorldY() - worldY;
         return localY < -1 || localY > layer.getHeight();
     }
     
@@ -140,7 +140,7 @@ public class MapChunkGenerator {
         if (lastTerrain == null) {
             if (worldX == 0 && worldY == 0) {
                 // seed the first cell
-                lastTerrain = new WorldCell(getTile("grass/mid"), 0, 0, world, Type.Terrain);
+                lastTerrain = new WorldCell(getTile("grass/mid"), 0, 0, 0, 0, world, Type.Terrain);
                 layer.setCell(0, 0, lastTerrain);
                 vertices.add(new Vector2(0, 1));
                 vertexCount++;
@@ -152,8 +152,10 @@ public class MapChunkGenerator {
             return;
         }
         
-        for (int x2 = lastTerrain.getX() - worldX + 1; x2 < layer.getWidth(); x2++) {
-            int y = lastTerrain.getY() - worldY;
+        for (int x2 = lastTerrain.getWorldX() - worldX + 1; x2 < layer.getWidth(); x2++) {
+            int y = lastTerrain.getWorldY() - worldY;
+            
+            Array<WorldCell> candidates = new Array<WorldCell>();
             int[] offsets = { -1, 1, 0 };
             for (int dy : offsets) {
                 int y2 = y + dy;
@@ -163,33 +165,26 @@ public class MapChunkGenerator {
                 }
                 
                 // add variation to the terrain
-                WorldCell cell;
-                int vy = 1;
                 if (Math.random() < 0.25 && lastTerrain.matchesSlope(-1, worldY + y2)) {
-                    cell = new WorldCell(getTile("grass/hill-right1"), worldX + x2,
-                            worldY + y2, world, Type.Terrain, -1);
+                    candidates.add(new WorldCell(getTile("grass/hill-right1"), x2, y2, worldX + x2,
+                            worldY + y2, world, Type.Terrain, -1));
                     
                 } else if (Math.random() < 0.25 && lastTerrain.matchesSlope(1, worldY + y2)) {
-                    cell = new WorldCell(getTile("grass/hill-left1"), worldX + x2,
-                            worldY + y2, world, Type.Terrain, 1);
-                    vy = 0;
+                    candidates.add(new WorldCell(getTile("grass/hill-left1"), x2, y2, worldX + x2,
+                            worldY + y2, world, Type.Terrain, 1));
                 } else if (lastTerrain.matchesSlope(0, worldY + y2)) {
-                    cell = new WorldCell(getTile("grass/mid"), worldX + x2,
-                            worldY + y2, world, Type.Terrain);
-                } else {
-                    cell = null;
+                    candidates.add(new WorldCell(getTile("grass/mid"), x2, y2, worldX + x2,
+                            worldY + y2, world, Type.Terrain));
                 }
+            }
+            
+            if (candidates.size > 0) {
+                WorldCell cell = candidates.get((int) (Math.random() * candidates.size));
+                layer.setCell(cell.getLocalX(), cell.getLocalY(), cell);
+                vertices.add(new Vector2(cell.getWorldX(), cell.getWorldY() + cell.vy()));
+                vertexCount++;
                 
-                // add the cell if it was set
-                if (cell != null) {
-                    layer.setCell(x2, y2, cell);
-                    lastTerrain.setNext(cell);
-                    vertices.add(new Vector2(x2 + worldX, y2 + worldY + vy));
-                    vertexCount++;
-                    
-                    lastTerrain = cell;
-                    break;
-                }
+                lastTerrain = cell;
             }
         }
         

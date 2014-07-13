@@ -18,29 +18,41 @@ public class WorldCell extends Cell {
     private final Type type;
     private final int slope;
     private final Body body;
-    private final int x;
-    private final int y;
+    private final int localX;
+    private final int localY;
+    private final int worldX;
+    private final int worldY;
     private WorldCell next = null;
 
-    public WorldCell(TiledMapTile tile, int x, int y, World world, Type type) {
-        this(tile, x, y, world, type, 0);
+    public WorldCell(TiledMapTile tile, int localX, int localY, int worldX, int worldY, World world, Type type) {
+        this(tile, localX, localY, worldX, worldY, world, type, 0);
     }
 
-    public WorldCell(TiledMapTile tile, int x, int y, World world, Type type, int slope) {
+    public WorldCell(TiledMapTile tile, int localX, int localY, int worldX, int worldY, World world, Type type, int slope) {
         this.type = type;
         this.slope = slope;
-        body = createBody(world, x, y, tile, type, slope);
-        this.x = x;
-        this.y = y;
+        body = createBody(world, worldX, worldY, tile, type, slope);
+        this.localX = localX;
+        this.localY = localY;
+        this.worldX = worldX;
+        this.worldY = worldY;
         setTile(tile);
     }
     
-    public int getX() {
-        return x;
+    public int getLocalX() {
+        return localX;
     }
     
-    public int getY() {
-        return y;
+    public int getLocalY() {
+        return localY;
+    }
+    
+    public int getWorldX() {
+        return worldX;
+    }
+    
+    public int getWorldY() {
+        return worldY;
     }
 
     public Type getType() {
@@ -72,7 +84,7 @@ public class WorldCell extends Cell {
     }
     
     public boolean matchesSlope(int otherSlope, int otherY) {
-        int dy = otherY - y;
+        int dy = otherY - worldY;
         if (otherSlope > 0) {
             // going uphill
 //            System.out.println(String.format("slope: %d, dy: %d", slope, dy));
@@ -82,6 +94,10 @@ public class WorldCell extends Cell {
             return (otherSlope > 0 && otherSlope == dy) || dy == 0;
         }
         return slope == dy;
+    }
+    
+    public int vy() {
+        return slope > 0 ? 0 : 1;
     }
     
     private static Body createBody(World world, int x, int y, TiledMapTile tile, Type type, int slope) {
