@@ -13,7 +13,7 @@ import com.eldritch.hydrok.level.ProceduralTiledMap;
 import com.eldritch.hydrok.player.Player;
 
 public class Terminator implements Activator {
-    private static final float V = 2;
+    private static final float V = 2.5f;
     
     private final Body body;
     private final ProceduralTiledMap map;
@@ -57,6 +57,10 @@ public class Terminator implements Activator {
     
     public boolean isGameOver() {
         return gameOver;
+    }
+    
+    public Vector2 getPosition() {
+        return body.getPosition();
     }
 
     @Override

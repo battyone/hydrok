@@ -12,7 +12,8 @@ import com.eldritch.hydrok.GameScreen;
 import com.eldritch.hydrok.util.Settings;
 
 public class GasManager extends AbstractPhaseManager {
-	private static final int MAX_VELOCITY = 3;
+	private static final int MAX_VELOCITY_Y = 3;
+	private static final int MAX_VELOCITY_X = 1;
 	private static final float JUMP = 0.5f;
 	
 	private final Animation animation;
@@ -36,6 +37,10 @@ public class GasManager extends AbstractPhaseManager {
     public void applyImpulse(float x, float y) {
         Vector2 pos = getBody().getPosition();
         Vector2 dir = new Vector2(pos.x, pos.y).sub(x, y).nor();
+        if (dir.x > 0 && getBody().getLinearVelocity().x >= MAX_VELOCITY_X) {
+            // can't exceed max velocity to discourage gas form for moving
+            dir.x = 0;
+        }
         getBody().applyLinearImpulse(dir.x * JUMP, dir.y * JUMP, pos.x, pos.y, true);
     }
 	
@@ -44,7 +49,7 @@ public class GasManager extends AbstractPhaseManager {
 		// apply upwards impulse, but only if max velocity is not reached yet
 		Body body = getBody();
 		Vector2 pos = body.getPosition();
-		if (body.getLinearVelocity().y < MAX_VELOCITY) {
+		if (body.getLinearVelocity().y < MAX_VELOCITY_Y) {
 		    float force = Math.max(1 / (getPlayer().lastGround * 20), 0.0515f);
 			body.applyLinearImpulse(0, force, pos.x, pos.y, true);
 		}

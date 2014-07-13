@@ -142,6 +142,9 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
         font.draw(batch,
                 "Elevation: " + (int) Math.round(player.getPosition().y),
                 10, getHeight() - 10);
+        font.draw(batch,
+                "Distance: " + (int) Math.round(player.getPosition().x - terminator.getPosition().x),
+                10, getHeight() - 30);
         batch.end();
     }
 	
