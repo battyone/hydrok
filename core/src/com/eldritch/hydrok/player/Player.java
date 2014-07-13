@@ -112,12 +112,13 @@ public class Player {
 	}
 	
 	public void transition(Phase nextPhase) {
-	    if (nextPhase.getTemperature() < phase.getTemperature()) {
-	        // we need a coolant in order to transition
-	        if (coolants <= 0) {
+	    int delta = nextPhase.getTemperature() - phase.getTemperature();
+	    if (delta < 0) {
+	        // we need to expend a number of coolants equal to the T delta to transition
+	        if (coolants + delta < 0) {
 	            return;
 	        }
-	        coolants--;
+	        coolants += delta;
 	    }
 	    
 	    // transition
@@ -134,7 +135,7 @@ public class Player {
 	}
 	
 	public enum Phase {
-		Solid(0), Liquid(50), Gas(100), Plasma(300);
+		Solid(0), Liquid(1), Gas(2), Plasma(5);
 		
 		private final int temperature;
 		
