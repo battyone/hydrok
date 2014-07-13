@@ -22,6 +22,7 @@ import com.eldritch.hydrok.level.ProceduralTiledMap;
 import com.eldritch.hydrok.level.ProceduralTiledMapRenderer;
 import com.eldritch.hydrok.player.Player;
 import com.eldritch.hydrok.player.Player.Phase;
+import com.eldritch.hydrok.screen.GameOverScreen;
 import com.eldritch.hydrok.util.HydrokContactListener;
 
 public class GameScreen extends AbstractScreen implements InputProcessor {
@@ -115,7 +116,12 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 		// updates
 		player.update(delta, contactListener.isGrounded());
 		map.update(player);
+		
+		// check for game over
 		terminator.update(delta);
+		if (terminator.isGameOver()) {
+		    game.setScreen(new GameOverScreen(game));
+		}
 		
 		Vector2 position = player.getPosition();
 		float scale = 50 * camera.zoom / SCALE;

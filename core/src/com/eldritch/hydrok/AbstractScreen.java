@@ -130,7 +130,7 @@ public abstract class AbstractScreen implements Screen {
 		stage.draw();
 
 		// draw the table debug lines
-		Table.drawDebug(stage);
+//		Table.drawDebug(stage);
 	}
 
 	@Override
