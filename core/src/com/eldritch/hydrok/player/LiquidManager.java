@@ -9,7 +9,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.eldritch.hydrok.util.Settings;
 
 public class LiquidManager extends AbstractPhaseManager {
-    private static final int MAX_VELOCITY = 5;
+    private static final int MAX_VELOCITY = 2;
     private static final float JUMP = 0.25f;
 
     private final TextureRegion texture;
