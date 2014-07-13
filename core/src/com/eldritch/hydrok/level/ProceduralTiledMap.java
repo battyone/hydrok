@@ -39,17 +39,12 @@ public class ProceduralTiledMap extends TiledMap {
     }
 
     public void update(Player player) {
-        // compare last chunk with the current chunk
-        int lastX = getIndex(lastPosition.x, chunkWidth);
-        int lastY = getIndex(lastPosition.y, chunkHeight);
-        
         // compare current chunk with the position chunk
+        int currentX = getIndex(minX, chunkWidth);
+        int currentY = getIndex(minY, chunkHeight);
         
         Vector2 position = player.getPosition();
         int chunkX = getIndex(position.x, chunkWidth);
-        int currentY = getIndex(minY, chunkHeight);
-        
-        int currentX = getIndex(minX, chunkWidth);
         int chunkY = getIndex(position.y, chunkHeight);
 
         // check for horizontal crossing
