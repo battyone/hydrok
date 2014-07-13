@@ -13,7 +13,7 @@ import com.eldritch.hydrok.util.Settings;
 
 public class GasManager extends AbstractPhaseManager {
 	private static final int MAX_VELOCITY = 3;
-	private static final float JUMP = 0.25f;
+	private static final float JUMP = 0.5f;
 	
 	private final Animation animation;
 	

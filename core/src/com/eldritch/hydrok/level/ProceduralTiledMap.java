@@ -53,7 +53,7 @@ public class ProceduralTiledMap extends TiledMap {
         int chunkY = getIndex(position.y, chunkHeight);
 
         // check for horizontal crossing
-        if (lastX < chunkX) {
+        if (currentX < chunkX) {
             System.out.println("RIGHT");
             // right
             for (int i = L - 1; i >= 0; i--) {
@@ -76,29 +76,9 @@ public class ProceduralTiledMap extends TiledMap {
 
             // reset min x position
             minX = chunkX * chunkWidth;
-        } else if (lastX > chunkX) {
+        } else if (currentX > chunkX) {
             System.out.println("LEFT");
             // left, should be rare
-            for (int i = L - 1; i >= 0; i--) {
-                // destroy the last column
-                for (MapLayer layer : chunks[i][L - 1].getLayers()) {
-                    ChunkLayer chunk = (ChunkLayer) layer;
-                    chunk.destroy();
-                    generator.removeBackVertices(chunk.getVertexCount());
-                }
-
-                for (int j = 1; j < chunks[i].length; j++) {
-                    // shift right
-                    chunks[i][j] = chunks[i][j - 1];
-                }
-
-                // regen first column
-                int j = 0;
-                chunks[i][j] = generate(i, j, chunkX, currentY);
-            }
-
-            // reset min x position
-            minX = chunkX * chunkWidth;
         } else if (currentY < chunkY) {
             System.out.println("UP");
             // up
