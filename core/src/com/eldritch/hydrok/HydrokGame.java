@@ -54,8 +54,8 @@ public class HydrokGame extends Game {
 				+ screen.getClass().getSimpleName());
 	}
 	
-	public static void log(String text) {
-		Gdx.app.log(HydrokGame.LOG, text);
+	public static void log(String text, Object... args) {
+		Gdx.app.log(HydrokGame.LOG, String.format(text, args));
 	}
 	
 	public static void error(String text, Exception ex) {

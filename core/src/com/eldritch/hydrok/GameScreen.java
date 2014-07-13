@@ -3,6 +3,7 @@ package com.eldritch.hydrok;
 import static com.eldritch.hydrok.util.Settings.SCALE;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.eldritch.hydrok.level.ProceduralTiledMap;
@@ -21,7 +23,7 @@ import com.eldritch.hydrok.player.Player;
 import com.eldritch.hydrok.player.Player.Phase;
 import com.eldritch.hydrok.util.HydrokContactListener;
 
-public class GameScreen extends AbstractScreen {
+public class GameScreen extends AbstractScreen implements InputProcessor {
 	public static final AssetManager textureManager = new AssetManager();
 	
 	private ProceduralTiledMap map;
@@ -62,6 +64,9 @@ public class GameScreen extends AbstractScreen {
 		debugRenderer = new Box2DDebugRenderer();
 		font = new BitmapFont();
 		batch = new SpriteBatch();
+		
+		Gdx.input.setInputProcessor(this);
+		HydrokGame.log("start");
 	}
 	
 	@Override
@@ -152,4 +157,46 @@ public class GameScreen extends AbstractScreen {
         }
 	    return textureManager.get(assetName, Texture.class);
 	}
+
+    @Override
+    public boolean keyDown(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        Vector3 world = camera.unproject(new Vector3(screenX, screenY, 0));
+        player.applyImpulseFrom(world.x, world.y);
+        return true;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        return false;
+    }
+
+    @Override
+    public boolean scrolled(int amount) {
+        return false;
+    }
 }

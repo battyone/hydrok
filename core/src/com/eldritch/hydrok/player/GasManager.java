@@ -34,9 +34,9 @@ public class GasManager extends AbstractPhaseManager {
 	
 	@Override
     public void applyImpulse(float x, float y) {
-        // jump
         Vector2 pos = getBody().getPosition();
-        getBody().applyLinearImpulse(0, JUMP, pos.x, pos.y, true);
+        Vector2 dir = new Vector2(pos.x, pos.y).sub(x, y).nor();
+        getBody().applyLinearImpulse(dir.x * JUMP, dir.y * JUMP, pos.x, pos.y, true);
     }
 	
 	@Override
