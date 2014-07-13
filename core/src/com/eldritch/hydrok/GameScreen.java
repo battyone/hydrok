@@ -45,7 +45,7 @@ public class GameScreen extends AbstractScreen {
 
 		world = new World(new Vector2(0, -10), true);
 		player = new Player(world, 11, 3);
-		contactListener = new HydrokContactListener();
+		contactListener = new HydrokContactListener(player);
         world.setContactListener(contactListener);
 		
 		map = new ProceduralTiledMap(world, 10, 10);
@@ -113,11 +113,20 @@ public class GameScreen extends AbstractScreen {
 		player.render(renderer);
 		
 		// debug
-		drawFps();
+		drawElevation();
+//		drawFps();
 		
 		debugRenderer.render(world, camera.combined);
 		world.step(delta, 6, 2);
 	}
+	
+	private void drawElevation() {
+        batch.begin();
+        font.draw(batch,
+                "Elevation: " + (int) Math.round(player.getPosition().y),
+                10, getHeight() - 10);
+        batch.end();
+    }
 	
 	private void drawFps() {
 	    batch.begin();

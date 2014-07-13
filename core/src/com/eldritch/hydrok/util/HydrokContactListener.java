@@ -5,9 +5,16 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
+import com.eldritch.hydrok.collectable.Collectable;
+import com.eldritch.hydrok.player.Player;
 
 public class HydrokContactListener implements ContactListener {
+    private final Player player;
     private int groundContacts = 0;
+    
+    public HydrokContactListener(Player player) {
+        this.player = player;
+    }
 
     public boolean isGrounded() {
         return groundContacts > 0;
@@ -21,14 +28,30 @@ public class HydrokContactListener implements ContactListener {
         if (fa == null || fb == null) {
             return;
         }
-
-        if (fa.getUserData() != null && fa.getUserData().equals("player")) {
-            groundContacts++;
+        
+        checkUserData(fa.getUserData());
+        checkUserData(fb.getUserData());
+    }
+    
+    private void checkUserData(Object userData) {
+        if (userData != null) {
+            // ground
+            if (userData.equals("player")) {
+                groundContacts++;
+            }
+            
+            // collectable
+            checkCollectable(userData);
         }
-
-        if (fb.getUserData() != null && fb.getUserData().equals("player")) {
-            groundContacts++;
+    }
+    
+    private boolean checkCollectable(Object userData) {
+        if (userData instanceof Collectable) {
+            Collectable c = (Collectable) userData;
+            c.handleCollection(player);
+            return true;
         }
+        return false;
     }
 
     @Override

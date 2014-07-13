@@ -20,6 +20,8 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.eldritch.hydrok.HydrokGame;
+import com.eldritch.hydrok.collectable.Collectable;
+import com.eldritch.hydrok.collectable.Collectable.WaterDroplet;
 import com.eldritch.hydrok.level.WorldCell.Type;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -71,9 +73,31 @@ public class MapChunkGenerator {
         ChunkLayer background = new ChunkLayer(world, width, height, TILE_WIDTH, TILE_HEIGHT);
         generateTerrain(background, chunkI, chunkJ, worldX, worldY);
         generateObstacles(background, chunkI, chunkJ, worldX, worldY);
+        generateCollectables(background, chunkI, chunkJ, worldX, worldY);
         generateBackground(background, chunkI, chunkJ, worldX, worldY);
         map.getLayers().add(background);
         return map;
+    }
+    
+    private void generateCollectables(ChunkLayer layer, int chunkI, int chunkJ, int worldX, int worldY) {
+        for (int x = 0; x < layer.getWidth(); x++) {
+            for (int y = 0; y < layer.getHeight(); y++) {
+                if (layer.getCell(x, y) != null) {
+                    // already has cell
+                    continue;
+                }
+                
+                WorldCell down = getCell(layer, x, y - 1, chunkI, chunkJ, 0);
+                if (down != null) {
+                    if (Math.random() < 0.1) {
+                        Collectable c = new WaterDroplet(x + worldX, y + worldY, world);
+                        WorldCell cell = new WorldCell(c.getTile(), x, y, c.getX(), c.getY(), world, Type.Collectable);
+                        layer.setCell(x, y, cell);
+                        layer.addBody(c.getBody());
+                    }
+                }
+            }
+        }
     }
     
     private void generateObstacles(ChunkLayer layer, int chunkI, int chunkJ, int worldX, int worldY) {
