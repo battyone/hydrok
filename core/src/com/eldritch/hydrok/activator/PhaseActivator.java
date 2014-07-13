@@ -62,17 +62,14 @@ public abstract class PhaseActivator implements Activator {
         return body;
     }
 
-    @Override
     public TiledMapTile getTile() {
         return tile;
     }
 
-    @Override
     public int getX() {
         return x;
     }
 
-    @Override
     public int getY() {
         return y;
     }

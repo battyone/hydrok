@@ -20,7 +20,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.eldritch.hydrok.HydrokGame;
-import com.eldritch.hydrok.activator.Activator;
+import com.eldritch.hydrok.activator.PhaseActivator;
 import com.eldritch.hydrok.activator.PhaseActivator.Fireball;
 import com.eldritch.hydrok.activator.PhaseActivator.IceShard;
 import com.eldritch.hydrok.activator.PhaseActivator.WaterDroplet;
@@ -92,21 +92,21 @@ public class MapChunkGenerator {
                 WorldCell down = getCell(layer, x, y - 1, chunkI, chunkJ, 0);
                 if (down != null && down.getType() == Type.Terrain) {
                     if (Math.random() < 0.1) {
-                        Activator a = new Fireball(x + worldX, y + worldY, world);
+                        PhaseActivator a = new Fireball(x + worldX, y + worldY, world);
                         WorldCell cell = new WorldCell(a.getTile(), x, y, a.getX(), a.getY(), world, Type.Activator);
                         layer.setCell(x, y, cell);
                         layer.addBody(a.getBody());
                     }
                 } else if (down != null && down.getType() == Type.Platform) {
                     if (Math.random() < 0.1) {
-                        Activator a = new WaterDroplet(x + worldX, y + worldY, world);
+                        PhaseActivator a = new WaterDroplet(x + worldX, y + worldY, world);
                         WorldCell cell = new WorldCell(a.getTile(), x, y, a.getX(), a.getY(), world, Type.Activator);
                         layer.setCell(x, y, cell);
                         layer.addBody(a.getBody());
                     }
                 } else if (down == null) {
                     if (Math.random() < 0.025) {
-                        Activator a = new IceShard(x + worldX, y + worldY, world);
+                        PhaseActivator a = new IceShard(x + worldX, y + worldY, world);
                         WorldCell cell = new WorldCell(a.getTile(), x, y, a.getX(), a.getY(), world, Type.Activator);
                         layer.setCell(x, y, cell);
                         layer.addBody(a.getBody());
