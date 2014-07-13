@@ -137,14 +137,14 @@ public class MapChunkGenerator {
     
     private void generateTerrain(ChunkLayer layer, int chunkI, int chunkJ, int worldX, int worldY) {
         int vertexCount = 0;
-        int startX = 0;
-        if (lastTerrain == null && worldX == 0 && worldY == 0) {
-            // seed the first cell
-            lastTerrain = new WorldCell(getTile("grass/mid"), 0, 0, world, Type.Terrain);
-            layer.setCell(0, 0, lastTerrain);
-            vertices.add(new Vector2(0, 1));
-            vertexCount++;
-            startX = 1;
+        if (lastTerrain == null) {
+            if (worldX == 0 && worldY == 0) {
+                // seed the first cell
+                lastTerrain = new WorldCell(getTile("grass/mid"), 0, 0, world, Type.Terrain);
+                layer.setCell(0, 0, lastTerrain);
+                vertices.add(new Vector2(0, 1));
+                vertexCount++;
+            }
         }
         
         if (outsideLayer(lastTerrain, layer, worldY)) {
@@ -152,8 +152,7 @@ public class MapChunkGenerator {
             return;
         }
         
-        System.out.println("add stuff");
-        for (int x2 = startX; x2 < layer.getWidth(); x2++) {
+        for (int x2 = lastTerrain.getX() - worldX + 1; x2 < layer.getWidth(); x2++) {
             int y = lastTerrain.getY() - worldY;
             int[] offsets = { -1, 1, 0 };
             for (int dy : offsets) {
