@@ -104,7 +104,7 @@ public class WorldCell extends Cell {
         switch (type) {
             case Terrain:
             case Filler:
-            case Collectable:
+            case Activator:
                 return null;
             case Platform:
                 return createBox(world, x, y, tile, type);
@@ -151,7 +151,7 @@ public class WorldCell extends Cell {
     }
 
     public enum Type {
-        Terrain(ALL_BITS), Platform(BIT_SOLID), Filler(ALL_BITS), Collectable(ALL_BITS);
+        Terrain(ALL_BITS), Platform(BIT_SOLID), Filler(ALL_BITS), Activator(ALL_BITS);
         
         private final short maskBits;
         

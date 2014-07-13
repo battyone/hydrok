@@ -5,7 +5,7 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
-import com.eldritch.hydrok.collectable.Collectable;
+import com.eldritch.hydrok.activator.Activator;
 import com.eldritch.hydrok.player.Player;
 
 public class HydrokContactListener implements ContactListener {
@@ -40,15 +40,15 @@ public class HydrokContactListener implements ContactListener {
                 groundContacts++;
             }
             
-            // collectable
-            checkCollectable(userData);
+            // activator
+            checkActivation(userData);
         }
     }
     
-    private boolean checkCollectable(Object userData) {
-        if (userData instanceof Collectable) {
-            Collectable c = (Collectable) userData;
-            c.handleCollection(player);
+    private boolean checkActivation(Object userData) {
+        if (userData instanceof Activator) {
+            Activator a = (Activator) userData;
+            a.activate(player);
             return true;
         }
         return false;

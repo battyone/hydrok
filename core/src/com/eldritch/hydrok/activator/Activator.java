@@ -1,4 +1,4 @@
-package com.eldritch.hydrok.collectable;
+package com.eldritch.hydrok.activator;
 
 import static com.eldritch.hydrok.util.Settings.ALL_BITS;
 import static com.eldritch.hydrok.util.Settings.SCALE;
@@ -16,8 +16,8 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.eldritch.hydrok.player.Player;
 import com.eldritch.hydrok.player.Player.Phase;
 
-public interface Collectable {
-    void handleCollection(Player player);
+public interface Activator {
+    void activate(Player player);
     
     Body getBody();
     
@@ -27,13 +27,13 @@ public interface Collectable {
     
     int getY();
     
-    public static abstract class AbstractCollectable implements Collectable {
+    public static abstract class AbstractActivator implements Activator {
         private final TiledMapTile tile;
         private final Body body;
         private final int x;
         private final int y;
         
-        public AbstractCollectable(String asset, int x, int y, World world) {
+        public AbstractActivator(String asset, int x, int y, World world) {
             this.x = x;
             this.y = y;
             
@@ -78,35 +78,35 @@ public interface Collectable {
         }
     }
     
-    public static class WaterDroplet extends AbstractCollectable {
+    public static class WaterDroplet extends AbstractActivator {
         public WaterDroplet(int x, int y, World world) {
             super("water-droplet", x, y, world);
         }
         
         @Override
-        public void handleCollection(Player player) {
+        public void activate(Player player) {
             player.setPhase(Phase.Liquid);
         }
     }
     
-    public static class IceShard extends AbstractCollectable {
+    public static class IceShard extends AbstractActivator {
         public IceShard(int x, int y, World world) {
             super("ice-shard", x, y, world);
         }
         
         @Override
-        public void handleCollection(Player player) {
+        public void activate(Player player) {
             player.setPhase(Phase.Solid);
         }
     }
     
-    public static class Fireball extends AbstractCollectable {
+    public static class Fireball extends AbstractActivator {
         public Fireball(int x, int y, World world) {
             super("fireball", x, y, world);
         }
         
         @Override
-        public void handleCollection(Player player) {
+        public void activate(Player player) {
             player.setPhase(Phase.Gas);
         }
     }

@@ -20,10 +20,10 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.eldritch.hydrok.HydrokGame;
-import com.eldritch.hydrok.collectable.Collectable;
-import com.eldritch.hydrok.collectable.Collectable.Fireball;
-import com.eldritch.hydrok.collectable.Collectable.IceShard;
-import com.eldritch.hydrok.collectable.Collectable.WaterDroplet;
+import com.eldritch.hydrok.activator.Activator;
+import com.eldritch.hydrok.activator.Activator.Fireball;
+import com.eldritch.hydrok.activator.Activator.IceShard;
+import com.eldritch.hydrok.activator.Activator.WaterDroplet;
 import com.eldritch.hydrok.level.WorldCell.Type;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -76,12 +76,12 @@ public class MapChunkGenerator {
         generateTerrain(background, chunkI, chunkJ, worldX, worldY);
         generateObstacles(background, chunkI, chunkJ, worldX, worldY);
         generateBackground(background, chunkI, chunkJ, worldX, worldY);
-        generateCollectables(background, chunkI, chunkJ, worldX, worldY);
+        genrateActivators(background, chunkI, chunkJ, worldX, worldY);
         map.getLayers().add(background);
         return map;
     }
     
-    private void generateCollectables(ChunkLayer layer, int chunkI, int chunkJ, int worldX, int worldY) {
+    private void genrateActivators(ChunkLayer layer, int chunkI, int chunkJ, int worldX, int worldY) {
         for (int x = 0; x < layer.getWidth(); x++) {
             for (int y = 0; y < layer.getHeight(); y++) {
                 if (layer.getCell(x, y) != null) {
@@ -92,24 +92,24 @@ public class MapChunkGenerator {
                 WorldCell down = getCell(layer, x, y - 1, chunkI, chunkJ, 0);
                 if (down != null && down.getType() == Type.Terrain) {
                     if (Math.random() < 0.1) {
-                        Collectable c = new Fireball(x + worldX, y + worldY, world);
-                        WorldCell cell = new WorldCell(c.getTile(), x, y, c.getX(), c.getY(), world, Type.Collectable);
+                        Activator a = new Fireball(x + worldX, y + worldY, world);
+                        WorldCell cell = new WorldCell(a.getTile(), x, y, a.getX(), a.getY(), world, Type.Activator);
                         layer.setCell(x, y, cell);
-                        layer.addBody(c.getBody());
+                        layer.addBody(a.getBody());
                     }
                 } else if (down != null && down.getType() == Type.Platform) {
                     if (Math.random() < 0.1) {
-                        Collectable c = new WaterDroplet(x + worldX, y + worldY, world);
-                        WorldCell cell = new WorldCell(c.getTile(), x, y, c.getX(), c.getY(), world, Type.Collectable);
+                        Activator a = new WaterDroplet(x + worldX, y + worldY, world);
+                        WorldCell cell = new WorldCell(a.getTile(), x, y, a.getX(), a.getY(), world, Type.Activator);
                         layer.setCell(x, y, cell);
-                        layer.addBody(c.getBody());
+                        layer.addBody(a.getBody());
                     }
                 } else if (down == null) {
                     if (Math.random() < 0.025) {
-                        Collectable c = new IceShard(x + worldX, y + worldY, world);
-                        WorldCell cell = new WorldCell(c.getTile(), x, y, c.getX(), c.getY(), world, Type.Collectable);
+                        Activator a = new IceShard(x + worldX, y + worldY, world);
+                        WorldCell cell = new WorldCell(a.getTile(), x, y, a.getX(), a.getY(), world, Type.Activator);
                         layer.setCell(x, y, cell);
-                        layer.addBody(c.getBody());
+                        layer.addBody(a.getBody());
                     }
                 }
             }
