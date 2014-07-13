@@ -125,31 +125,37 @@ public class MapChunkGenerator {
         }
     }
     
+    private boolean outsideLayer(WorldCell lastTerrain, ChunkLayer layer, int worldY) {
+        if (lastTerrain == null) {
+            return true;
+        }
+        
+        // allowed to be within, just below, or just above
+        int localY = lastTerrain.getY() - worldY;
+        return localY < -1 || localY > layer.getHeight();
+    }
+    
     private void generateTerrain(ChunkLayer layer, int chunkI, int chunkJ, int worldX, int worldY) {
         int vertexCount = 0;
+        int startX = 0;
         if (lastTerrain == null && worldX == 0 && worldY == 0) {
             // seed the first cell
             lastTerrain = new WorldCell(getTile("grass/mid"), 0, 0, world, Type.Terrain);
             layer.setCell(0, 0, lastTerrain);
             vertices.add(new Vector2(0, 1));
             vertexCount++;
+            startX = 1;
         }
         
-        // add terrain until no longer able to
-        boolean canContinue = lastTerrain != null;
-        while (canContinue) {
-            int x = lastTerrain.getX() - worldX;
+        if (outsideLayer(lastTerrain, layer, worldY)) {
+            // wrong layer for terrain
+            return;
+        }
+        
+        System.out.println("add stuff");
+        for (int x2 = startX; x2 < layer.getWidth(); x2++) {
             int y = lastTerrain.getY() - worldY;
-            
-            int x2 = x + 1;
-            if (x2 < 0 || x2 >= layer.getWidth()) {
-                // x-coordinate out of bounds
-                canContinue = false;
-                break;
-            }
-            
             int[] offsets = { -1, 1, 0 };
-            canContinue = false;
             for (int dy : offsets) {
                 int y2 = y + dy;
                 if (y2 < 0 || y2 >= layer.getHeight()) {
@@ -183,13 +189,12 @@ public class MapChunkGenerator {
                     vertexCount++;
                     
                     lastTerrain = cell;
-                    canContinue = true;
                     break;
                 }
             }
         }
         
-        // check for terrain
+        // check for terrain vertices
         if (vertexCount >= 2) {
             // create the body
             BodyDef bdef = new BodyDef();

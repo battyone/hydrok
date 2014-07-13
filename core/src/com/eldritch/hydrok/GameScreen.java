@@ -44,15 +44,13 @@ public class GameScreen extends AbstractScreen {
 		super.show();
 
 		world = new World(new Vector2(0, -10), true);
-		player = new Player(world, 1, 3);
+		player = new Player(world, 11, 3);
 		contactListener = new HydrokContactListener();
         world.setContactListener(contactListener);
 		
 		map = new ProceduralTiledMap(world, 10, 10);
 		renderer = new ProceduralTiledMapRenderer(map, SCALE);
 
-//		float w = Gdx.graphics.getWidth();
-//		float h = Gdx.graphics.getHeight();
 		float w = 30;
 		float h = 20;
 		camera = new OrthographicCamera();
@@ -82,6 +80,21 @@ public class GameScreen extends AbstractScreen {
 		if (Gdx.input.isKeyPressed(Keys.D)) {
 			player.setPhase(Phase.Liquid);
 		}
+		
+		if (Gdx.input.isKeyPressed(Keys.LEFT)) {
+		    Vector2 pos = player.getPosition();
+		    player.getBody().applyLinearImpulse(-0.2f, 0, pos.x, pos.y, true);
+        }
+		
+		if (Gdx.input.isKeyPressed(Keys.UP)) {
+            Vector2 pos = player.getPosition();
+            player.getBody().applyLinearImpulse(0, 0.2f, pos.x, pos.y, true);
+        }
+		
+		if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
+            Vector2 pos = player.getPosition();
+            player.getBody().applyLinearImpulse(0.2f, 0, pos.x, pos.y, true);
+        }
 		
 		// updates
 		player.update(delta, contactListener.isGrounded());
