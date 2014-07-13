@@ -20,13 +20,16 @@ public class Player {
     private final float width;
     private final float height;
 	private final EnumMap<Phase, PhaseManager> managers;
+	private int coolants;
 	float lastGround = 0;
 	
 	// mutable state
 	private Phase phase = Phase.Solid;
 
-	public Player(World world, int x, int y) {
-	 // First we create a body definition
+	public Player(World world, int x, int y, int coolants) {
+	    this.coolants = coolants;
+	    
+	    // First we create a body definition
         BodyDef bodyDef = new BodyDef();
 
         // We set our body to dynamic, for something like ground which doesn't
@@ -100,6 +103,27 @@ public class Player {
 		return body;
 	}
 	
+	public void addCoolant() {
+	    coolants++;
+	}
+	
+	public int getCoolants() {
+	    return coolants;
+	}
+	
+	public void transition(Phase nextPhase) {
+	    if (nextPhase.getTemperature() < phase.getTemperature()) {
+	        // we need a coolant in order to transition
+	        if (coolants <= 0) {
+	            return;
+	        }
+	        coolants--;
+	    }
+	    
+	    // transition
+	    setPhase(nextPhase);
+	}
+	
 	public void setPhase(Phase phase) {
 		if (this.phase == phase) {
 			return;
@@ -110,7 +134,17 @@ public class Player {
 	}
 	
 	public enum Phase {
-		Solid, Liquid, Gas, Plasma
+		Solid(0), Liquid(50), Gas(100), Plasma(300);
+		
+		private final int temperature;
+		
+		private Phase(int temperature) {
+		    this.temperature = temperature;
+		}
+		
+		public int getTemperature() {
+		    return temperature;
+		}
 	}
 
 	public static interface PhaseManager {

@@ -44,7 +44,7 @@ public class GameScreen extends AbstractScreen {
 		super.show();
 
 		world = new World(new Vector2(0, -10), true);
-		player = new Player(world, 11, 3);
+		player = new Player(world, 11, 3, 3);
 		contactListener = new HydrokContactListener(player);
         world.setContactListener(contactListener);
 		
@@ -70,15 +70,15 @@ public class GameScreen extends AbstractScreen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		if (Gdx.input.isKeyPressed(Keys.A)) {    
-			player.setPhase(Phase.Gas);
+			player.transition(Phase.Gas);
 		}
 		
 		if (Gdx.input.isKeyPressed(Keys.S)) {  
-			player.setPhase(Phase.Solid);
+			player.transition(Phase.Solid);
 		}
 
 		if (Gdx.input.isKeyPressed(Keys.D)) {
-			player.setPhase(Phase.Liquid);
+			player.transition(Phase.Liquid);
 		}
 		
 		if (Gdx.input.isKeyPressed(Keys.LEFT)) {
@@ -113,18 +113,21 @@ public class GameScreen extends AbstractScreen {
 		player.render(renderer);
 		
 		// debug
-		drawElevation();
+		drawHud();
 //		drawFps();
 		
 		debugRenderer.render(world, camera.combined);
 		world.step(delta, 6, 2);
 	}
 	
-	private void drawElevation() {
+	private void drawHud() {
         batch.begin();
         font.draw(batch,
                 "Elevation: " + (int) Math.round(player.getPosition().y),
                 10, getHeight() - 10);
+        font.draw(batch,
+                "Coolants: " + player.getCoolants(),
+                10, getHeight() - 30);
         batch.end();
     }
 	
