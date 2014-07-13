@@ -93,6 +93,10 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 			player.transition(Phase.Liquid);
 		}
 		
+		if (Gdx.input.isKeyPressed(Keys.F)) {
+            player.transition(Phase.Plasma);
+        }
+		
 		if (Gdx.input.isKeyPressed(Keys.LEFT)) {
 		    Vector2 pos = player.getPosition();
 		    player.getBody().applyLinearImpulse(-0.2f, 0, pos.x, pos.y, true);

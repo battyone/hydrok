@@ -77,6 +77,7 @@ public class Player {
 		managers.put(Phase.Solid, new SolidManager(this, world, x, y, width, height));
 		managers.put(Phase.Liquid, new LiquidManager(this, world, x, y, width, height));
 		managers.put(Phase.Gas, new GasManager(this, world, x ,y, width * 2, height * 2));
+		managers.put(Phase.Plasma, new PlasmaManager(this, world, x ,y, width * 2, height * 2));
 		managers.get(phase).setActive();
 	}
 
