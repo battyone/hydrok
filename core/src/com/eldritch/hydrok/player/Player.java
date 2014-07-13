@@ -20,17 +20,14 @@ public class Player {
     private final float width;
     private final float height;
 	private final EnumMap<Phase, PhaseManager> managers;
-	private int accelerants;
-	private int coolants;
 	float lastGround = 0;
+	boolean grounded = true;
+	boolean canJump = true;
 	
 	// mutable state
 	private Phase phase = Phase.Solid;
 
-	public Player(World world, int x, int y, int transitions) {
-	    this.accelerants = transitions;
-	    this.coolants = transitions;
-	    
+	public Player(World world, int x, int y) {
 	    // First we create a body definition
         BodyDef bodyDef = new BodyDef();
 
@@ -84,6 +81,7 @@ public class Player {
 	}
 
 	public void update(float delta, boolean grounded) {
+	    this.grounded = grounded;
 	    if (grounded && phase != Phase.Gas) {
             lastGround = 0;
         }
@@ -105,38 +103,15 @@ public class Player {
 		return body;
 	}
 	
-	public void addCoolant() {
-	    coolants++;
+	public void markGrounded() {
+	    canJump = true;
 	}
 	
-	public int getCoolants() {
-	    return coolants;
+	public void applyImpulseFrom(float x, float y) {
+	    managers.get(phase).applyImpulse(x, y);
 	}
-	
-	public void addAccelerant() {
-        accelerants++;
-    }
-    
-    public int getAccelerants() {
-        return accelerants;
-    }
 	
 	public void transition(Phase nextPhase) {
-	    int delta = nextPhase.getTemperature() - phase.getTemperature();
-	    if (delta < 0) {
-	        // we need to expend a number of coolants equal to the T delta to transition
-	        if (coolants + delta < 0) {
-	            return;
-	        }
-	        coolants += delta;
-	    } else if (delta > 0) {
-	        // same things for accelerants
-	        if (accelerants - delta < 0) {
-                return;
-            }
-	        accelerants -= delta;
-	    }
-	    
 	    // transition
 	    setPhase(nextPhase);
 	}
@@ -178,5 +153,7 @@ public class Player {
 		Body getBody();
 		
 		void setActive();
+		
+		void applyImpulse(float x, float y);
 	}
 }

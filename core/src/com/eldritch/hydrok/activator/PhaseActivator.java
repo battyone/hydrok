@@ -86,8 +86,6 @@ public abstract class PhaseActivator implements Activator {
 
         @Override
         public void handleNoTransition(Player player) {
-            player.addAccelerant();
-            player.addCoolant();
         }
     }
 
@@ -98,8 +96,6 @@ public abstract class PhaseActivator implements Activator {
 
         @Override
         public void handleNoTransition(Player player) {
-            player.addCoolant();
-            player.addCoolant();
         }
     }
 
@@ -110,8 +106,6 @@ public abstract class PhaseActivator implements Activator {
 
         @Override
         public void handleNoTransition(Player player) {
-            player.addAccelerant();
-            player.addAccelerant();
         }
     }
 }

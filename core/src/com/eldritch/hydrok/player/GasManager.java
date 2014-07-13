@@ -13,9 +13,9 @@ import com.eldritch.hydrok.util.Settings;
 
 public class GasManager extends AbstractPhaseManager {
 	private static final int MAX_VELOCITY = 3;
+	private static final float JUMP = 0.25f;
 	
 	private final Animation animation;
-	private float stateTime = 0;
 	
 	public GasManager(Player player, World world, int x, int y, float width, float height) {
 	    super(player, world, x, y, width, height, 0.20f, 0.3f, Settings.BIT_GAS);
@@ -33,9 +33,14 @@ public class GasManager extends AbstractPhaseManager {
 	}
 	
 	@Override
-	public void update(float delta, boolean grounded) {
-		stateTime += delta;
-		
+    public void applyImpulse(float x, float y) {
+        // jump
+        Vector2 pos = getBody().getPosition();
+        getBody().applyLinearImpulse(0, JUMP, pos.x, pos.y, true);
+    }
+	
+	@Override
+	public void doUpdate(float delta, boolean grounded) {
 		// apply upwards impulse, but only if max velocity is not reached yet
 		Body body = getBody();
 		Vector2 pos = body.getPosition();
@@ -54,14 +59,8 @@ public class GasManager extends AbstractPhaseManager {
         
 		Batch batch = renderer.getSpriteBatch();
 		batch.begin();
-		batch.draw(animation.getKeyFrame(stateTime),
+		batch.draw(animation.getKeyFrame(getStateTime()),
 				position.x - width / 2, position.y - height / 2, width, height);
 		batch.end();
-	}
-	
-	@Override
-	public void setActive() {
-	    super.setActive();
-		stateTime = 0;
 	}
 }

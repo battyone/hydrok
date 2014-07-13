@@ -10,6 +10,7 @@ import com.eldritch.hydrok.util.Settings;
 
 public class LiquidManager extends AbstractPhaseManager {
     private static final int MAX_VELOCITY = 5;
+    private static final float JUMP = 0.25f;
 
     private final TextureRegion texture;
 
@@ -17,9 +18,18 @@ public class LiquidManager extends AbstractPhaseManager {
         super(player, world, x, y, width, height, 0.35f, 0.0f, Settings.BIT_LIQUID);
         texture = new TextureRegion(new Texture("sprite/liquid.png"));
     }
+    
+    @Override
+    public void applyImpulse(float x, float y) {
+        if (getPlayer().grounded) {
+            // jump
+            Vector2 pos = getBody().getPosition();
+            getBody().applyLinearImpulse(0, JUMP, pos.x, pos.y, true);
+        }
+    }
 
     @Override
-    public void update(float delta, boolean grounded) {
+    public void doUpdate(float delta, boolean grounded) {
         // apply right impulse, but only if on the ground max velocity is not reached yet
         Vector2 pos = getBody().getPosition();
         if (grounded && getBody().getLinearVelocity().x < MAX_VELOCITY) {

@@ -13,6 +13,7 @@ public abstract class AbstractPhaseManager implements PhaseManager {
     private final float density;
     private final float restitution;
     private final short categoryBits;
+    private float stateTime = 0;
 
     public AbstractPhaseManager(Player player, World world, int x, int y, float width, float height,
             float density, float restitution, short categoryBits) {
@@ -25,6 +26,16 @@ public abstract class AbstractPhaseManager implements PhaseManager {
         this.density = density;
         this.restitution = restitution;
         this.categoryBits = categoryBits;
+    }
+    
+    @Override
+    public void update(float delta, boolean grounded) {
+        stateTime += delta;
+        doUpdate(delta, grounded);
+    }
+    
+    public float getStateTime() {
+        return stateTime;
     }
 
     public float getWidth() {
@@ -47,6 +58,8 @@ public abstract class AbstractPhaseManager implements PhaseManager {
 
     @Override
     public void setActive() {
+        stateTime = 0;
+        
         // update all fixtures
         for (Fixture fixture : getBody().getFixtureList()) {
             // physics properties
@@ -60,4 +73,6 @@ public abstract class AbstractPhaseManager implements PhaseManager {
             fixture.setFilterData(filter);
         }
     }
+    
+    protected abstract void doUpdate(float delta, boolean grounded);
 }

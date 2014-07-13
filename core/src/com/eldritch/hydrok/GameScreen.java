@@ -44,7 +44,7 @@ public class GameScreen extends AbstractScreen {
 		super.show();
 
 		world = new World(new Vector2(0, -10), true);
-		player = new Player(world, 11, 3, 3);
+		player = new Player(world, 11, 3);
 		contactListener = new HydrokContactListener(player);
         world.setContactListener(contactListener);
 		
@@ -96,6 +96,11 @@ public class GameScreen extends AbstractScreen {
             player.getBody().applyLinearImpulse(0.2f, 0, pos.x, pos.y, true);
         }
 		
+		if (Gdx.input.isKeyPressed(Keys.SPACE)) {
+		    Vector2 pos = player.getPosition();
+		    player.applyImpulseFrom(pos.x, pos.y - 1);
+        }
+		
 		// updates
 		player.update(delta, contactListener.isGrounded());
 		map.update(player);
@@ -125,12 +130,6 @@ public class GameScreen extends AbstractScreen {
         font.draw(batch,
                 "Elevation: " + (int) Math.round(player.getPosition().y),
                 10, getHeight() - 10);
-        font.draw(batch,
-                "Accelerants: " + player.getAccelerants(),
-                10, getHeight() - 30);
-        font.draw(batch,
-                "Coolants: " + player.getCoolants(),
-                10, getHeight() - 50);
         batch.end();
     }
 	
