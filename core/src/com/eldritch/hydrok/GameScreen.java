@@ -44,6 +44,8 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 	private ShapeRenderer shapeRenderer;
 	private BitmapFont font;
 	private SpriteBatch batch;
+	
+	private boolean debug = false;
 
 	public GameScreen(HydrokGame game) {
 		super(game);
@@ -128,8 +130,8 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 		
 		// check for game over
 		terminator.update(delta);
-		if (terminator.isGameOver()) {
-//		    game.setScreen(new GameOverScreen(game, (int) player.getPosition().x));
+		if (terminator.isGameOver() && !debug) {
+		    game.setScreen(new GameOverScreen(game, (int) player.getPosition().x));
 		}
 		
 		Vector2 position = player.getPosition();
@@ -145,15 +147,17 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 		player.render(renderer);
 		terminator.render(renderer);
 		
-		// render map shapes
-		shapeRenderer.setProjectionMatrix(camera.combined);
-		map.render(shapeRenderer);
-		
 		// debug
-		drawHud();
-		drawFps();
+		if (debug) {
+		    // render map shapes
+	        shapeRenderer.setProjectionMatrix(camera.combined);
+		    map.render(shapeRenderer);
+		    debugRenderer.render(world, camera.combined);
+		    drawFps();
+		}
 		
-		debugRenderer.render(world, camera.combined);
+		drawHud();
+		
 		world.step(delta, 6, 2);
 	}
 	
@@ -198,6 +202,16 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 
     @Override
     public boolean keyUp(int keycode) {
+        switch (keycode) {
+            case Keys.Z:
+                camera.zoom = camera.zoom >= DEBUG_ZOOM ? ZOOM : DEBUG_ZOOM;
+                camera.update();
+                return true;
+            case Keys.F1:
+                // debug rendering
+                debug = !debug;
+                return true;
+        }
         if (keycode == Keys.Z) {
             camera.zoom = camera.zoom >= DEBUG_ZOOM ? ZOOM : DEBUG_ZOOM;
             camera.update();
