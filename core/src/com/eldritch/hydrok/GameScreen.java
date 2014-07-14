@@ -27,6 +27,9 @@ import com.eldritch.hydrok.screen.GameOverScreen;
 import com.eldritch.hydrok.util.HydrokContactListener;
 
 public class GameScreen extends AbstractScreen implements InputProcessor {
+    private static final float ZOOM = 0.6f;
+    private static final float DEBUG_ZOOM = 2.8f;
+    
 	public static final AssetManager textureManager = new AssetManager();
 	
 	private ProceduralTiledMap map;
@@ -66,8 +69,7 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 		float h = 20;
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, w, h);
-		camera.zoom = 0.6f;
-//		camera.zoom = 2.8f;
+		camera.zoom = ZOOM;
 		camera.update();
 
 		debugRenderer = new Box2DDebugRenderer();
@@ -149,7 +151,7 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 		
 		// debug
 		drawHud();
-//		drawFps();
+		drawFps();
 		
 		debugRenderer.render(world, camera.combined);
 		world.step(delta, 6, 2);
@@ -173,7 +175,7 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 	    batch.begin();
         font.draw(batch,
                 "FPS: " + Gdx.graphics.getFramesPerSecond(),
-                10, getHeight() - 10);
+                10, getHeight() - 70);
         batch.end();
 	}
 	
@@ -196,6 +198,11 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 
     @Override
     public boolean keyUp(int keycode) {
+        if (keycode == Keys.Z) {
+            camera.zoom = camera.zoom >= DEBUG_ZOOM ? ZOOM : DEBUG_ZOOM;
+            camera.update();
+            return true;
+        }
         return false;
     }
 
