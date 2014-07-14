@@ -11,6 +11,7 @@ import com.eldritch.hydrok.util.Settings;
 
 public class SolidManager extends AbstractPhaseManager {
 	private static final int MAX_VELOCITY = 8;
+	private static final int MAX_VELOCITY_JUMP = 10;
 	private static final float JUMP = 2.75f;
 	
 	private final TextureRegion texture;
@@ -26,7 +27,16 @@ public class SolidManager extends AbstractPhaseManager {
     	    // jump
     	    Vector2 pos = getBody().getPosition();
     	    Vector2 dir = new Vector2(pos.x, pos.y).sub(x, y).nor();
-    	    getBody().applyLinearImpulse(dir.x * JUMP, dir.y * JUMP, pos.x, pos.y, true);
+    	    
+    	    float dx = dir.x * JUMP;
+            float dy = dir.y * JUMP;
+    	    if (Math.abs(getBody().getLinearVelocity().y) > MAX_VELOCITY_JUMP) {
+                dy = 0;
+            }
+            if (Math.abs(getBody().getLinearVelocity().x) > MAX_VELOCITY_JUMP) {
+                dx = 0;
+            }
+    	    getBody().applyLinearImpulse(dx, dy, pos.x, pos.y, true);
     	    getPlayer().canJump = false;
 	    }
 	}

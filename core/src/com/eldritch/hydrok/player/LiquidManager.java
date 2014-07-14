@@ -10,7 +10,7 @@ import com.eldritch.hydrok.util.Settings;
 
 public class LiquidManager extends AbstractPhaseManager {
     private static final int MAX_VELOCITY_X = 2;
-    private static final int MAX_VELOCITY_Y = 0;
+    private static final int MAX_VELOCITY_JUMP = 3;
     private static final float JUMP = 2.25f;
 
     private final TextureRegion texture;
@@ -27,9 +27,12 @@ public class LiquidManager extends AbstractPhaseManager {
         
         float dx = dir.x * JUMP;
         float dy = dir.y * JUMP;
-        if (dy > 0) {
+        if (dy > 0 || Math.abs(getBody().getLinearVelocity().y) > MAX_VELOCITY_JUMP) {
             // can't jump as liquid
-            dy *= 0;
+            dy = 0;
+        }
+        if (Math.abs(getBody().getLinearVelocity().x) > MAX_VELOCITY_JUMP) {
+            dx = 0;
         }
         getBody().applyLinearImpulse(dx, dy, pos.x, pos.y, true);
     }
