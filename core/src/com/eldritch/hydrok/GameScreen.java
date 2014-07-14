@@ -67,7 +67,7 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, w, h);
 		camera.zoom = 0.6f;
-		camera.zoom = 2.8f;
+//		camera.zoom = 2.8f;
 		camera.update();
 
 		debugRenderer = new Box2DDebugRenderer();
@@ -127,7 +127,7 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 		// check for game over
 		terminator.update(delta);
 		if (terminator.isGameOver()) {
-//		    game.setScreen(new GameOverScreen(game, (int) player.getPosition().x));
+		    game.setScreen(new GameOverScreen(game, (int) player.getPosition().x));
 		}
 		
 		Vector2 position = player.getPosition();
@@ -141,6 +141,7 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 		renderer.setView(camera);
 		renderer.render();
 		player.render(renderer);
+		terminator.render(renderer);
 		
 		// render map shapes
 		shapeRenderer.setProjectionMatrix(camera.combined);

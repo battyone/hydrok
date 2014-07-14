@@ -56,6 +56,14 @@ public class ProceduralTiledMap extends TiledMap {
         return minY - chunkHeight / 2;
     }
     
+    public int getChunkWidth() {
+        return chunkWidth;
+    }
+    
+    public int getChunkHeight() {
+        return chunkHeight;
+    }
+    
     public int getWidth() {
         return L * chunkWidth;
     }

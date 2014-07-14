@@ -1,7 +1,12 @@
 package com.eldritch.hydrok.activator;
 
 import static com.eldritch.hydrok.util.Settings.ALL_BITS;
+import static com.eldritch.hydrok.util.Settings.SCALE;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -15,12 +20,14 @@ import com.eldritch.hydrok.player.Player;
 public class Terminator implements Activator {
     private static final float V = 2.5f;
     
+    private final TextureRegion region;
     private final Body body;
     private final ProceduralTiledMap map;
     private boolean gameOver = false;
     private int lastX;
     
     public Terminator(World world, ProceduralTiledMap map) {
+        region = new TextureRegion(new Texture("fill/terminator.png"));
         this.map = map;
         lastX = map.getMinX();
         
@@ -53,6 +60,22 @@ public class Terminator implements Activator {
             lastX = map.getMinX();
         }
         body.setTransform(nextX, map.getMinY(), 0);
+    }
+    
+    public void render(OrthogonalTiledMapRenderer renderer) {
+        Vector2 position = body.getPosition();
+        float width = region.getRegionWidth() * 3 * SCALE;
+        float height = map.getHeight();
+        
+        Batch batch = renderer.getSpriteBatch();
+        batch.begin();
+        batch.draw(
+                region,
+                position.x - map.getChunkWidth() / 2 - width / 2,
+                position.y - map.getChunkHeight() / 2, 
+                width,
+                height);
+        batch.end();
     }
     
     public boolean isGameOver() {
