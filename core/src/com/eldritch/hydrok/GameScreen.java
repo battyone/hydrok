@@ -127,7 +127,7 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 		// check for game over
 		terminator.update(delta);
 		if (terminator.isGameOver()) {
-		    game.setScreen(new GameOverScreen(game, (int) player.getPosition().x));
+//		    game.setScreen(new GameOverScreen(game, (int) player.getPosition().x));
 		}
 		
 		Vector2 position = player.getPosition();

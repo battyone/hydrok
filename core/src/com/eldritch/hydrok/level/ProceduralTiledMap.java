@@ -71,7 +71,7 @@ public class ProceduralTiledMap extends TiledMap {
     public int getHeight() {
         return L * chunkHeight;
     }
-
+    
     public void update(Player player) {
         // compare current chunk with the position chunk
         int currentX = getIndex(minX, chunkWidth);
@@ -80,6 +80,9 @@ public class ProceduralTiledMap extends TiledMap {
         Vector2 position = player.getPosition();
         int chunkX = getIndex(position.x, chunkWidth);
         int chunkY = getIndex(position.y, chunkHeight);
+        
+        float thresholdUp = minY + chunkHeight + chunkHeight / 2;
+        float thresholdDown = minY - chunkHeight / 2;
 
         // check for horizontal crossing
         if (currentX < chunkX) {
@@ -108,7 +111,7 @@ public class ProceduralTiledMap extends TiledMap {
         } else if (currentX > chunkX) {
             System.out.println("LEFT");
             // left, should be rare
-        } else if (currentY < chunkY) {
+        } else if (position.y > thresholdUp) {
             System.out.println("UP");
             // up
             for (int j = 0; j < chunks.length; j++) {
@@ -129,7 +132,7 @@ public class ProceduralTiledMap extends TiledMap {
 
             // reset min y position
             minY = chunkY * chunkHeight;
-        } else if (currentY > chunkY) {
+        } else if (position.y < thresholdDown) {
             System.out.println("DOWN");
             // down
             for (int j = 0; j < chunks.length; j++) {
@@ -169,8 +172,16 @@ public class ProceduralTiledMap extends TiledMap {
                 renderer.rect(x, y, chunkWidth, chunkHeight);
             }
         }
+        
+        renderer.setColor(1, 0, 1, 1);
+        int startX = minX - chunkWidth;
+        int startY = minY;
+        renderer.line(startX, startY + chunkHeight + chunkHeight / 2, startX + getWidth(), startY + chunkHeight + chunkHeight / 2);
+        renderer.line(startX, startY - chunkHeight / 2, startX + getWidth(), startY - chunkHeight / 2);
+        
         renderer.setColor(1, 0, 0, 1);
         renderer.rect(minX - chunkWidth, minY - chunkHeight, getWidth(), getHeight());
+        
         renderer.end();
     }
     
