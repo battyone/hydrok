@@ -63,9 +63,7 @@ public class MapChunkGenerator {
         if (terrainCells.size <= minRemaining) {
             return;
         }
-        
         int count = terrainCells.size - minRemaining;
-        System.out.println("removing: " + count);
         terrainCells.removeRange(0, count - 1);
     }
 
