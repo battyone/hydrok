@@ -82,7 +82,7 @@ public class ProceduralTiledMap extends TiledMap {
                 for (MapLayer layer : chunks[i][0].getLayers()) {
                     ChunkLayer chunk = (ChunkLayer) layer;
                     chunk.destroy();
-                    generator.removeVertices(chunk.getVertexCount());
+                    generator.removeVertices(getWidth());
                 }
 
                 for (int j = 0; j < chunks[i].length - 1; j++) {

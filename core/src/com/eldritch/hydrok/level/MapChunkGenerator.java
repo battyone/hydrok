@@ -39,6 +39,7 @@ public class MapChunkGenerator {
     private final int height;
     final Array<WorldCell> terrainCells = new Array<WorldCell>();
     private WorldCell lastTerrain = null;
+    private Body chainBody = null;
 
     private final LoadingCache<String, StaticTiledMapTile> tiles = CacheBuilder.newBuilder().build(
             new CacheLoader<String, StaticTiledMapTile>() {
@@ -58,16 +59,14 @@ public class MapChunkGenerator {
         this.height = height;
     }
     
-    public void removeVertices(int count) {
-        if (count > 0) {
-            terrainCells.removeRange(0, count - 1);
+    public void removeVertices(int minRemaining) {
+        if (terrainCells.size <= minRemaining) {
+            return;
         }
-    }
-    
-    public void removeBackVertices(int count) {
-        if (count > 0) {
-            terrainCells.removeRange(terrainCells.size - count, terrainCells.size - 1);
-        }
+        
+        int count = terrainCells.size - minRemaining;
+        System.out.println("removing: " + count);
+        terrainCells.removeRange(0, count - 1);
     }
 
     public TiledMap generate(int chunkI, int chunkJ, int worldX, int worldY) {
@@ -253,12 +252,12 @@ public class MapChunkGenerator {
             fd.filter.categoryBits = 0x0001;
             fd.filter.maskBits = Type.Terrain.getMaskBits();
             
-            Body body = world.createBody(bdef);
-            body.createFixture(fd);
+            if (chainBody != null) {
+                world.destroyBody(chainBody);
+            }
+            chainBody = world.createBody(bdef);
+            chainBody.createFixture(fd);
             chain.dispose();
-            
-            layer.addBody(body);
-            layer.setVertexCount(vertexCount);
         }
     }
     
@@ -277,7 +276,6 @@ public class MapChunkGenerator {
             }
             
             layer.setCell(cell.getLocalX(), cell.getLocalY(), cell);
-            layer.incrementVertexCount();
         }
     }
 
