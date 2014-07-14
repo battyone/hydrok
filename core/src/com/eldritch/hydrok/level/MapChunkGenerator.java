@@ -69,12 +69,18 @@ public class MapChunkGenerator {
 
     public TiledMap generate(int chunkI, int chunkJ, int worldX, int worldY) {
         TiledMap map = new TiledMap();
-        ChunkLayer background = new ChunkLayer(world, width, height, TILE_WIDTH, TILE_HEIGHT);
-        generateTerrain(background, chunkI, chunkJ, worldX, worldY);
-        generateObstacles(background, chunkI, chunkJ, worldX, worldY);
-        generateBackground(background, chunkI, chunkJ, worldX, worldY);
-        genrateActivators(background, chunkI, chunkJ, worldX, worldY);
+        ChunkLayer background = new ChunkLayer(world, width, height, TILE_WIDTH, TILE_HEIGHT, 0);
+        ChunkLayer terrain = new ChunkLayer(world, width, height, TILE_WIDTH, TILE_HEIGHT, 1);
+        
+        generateTerrain(terrain, chunkI, chunkJ, worldX, worldY);
+        generateBackground(terrain, chunkI, chunkJ, worldX, worldY);
+        generateWater(background, terrain, chunkI, chunkJ, worldX, worldY);
+        generateObstacles(terrain, chunkI, chunkJ, worldX, worldY);
+        genrateActivators(terrain, chunkI, chunkJ, worldX, worldY);
+        
         map.getLayers().add(background);
+        map.getLayers().add(terrain);
+        
         return map;
     }
     
@@ -86,7 +92,7 @@ public class MapChunkGenerator {
                     continue;
                 }
                 
-                WorldCell down = getCell(layer, x, y - 1, chunkI, chunkJ, 0);
+                WorldCell down = getCell(layer, x, y - 1, chunkI, chunkJ);
                 if (down != null && down.getType() == Type.Terrain) {
                     if (Math.random() < 0.1) {
                         PhaseActivator a = new Fireball(x + worldX, y + worldY, world);
@@ -107,6 +113,55 @@ public class MapChunkGenerator {
                         WorldCell cell = new WorldCell(a.getTile(), x, y, a.getX(), a.getY(), world, Type.Activator);
                         layer.setCell(x, y, cell);
                         layer.addBody(a.getBody());
+                    }
+                }
+            }
+        }
+    }
+    
+    private boolean isTerrain(WorldCell cell) {
+        return cell != null && cell.getType() == Type.Terrain;
+    }
+    
+    private void generateWater(ChunkLayer layer, ChunkLayer terrain, int chunkI, int chunkJ, int worldX, int worldY) {
+        for (int x = 0; x < layer.getWidth(); x++) {
+            for (int y = 0; y < layer.getHeight(); y++) {
+                if (layer.getCell(x, y) != null) {
+                    // already has cell
+                    continue;
+                }
+                
+                WorldCell current = getCell(terrain, x, y, chunkI, chunkJ);
+                WorldCell down = getCell(terrain, x - 1, y - 1, chunkI, chunkJ);
+                if (isTerrain(current) && isTerrain(down) && down.getSlope() == 0) {
+                    // start of a valley, fill in water working back
+                    Array<WorldCell> cells = new Array<WorldCell>();
+                    int localX = current.getLocalX();
+                    int localY = current.getLocalY();
+                    boolean finished = false;
+                    while (down != null && !finished) {
+                        cells.add(new WorldCell(
+                                getTile("water/top"), localX, localY,
+                                localX + worldX, localY + worldY, world, Type.Activator));
+                        
+                        // set to new current
+                        current = getCell(terrain, localX, localY, chunkI, chunkJ);
+                        if (current != null && current.getSlope() < 0) {
+                            // found the other end
+                            finished = true;
+                        }
+                        
+                        // update down cell
+                        localX -= 1;
+                        down = getCell(terrain, localX, localY - 1, chunkI, chunkJ);
+                    }
+                    
+                    // only add cells if we finished, otherwise we have an incomplete valley
+                    if (finished) {
+                        for (WorldCell cell : cells) {
+                            setCell(cell, cell.getLocalX(), cell.getLocalY(), chunkI, chunkJ, layer);
+//                          layer.addBody(a.getBody());
+                        }
                     }
                 }
             }
@@ -144,7 +199,7 @@ public class MapChunkGenerator {
                     continue;
                 }
                 
-                WorldCell up = getCell(layer, x, y + 1, chunkI, chunkJ, 0);
+                WorldCell up = getCell(layer, x, y + 1, chunkI, chunkJ);
                 if (up != null) {
                     if (up.getType() == Type.Terrain || up.getType() == Type.Filler) {
                         StaticTiledMapTile tile = getTile("grass/center");
@@ -277,7 +332,7 @@ public class MapChunkGenerator {
         }
     }
 
-    private WorldCell getCell(ChunkLayer layer, int x, int y, int chunkI, int chunkJ, int z) {
+    private WorldCell getCell(ChunkLayer layer, int x, int y, int chunkI, int chunkJ) {
         // get the updated chunk
         int chunkX = (int) Math.floor(1.0 * x / width) + chunkJ;
         int chunkY = (int) Math.floor(1.0 * y / height) + chunkI;
@@ -290,17 +345,43 @@ public class MapChunkGenerator {
         // update layer if chunks differ
         if (chunkX != chunkJ || chunkY != chunkI) {
             if (chunks[chunkY][chunkX] == null
-                    || chunks[chunkY][chunkX].getLayers().getCount() <= z) {
+                    || chunks[chunkY][chunkX].getLayers().getCount() <= layer.getZ()) {
                 // out of bounds
                 return null;
             }
-            layer = (ChunkLayer) chunks[chunkY][chunkX].getLayers().get(z);
+            layer = (ChunkLayer) chunks[chunkY][chunkX].getLayers().get(layer.getZ());
         }
 
         // return the cell within chunk
         int tileX = x - (chunkX - chunkJ) * width;
         int tileY = y - (chunkY - chunkI) * height;
         return layer.getCell(tileX, tileY);
+    }
+    
+    private void setCell(WorldCell cell, int x, int y, int chunkI, int chunkJ, ChunkLayer layer) {
+        // get the updated chunk
+        int chunkX = (int) Math.floor(1.0 * x / width) + chunkJ;
+        int chunkY = (int) Math.floor(1.0 * y / height) + chunkI;
+
+        // handle out of bounds
+        if (chunkX < 0 || chunkY < 0 || chunkX >= L || chunkY >= L) {
+            return;
+        }
+
+        // update layer if chunks differ
+        if (chunkX != chunkJ || chunkY != chunkI) {
+            if (chunks[chunkY][chunkX] == null
+                    || chunks[chunkY][chunkX].getLayers().getCount() <= layer.getZ()) {
+                // out of bounds
+                return;
+            }
+            layer = (ChunkLayer) chunks[chunkY][chunkX].getLayers().get(layer.getZ());
+        }
+
+        // return the cell within chunk
+        int tileX = x - (chunkX - chunkJ) * width;
+        int tileY = y - (chunkY - chunkI) * height;
+        layer.setCell(tileX, tileY, cell);
     }
 
     private StaticTiledMapTile getTile(String key) {

@@ -38,6 +38,7 @@ public class ProceduralTiledMap extends TiledMap {
 
         // add index layers
         getLayers().add(new ProceduralLayer(0, width * L, height * L, TILE_WIDTH, TILE_HEIGHT));
+        getLayers().add(new ProceduralLayer(1, width * L, height * L, TILE_WIDTH, TILE_HEIGHT));
     }
     
     public int getX() {

@@ -52,6 +52,20 @@ snow/mid
   orig: 70, 70
   offset: 0, 0
   index: 0
+water/top
+  rotate: false
+  xy: 432, 648
+  size: 70, 70
+  orig: 70, 70
+  offset: 0, 0
+  index: 0
+water/top-mid
+  rotate: false
+  xy: 432, 576
+  size: 70, 70
+  orig: 70, 70
+  offset: 0, 0
+  index: 0
 
 objects-atlas.png
 format: RGBA8888

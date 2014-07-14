@@ -10,10 +10,16 @@ import com.badlogic.gdx.physics.box2d.World;
 public class ChunkLayer extends TiledMapTileLayer {
     private final Set<Body> bodies = new HashSet<Body>();
     private final World world;
+    private final int z;
 
-    public ChunkLayer(World world, int width, int height, int tileWidth, int tileHeight) {
+    public ChunkLayer(World world, int width, int height, int tileWidth, int tileHeight, int z) {
         super(width, height, tileWidth, tileHeight);
         this.world = world;
+        this.z = z;
+    }
+    
+    public int getZ() {
+        return z;
     }
 
     public void addBody(Body body) {

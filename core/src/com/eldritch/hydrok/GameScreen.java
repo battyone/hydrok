@@ -212,11 +212,6 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
                 debug = !debug;
                 return true;
         }
-        if (keycode == Keys.Z) {
-            camera.zoom = camera.zoom >= DEBUG_ZOOM ? ZOOM : DEBUG_ZOOM;
-            camera.update();
-            return true;
-        }
         return false;
     }
 
