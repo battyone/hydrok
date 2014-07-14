@@ -142,9 +142,9 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 		
 		// set the tile map renderer view based on what the
 		// camera sees and render the map
+        player.render(renderer);
 		renderer.setView(camera);
 		renderer.render();
-		player.render(renderer);
 		terminator.render(renderer);
 		
 		// debug

@@ -20,10 +20,12 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.eldritch.hydrok.HydrokGame;
+import com.eldritch.hydrok.activator.ObstaclePhaseActivator;
+import com.eldritch.hydrok.activator.ObstaclePhaseActivator.Fireball;
+import com.eldritch.hydrok.activator.ObstaclePhaseActivator.IceShard;
+import com.eldritch.hydrok.activator.ObstaclePhaseActivator.WaterDroplet;
 import com.eldritch.hydrok.activator.PhaseActivator;
-import com.eldritch.hydrok.activator.PhaseActivator.Fireball;
-import com.eldritch.hydrok.activator.PhaseActivator.IceShard;
-import com.eldritch.hydrok.activator.PhaseActivator.WaterDroplet;
+import com.eldritch.hydrok.activator.TiledPhaseActivator.LiquidActivator;
 import com.eldritch.hydrok.level.WorldCell.Type;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -95,21 +97,21 @@ public class MapChunkGenerator {
                 WorldCell down = getCell(layer, x, y - 1, chunkI, chunkJ);
                 if (down != null && down.getType() == Type.Terrain) {
                     if (Math.random() < 0.1) {
-                        PhaseActivator a = new Fireball(x + worldX, y + worldY, world);
+                        ObstaclePhaseActivator a = new Fireball(x + worldX, y + worldY, world);
                         WorldCell cell = new WorldCell(a.getTile(), x, y, a.getX(), a.getY(), world, Type.Activator);
                         layer.setCell(x, y, cell);
                         layer.addBody(a.getBody());
                     }
                 } else if (down != null && down.getType() == Type.Platform) {
                     if (Math.random() < 0.1) {
-                        PhaseActivator a = new WaterDroplet(x + worldX, y + worldY, world);
+                        ObstaclePhaseActivator a = new WaterDroplet(x + worldX, y + worldY, world);
                         WorldCell cell = new WorldCell(a.getTile(), x, y, a.getX(), a.getY(), world, Type.Activator);
                         layer.setCell(x, y, cell);
                         layer.addBody(a.getBody());
                     }
                 } else if (down == null) {
                     if (Math.random() < 0.025) {
-                        PhaseActivator a = new IceShard(x + worldX, y + worldY, world);
+                        ObstaclePhaseActivator a = new IceShard(x + worldX, y + worldY, world);
                         WorldCell cell = new WorldCell(a.getTile(), x, y, a.getX(), a.getY(), world, Type.Activator);
                         layer.setCell(x, y, cell);
                         layer.addBody(a.getBody());
@@ -159,8 +161,10 @@ public class MapChunkGenerator {
                     // only add cells if we finished, otherwise we have an incomplete valley
                     if (finished) {
                         for (WorldCell cell : cells) {
+                            PhaseActivator activator = new LiquidActivator(
+                                    cell.getTile(), cell.getWorldX(), cell.getWorldY(), world);
                             setCell(cell, cell.getLocalX(), cell.getLocalY(), chunkI, chunkJ, layer);
-//                          layer.addBody(a.getBody());
+                            layer.addBody(activator.getBody());
                         }
                     }
                 }
