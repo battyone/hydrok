@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -37,6 +38,7 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 	private Terminator terminator;
 	
 	private Box2DDebugRenderer debugRenderer;
+	private ShapeRenderer shapeRenderer;
 	private BitmapFont font;
 	private SpriteBatch batch;
 
@@ -65,10 +67,11 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, w, h);
 		camera.zoom = 0.6f;
-//		camera.zoom = 2.8f;
+		camera.zoom = 2.8f;
 		camera.update();
 
 		debugRenderer = new Box2DDebugRenderer();
+		shapeRenderer = new ShapeRenderer();
 		font = new BitmapFont();
 		batch = new SpriteBatch();
 		
@@ -124,7 +127,7 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 		// check for game over
 		terminator.update(delta);
 		if (terminator.isGameOver()) {
-		    game.setScreen(new GameOverScreen(game, (int) player.getPosition().x));
+//		    game.setScreen(new GameOverScreen(game, (int) player.getPosition().x));
 		}
 		
 		Vector2 position = player.getPosition();
@@ -138,6 +141,10 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 		renderer.setView(camera);
 		renderer.render();
 		player.render(renderer);
+		
+		// render map shapes
+		shapeRenderer.setProjectionMatrix(camera.combined);
+		map.render(shapeRenderer);
 		
 		// debug
 		drawHud();

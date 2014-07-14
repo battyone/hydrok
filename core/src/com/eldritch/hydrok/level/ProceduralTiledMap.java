@@ -3,6 +3,8 @@ package com.eldritch.hydrok.level;
 import static com.eldritch.hydrok.util.Settings.TILE_WIDTH;
 import static com.eldritch.hydrok.util.Settings.TILE_HEIGHT;
 
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -147,6 +149,21 @@ public class ProceduralTiledMap extends TiledMap {
 
         // reset the last position
         lastPosition.set(position);
+    }
+    
+    public void render(ShapeRenderer renderer) {
+        renderer.begin(ShapeType.Line);
+        renderer.setColor(0, 0, 1, 1);
+        for (int i = 0; i < L; i++) {
+            for (int j = 0; j < L; j++) {
+                int x = minX - chunkWidth + j * chunkWidth;
+                int y = minY - chunkHeight + i * chunkHeight;
+                renderer.rect(x, y, chunkWidth, chunkHeight);
+            }
+        }
+        renderer.setColor(1, 0, 0, 1);
+        renderer.rect(minX - chunkWidth, minY - chunkHeight, getWidth(), getHeight());
+        renderer.end();
     }
     
     private int getIndex(float a, int length) {
