@@ -22,6 +22,7 @@ public class WorldCell extends Cell {
     private final int localY;
     private final int worldX;
     private final int worldY;
+    private final Vector2 terrainVector;
     private WorldCell next = null;
 
     public WorldCell(TiledMapTile tile, int localX, int localY, int worldX, int worldY, World world, Type type) {
@@ -36,6 +37,7 @@ public class WorldCell extends Cell {
         this.localY = localY;
         this.worldX = worldX;
         this.worldY = worldY;
+        terrainVector = type == Type.Terrain ? new Vector2(worldX, worldY + vy()) : Vector2.Zero;
         setTile(tile);
     }
     
@@ -53,6 +55,10 @@ public class WorldCell extends Cell {
     
     public int getWorldY() {
         return worldY;
+    }
+    
+    public Vector2 getTerrainVector() {
+        return terrainVector;
     }
 
     public Type getType() {

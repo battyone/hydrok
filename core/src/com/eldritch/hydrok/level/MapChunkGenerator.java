@@ -37,7 +37,7 @@ public class MapChunkGenerator {
     private final World world;
     private final int width;
     private final int height;
-    final Array<Vector2> vertices = new Array<Vector2>();
+    final Array<WorldCell> terrainCells = new Array<WorldCell>();
     private WorldCell lastTerrain = null;
 
     private final LoadingCache<String, StaticTiledMapTile> tiles = CacheBuilder.newBuilder().build(
@@ -60,13 +60,13 @@ public class MapChunkGenerator {
     
     public void removeVertices(int count) {
         if (count > 0) {
-            vertices.removeRange(0, count - 1);
+            terrainCells.removeRange(0, count - 1);
         }
     }
     
     public void removeBackVertices(int count) {
         if (count > 0) {
-            vertices.removeRange(vertices.size - count, vertices.size - 1);
+            terrainCells.removeRange(terrainCells.size - count, terrainCells.size - 1);
         }
     }
 
@@ -182,13 +182,19 @@ public class MapChunkGenerator {
                 // seed the first cell
                 lastTerrain = new WorldCell(getTile("grass/mid"), 0, 0, 0, 0, world, Type.Terrain);
                 layer.setCell(0, 0, lastTerrain);
-                vertices.add(new Vector2(0, 1));
+                terrainCells.add(lastTerrain);
                 vertexCount++;
             }
         }
         
         if (outsideLayer(lastTerrain, layer, worldY)) {
             // wrong layer for terrain
+            return;
+        }
+        
+        // check to see if this layer needs to be reconstructed from existing terrain
+        if (lastTerrain.getWorldX() - worldX + 1 >= layer.getWidth()) {
+            regenerateTerrain(layer, chunkI, chunkJ, worldX, worldY);
             return;
         }
         
@@ -222,7 +228,7 @@ public class MapChunkGenerator {
             if (candidates.size > 0) {
                 WorldCell cell = candidates.get((int) (Math.random() * candidates.size));
                 layer.setCell(cell.getLocalX(), cell.getLocalY(), cell);
-                vertices.add(new Vector2(cell.getWorldX(), cell.getWorldY() + cell.vy()));
+                terrainCells.add(cell);
                 vertexCount++;
                 
                 lastTerrain = cell;
@@ -236,7 +242,11 @@ public class MapChunkGenerator {
             bdef.type = BodyType.StaticBody;
             
             ChainShape chain = new ChainShape();
-            chain.createChain((Vector2[]) vertices.toArray(Vector2.class));
+            Vector2[] vertices = new Vector2[terrainCells.size];
+            for (int i = 0; i < terrainCells.size; i++) {
+                vertices[i] = terrainCells.get(i).getTerrainVector();
+            }
+            chain.createChain(vertices);
             
             FixtureDef fd = new FixtureDef();
             fd.shape = chain;
@@ -249,6 +259,25 @@ public class MapChunkGenerator {
             
             layer.addBody(body);
             layer.setVertexCount(vertexCount);
+        }
+    }
+    
+    private void regenerateTerrain(ChunkLayer layer, int chunkI, int chunkJ, int worldX, int worldY) {
+        for (WorldCell cell : terrainCells) {
+            int x = cell.getWorldX() - worldX;
+            if (x < 0 || x >= layer.getHeight()) {
+                // x-coordinate out of bounds
+                continue;
+            }
+            
+            int y = cell.getWorldY() - worldY;
+            if (y < 0 || y >= layer.getHeight()) {
+                // y-coordinate out of bounds
+                continue;
+            }
+            
+            layer.setCell(cell.getLocalX(), cell.getLocalY(), cell);
+            layer.incrementVertexCount();
         }
     }
 

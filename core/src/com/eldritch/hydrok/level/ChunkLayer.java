@@ -21,6 +21,10 @@ public class ChunkLayer extends TiledMapTileLayer {
         this.vertexCount = vertexCount;
     }
     
+    public void incrementVertexCount() {
+        vertexCount++;
+    }
+    
     public int getVertexCount() {
         return vertexCount;
     }
