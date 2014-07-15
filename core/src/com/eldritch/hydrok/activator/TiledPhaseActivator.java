@@ -19,7 +19,7 @@ public abstract class TiledPhaseActivator extends PhaseActivator {
     
     private static Body createBody(TiledMapTile tile, World world, int x, int y) {
         float halfWidth = (tile.getTextureRegion().getRegionWidth() / 2.0f) * SCALE;
-        float halfHeight = (tile.getTextureRegion().getRegionHeight() / 2.0f) * SCALE;
+        float halfHeight = (tile.getTextureRegion().getRegionHeight() / 4.0f) * SCALE;
         
         // create our body definition
         BodyDef groundBodyDef = new BodyDef();

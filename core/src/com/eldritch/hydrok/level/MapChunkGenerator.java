@@ -137,22 +137,15 @@ public class MapChunkGenerator {
                 WorldCell current = getCell(terrain, x, y, chunkI, chunkJ);
                 WorldCell down = getCell(terrain, x - 1, y - 1, chunkI, chunkJ);
                 if (isTerrain(current) && isTerrain(down) && down.getSlope() == 0) {
-                    // liquid or lava
-                    boolean isLiquid = Math.random() < 0.8;
-                    
                     // start of a valley, fill in water working back
-                    Array<PhaseActivator> activators = new Array<PhaseActivator>();
+                    Array<WorldCell> cells = new Array<WorldCell>();
                     int localX = current.getLocalX();
                     int localY = current.getLocalY();
                     boolean finished = false;
                     while (down != null && !finished) {
-                        if (isLiquid) {
-                            activators.add(new LiquidActivator(getTile("water/top"),
-                                    localX + worldX, localY + worldY, world));
-                        } else {
-                            activators.add(new GasActivator(getTile("lava/top"),
-                                    localX + worldX, localY + worldY, world));
-                        }
+                        cells.add(new WorldCell(
+                                getTile("water/top"), localX, localY,
+                                localX + worldX, localY + worldY, world, Type.Activator));
 
                         // set to new current
                         current = getCell(terrain, localX, localY, chunkI, chunkJ);
@@ -165,14 +158,21 @@ public class MapChunkGenerator {
                         localX -= 1;
                         down = getCell(terrain, localX, localY - 1, chunkI, chunkJ);
                     }
+                    
+                    // liquid or lava
+                    boolean isLiquid = Math.random() < 0.8;
 
                     // only add cells if we finished, otherwise we have an incomplete valley
                     if (finished) {
-                        for (PhaseActivator activator : activators) {
-                            int tileX = activator.getX() - worldX;
-                            int tileY = activator.getY() - worldY;
-                            WorldCell cell = new WorldCell(activator.getTile(), tileX, tileY,
-                                    activator.getX(), activator.getY(), world, Type.Activator);
+                        for (WorldCell cell : cells) {
+                            PhaseActivator activator;
+                            if (isLiquid) {
+                                activator = new LiquidActivator(getTile("water/top"),
+                                        cell.getWorldX(), cell.getWorldY(), world);
+                            } else {
+                                activator = new GasActivator(getTile("lava/top"),
+                                        cell.getWorldX(), cell.getWorldY(), world);
+                            }
                             setCell(cell, cell.getLocalX(), cell.getLocalY(), chunkI, chunkJ, layer);
                             layer.addBody(activator.getBody());
                         }
