@@ -132,8 +132,12 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 		
 		// check for game over
 		terminator.update(delta);
-		if (terminator.isGameOver() && !debug) {
-		    game.setScreen(new GameOverScreen(game, (int) player.getPosition().x));
+		if (terminator.isGameOver()) {
+		    HydrokGame.log("GAME OVER!!");
+		    if (!debug) {
+		        game.setScreen(new GameOverScreen(game, (int) player.getPosition().x));
+		        return;
+		    }
 		}
 		
 		Vector2 position = player.getPosition();
@@ -158,6 +162,7 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 		    drawFps();
 		}
 		
+		// HUD comes last
 		drawHud();
 		
 		world.step(delta, 6, 2);

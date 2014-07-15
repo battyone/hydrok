@@ -88,7 +88,6 @@ public class Terminator implements Activator {
 
     @Override
     public void activate(Player player) {
-        HydrokGame.log("GAME OVER!!");
         gameOver = true;
     }
 
