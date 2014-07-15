@@ -1,6 +1,6 @@
 package com.eldritch.hydrok.level;
 
-import static com.eldritch.hydrok.level.ProceduralTiledMap.L;
+import static com.eldritch.hydrok.util.Settings.CHUNKS;
 import static com.eldritch.hydrok.util.Settings.TILE_HEIGHT;
 import static com.eldritch.hydrok.util.Settings.TILE_WIDTH;
 
@@ -28,6 +28,7 @@ import com.eldritch.hydrok.activator.PhaseActivator;
 import com.eldritch.hydrok.activator.TiledPhaseActivator.GasActivator;
 import com.eldritch.hydrok.activator.TiledPhaseActivator.LiquidActivator;
 import com.eldritch.hydrok.level.WorldCell.Type;
+import com.eldritch.hydrok.util.TilePoint;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -138,14 +139,12 @@ public class MapChunkGenerator {
                 WorldCell down = getCell(terrain, x - 1, y - 1, chunkI, chunkJ);
                 if (isTerrain(current) && isTerrain(down) && down.getSlope() == 0) {
                     // start of a valley, fill in water working back
-                    Array<WorldCell> cells = new Array<WorldCell>();
+                    Array<TilePoint> points = new Array<TilePoint>();
                     int localX = current.getLocalX();
                     int localY = current.getLocalY();
                     boolean finished = false;
                     while (down != null && !finished) {
-                        cells.add(new WorldCell(
-                                getTile("water/top"), localX, localY,
-                                localX + worldX, localY + worldY, world, Type.Activator));
+                        points.add(TilePoint.of(localX, localY));
 
                         // set to new current
                         current = getCell(terrain, localX, localY, chunkI, chunkJ);
@@ -164,15 +163,20 @@ public class MapChunkGenerator {
 
                     // only add cells if we finished, otherwise we have an incomplete valley
                     if (finished) {
-                        for (WorldCell cell : cells) {
+                        for (TilePoint point : points) {
                             PhaseActivator activator;
                             if (isLiquid) {
                                 activator = new LiquidActivator(getTile("water/top"),
-                                        cell.getWorldX(), cell.getWorldY(), world);
+                                        point.x + worldX, point.y + worldY, world);
                             } else {
                                 activator = new GasActivator(getTile("lava/top"),
-                                        cell.getWorldX(), cell.getWorldY(), world);
+                                        point.x + worldX, point.y + worldY, world);
                             }
+                            
+                            int tileX = activator.getX() - worldX;
+                            int tileY = activator.getY() - worldY;
+                            WorldCell cell = new WorldCell(activator.getTile(), tileX, tileY,
+                                    activator.getX(), activator.getY(), world, Type.Activator);
                             setCell(cell, cell.getLocalX(), cell.getLocalY(), chunkI, chunkJ, layer);
                             layer.addBody(activator.getBody());
                         }
@@ -356,7 +360,7 @@ public class MapChunkGenerator {
         int chunkY = (int) Math.floor(1.0 * y / height) + chunkI;
 
         // handle out of bounds
-        if (chunkX < 0 || chunkY < 0 || chunkX >= L || chunkY >= L) {
+        if (chunkX < 0 || chunkY < 0 || chunkX >= CHUNKS || chunkY >= CHUNKS) {
             return null;
         }
 
@@ -382,7 +386,7 @@ public class MapChunkGenerator {
         int chunkY = (int) Math.floor(1.0 * y / height) + chunkI;
 
         // handle out of bounds
-        if (chunkX < 0 || chunkY < 0 || chunkX >= L || chunkY >= L) {
+        if (chunkX < 0 || chunkY < 0 || chunkX >= CHUNKS || chunkY >= CHUNKS) {
             return;
         }
 

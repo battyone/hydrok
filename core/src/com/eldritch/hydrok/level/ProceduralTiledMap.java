@@ -1,5 +1,6 @@
 package com.eldritch.hydrok.level;
 
+import static com.eldritch.hydrok.util.Settings.CHUNKS;
 import static com.eldritch.hydrok.util.Settings.TILE_WIDTH;
 import static com.eldritch.hydrok.util.Settings.TILE_HEIGHT;
 
@@ -13,9 +14,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.eldritch.hydrok.player.Player;
 
 public class ProceduralTiledMap extends TiledMap {
-    public static final int L = 3;
-
-    private final TiledMap[][] chunks = new TiledMap[L][L];
+    private final TiledMap[][] chunks = new TiledMap[CHUNKS][CHUNKS];
     private final MapChunkGenerator generator;
     private final int chunkWidth;
     private final int chunkHeight;
@@ -30,15 +29,17 @@ public class ProceduralTiledMap extends TiledMap {
         generator = new MapChunkGenerator(chunks, world, width, height);
 
         // generate initial chunk setup: [0, 0] is bottom left
-        for (int j = 0; j < L; j++) {
-            for (int i = L - 1; i >= 0; i--) {
+        for (int j = 0; j < CHUNKS; j++) {
+            for (int i = CHUNKS - 1; i >= 0; i--) {
                 chunks[i][j] = generate(i, j, 0, 0);
             }
         }
 
         // add index layers
-        getLayers().add(new ProceduralLayer(0, width * L, height * L, TILE_WIDTH, TILE_HEIGHT));
-        getLayers().add(new ProceduralLayer(1, width * L, height * L, TILE_WIDTH, TILE_HEIGHT));
+        getLayers().add(new ProceduralLayer(
+                0, width * CHUNKS, height * CHUNKS, TILE_WIDTH, TILE_HEIGHT));
+        getLayers().add(new ProceduralLayer(
+                1, width * CHUNKS, height * CHUNKS, TILE_WIDTH, TILE_HEIGHT));
     }
     
     public int getX() {
@@ -66,11 +67,11 @@ public class ProceduralTiledMap extends TiledMap {
     }
     
     public int getWidth() {
-        return L * chunkWidth;
+        return CHUNKS * chunkWidth;
     }
     
     public int getHeight() {
-        return L * chunkHeight;
+        return CHUNKS * chunkHeight;
     }
     
     public void update(Player player) {
@@ -88,7 +89,7 @@ public class ProceduralTiledMap extends TiledMap {
         // check for horizontal crossing
         if (currentX < chunkX) {
             // right
-            for (int i = L - 1; i >= 0; i--) {
+            for (int i = CHUNKS - 1; i >= 0; i--) {
                 // destroy the first column
                 for (MapLayer layer : chunks[i][0].getLayers()) {
                     ChunkLayer chunk = (ChunkLayer) layer;
@@ -162,8 +163,8 @@ public class ProceduralTiledMap extends TiledMap {
     public void render(ShapeRenderer renderer) {
         renderer.begin(ShapeType.Line);
         renderer.setColor(0, 0, 1, 1);
-        for (int i = 0; i < L; i++) {
-            for (int j = 0; j < L; j++) {
+        for (int i = 0; i < CHUNKS; i++) {
+            for (int j = 0; j < CHUNKS; j++) {
                 int x = minX - chunkWidth + j * chunkWidth;
                 int y = minY - chunkHeight + i * chunkHeight;
                 renderer.rect(x, y, chunkWidth, chunkHeight);
@@ -214,7 +215,7 @@ public class ProceduralTiledMap extends TiledMap {
             int chunkY = getIndex(y, chunkHeight);
 
             // handle out of bounds
-            if (chunkX < 0 || chunkY < 0 || chunkX >= L || chunkY >= L) {
+            if (chunkX < 0 || chunkY < 0 || chunkX >= CHUNKS || chunkY >= CHUNKS) {
                 return null;
             }
 
