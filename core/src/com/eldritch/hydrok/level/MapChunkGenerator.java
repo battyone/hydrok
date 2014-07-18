@@ -19,6 +19,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.ChainShape;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
@@ -384,7 +385,8 @@ public class MapChunkGenerator {
                 world.destroyBody(chainBody);
             }
             chainBody = world.createBody(bdef);
-            chainBody.createFixture(fd);
+            Fixture fixture = chainBody.createFixture(fd);
+            fixture.setUserData("ground");
             chain.dispose();
         }
     }

@@ -36,7 +36,7 @@ public class HydrokContactListener implements ContactListener {
     private void checkUserData(Object userData) {
         if (userData != null) {
             // ground
-            if (userData.equals("player")) {
+            if (userData.equals("ground")) {
                 groundContacts++;
                 player.markGrounded();
             }
