@@ -1,10 +1,8 @@
 package com.eldritch.hydrok.util;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
@@ -12,7 +10,6 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
-import com.eldritch.hydrok.HydrokGame;
 import com.eldritch.hydrok.activator.Activator;
 import com.eldritch.hydrok.player.Player;
 
@@ -26,6 +23,14 @@ public class HydrokContactListener implements ContactListener {
 
     public boolean isGrounded() {
         return !groundContacts.isEmpty();
+    }
+    
+    public int getContactCount() {
+        int count = 0;
+        for (Entry<Fixture, Integer> entry : groundContacts.entrySet()) {
+            count += entry.getValue();
+        }
+        return count;
     }
 
     @Override
@@ -111,14 +116,6 @@ public class HydrokContactListener implements ContactListener {
         } else {
             groundContacts.put(fixture, contacts - 1);
         }
-    }
-    
-    private int getContactCount() {
-        int count = 0;
-        for (Entry<Fixture, Integer> entry : groundContacts.entrySet()) {
-            count += entry.getValue();
-        }
-        return count;
     }
 
     @Override

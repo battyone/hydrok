@@ -6,6 +6,8 @@ import static com.eldritch.hydrok.util.Settings.SCALE;
 import static com.eldritch.hydrok.util.Settings.TILE_HEIGHT;
 import static com.eldritch.hydrok.util.Settings.TILE_WIDTH;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import com.badlogic.gdx.Gdx;
@@ -29,6 +31,8 @@ import com.eldritch.hydrok.activator.PhaseActivator;
 import com.eldritch.hydrok.activator.TiledPhaseActivator.GasActivator;
 import com.eldritch.hydrok.activator.TiledPhaseActivator.LiquidActivator;
 import com.eldritch.hydrok.activator.TiledPhaseActivator.SolidActivator;
+import com.eldritch.hydrok.entity.Bird;
+import com.eldritch.hydrok.entity.Entity;
 import com.eldritch.hydrok.level.WorldCell.Type;
 import com.eldritch.hydrok.util.HydrokContactListener;
 import com.eldritch.hydrok.util.Settings;
@@ -41,6 +45,7 @@ public class MapChunkGenerator {
     private final TextureAtlas atlas = new TextureAtlas(
             Gdx.files.internal("image-atlases/environment.atlas"));
 
+    private final List<Entity> newEntities = new ArrayList<Entity>();
     private final TiledMap[][] chunks;
     private final HydrokContactListener contactListener;
     private final World world;
@@ -76,6 +81,10 @@ public class MapChunkGenerator {
         int count = terrainCells.size - minRemaining;
         terrainCells.removeRange(0, count - 1);
     }
+    
+    public List<Entity> getNewEntities() {
+        return newEntities;
+    }
 
     public TiledMap generate(int chunkI, int chunkJ, int worldX, int worldY) {
         TiledMap map = new TiledMap();
@@ -87,11 +96,28 @@ public class MapChunkGenerator {
         generateWater(background, terrain, chunkI, chunkJ, worldX, worldY);
         generateObstacles(terrain, chunkI, chunkJ, worldX, worldY);
         generateActivators(terrain, chunkI, chunkJ, worldX, worldY);
+        generateEntities(terrain, chunkI, chunkJ, worldX, worldY);
 
         map.getLayers().add(background);
         map.getLayers().add(terrain);
 
         return map;
+    }
+    
+    private void generateEntities(ChunkLayer layer, int chunkI, int chunkJ, int worldX, int worldY) {
+        for (int x = 0; x < layer.getWidth(); x++) {
+            for (int y = 0; y < layer.getHeight(); y++) {
+                if (!isNullOrEmpty(layer.getCell(x, y))) {
+                    // already has cell
+                    continue;
+                }
+                
+                if (Math.random() < 0.025) {
+                    Entity entity = new Bird(x + worldX, y + worldY, world);
+                    newEntities.add(entity);
+                }
+            }
+        }
     }
 
     private void generateActivators(ChunkLayer layer, int chunkI, int chunkJ, int worldX, int worldY) {

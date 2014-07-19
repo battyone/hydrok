@@ -13,7 +13,6 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
-import com.eldritch.hydrok.HydrokGame;
 import com.eldritch.hydrok.level.ProceduralTiledMap;
 import com.eldritch.hydrok.player.Player;
 

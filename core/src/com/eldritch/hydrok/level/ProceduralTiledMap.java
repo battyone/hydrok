@@ -4,6 +4,8 @@ import static com.eldritch.hydrok.util.Settings.CHUNKS;
 import static com.eldritch.hydrok.util.Settings.TILE_WIDTH;
 import static com.eldritch.hydrok.util.Settings.TILE_HEIGHT;
 
+import java.util.Collection;
+
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.MapLayer;
@@ -11,6 +13,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+import com.eldritch.hydrok.entity.Entity;
 import com.eldritch.hydrok.player.Player;
 import com.eldritch.hydrok.util.HydrokContactListener;
 
@@ -73,6 +76,13 @@ public class ProceduralTiledMap extends TiledMap {
     
     public int getHeight() {
         return CHUNKS * chunkHeight;
+    }
+    
+    public void addEntitiesTo(Collection<Entity> entities) {
+        for (Entity entity : generator.getNewEntities()) {
+            entities.add(entity);
+        }
+        generator.getNewEntities().clear();
     }
     
     public void update(Player player) {

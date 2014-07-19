@@ -4,6 +4,9 @@ import static com.eldritch.hydrok.util.Settings.CHUNK_WIDTH;
 import static com.eldritch.hydrok.util.Settings.CHUNK_HEIGHT;
 import static com.eldritch.hydrok.util.Settings.SCALE;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Input.Keys;
@@ -21,6 +24,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.eldritch.hydrok.activator.Terminator;
+import com.eldritch.hydrok.entity.Entity;
 import com.eldritch.hydrok.level.ProceduralTiledMap;
 import com.eldritch.hydrok.level.ProceduralTiledMapRenderer;
 import com.eldritch.hydrok.player.Player;
@@ -34,6 +38,7 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
     
 	public static final AssetManager textureManager = new AssetManager();
 	
+	private final List<Entity> entities = new ArrayList<Entity>();
 	private ProceduralTiledMap map;
 	private OrthographicCamera camera;
 	private Player player;
@@ -126,7 +131,13 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 		    player.applyImpulseFrom(pos.x, pos.y - 1);
         }
 		
+		// bookkeeping
+		map.addEntitiesTo(entities);
+		
 		// updates
+		for (Entity entity : entities) {
+            entity.update(delta);
+        }
 		player.update(delta, contactListener.isGrounded());
 		map.update(player);
 		
@@ -150,6 +161,9 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
         player.render(renderer);
 		renderer.setView(camera);
 		renderer.render();
+		for (Entity entity : entities) {
+            entity.render(renderer);
+        }
 		terminator.render(renderer);
 		
 		// debug
