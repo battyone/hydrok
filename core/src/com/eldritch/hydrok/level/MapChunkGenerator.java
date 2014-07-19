@@ -156,13 +156,23 @@ public class MapChunkGenerator {
                         // layer.setCell(x, y, cell);
                         // layer.addBody(a.getBody());
 
-                        TiledMapTile tile = getTile("object/cloud2");
-                        Body body = createBody(tile, world, x + worldX, y + worldY);
-                        PhaseActivator a = new SolidActivator(tile, x + worldX, y + worldY, body);
-                        WorldCell cell = new WorldCell(tile, x, y, a.getX(), a.getY(),
-                                Type.Activator);
-                        layer.setCell(x, y, cell);
-                        layer.addBody(body);
+                        if (Math.random() < 0.7) {
+                            TiledMapTile tile = getTile("object/storm-cloud2");
+                            Body body = createBody(tile, world, x + worldX, y + worldY);
+                            PhaseActivator a = new SolidActivator(tile, x + worldX, y + worldY, body);
+                            WorldCell cell = new WorldCell(tile, x, y, a.getX(), a.getY(),
+                                    Type.Activator);
+                            layer.setCell(x, y, cell);
+                            layer.addBody(body);
+                        } else {
+                            TiledMapTile tile = getTile("object/cloud2");
+                            Body body = createBody(tile, world, x + worldX, y + worldY);
+                            PhaseActivator a = new LiquidActivator(tile, x + worldX, y + worldY, body);
+                            WorldCell cell = new WorldCell(tile, x, y, a.getX(), a.getY(),
+                                    Type.Activator);
+                            layer.setCell(x, y, cell);
+                            layer.addBody(body);
+                        }
                     }
                 }
             }
