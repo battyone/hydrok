@@ -72,6 +72,9 @@ public abstract class AbstractPhaseManager implements PhaseManager {
             filter.maskBits = 0x0001;
             fixture.setFilterData(filter);
         }
+        
+        // reset angular velocity
+        getBody().setAngularVelocity(0);
     }
     
     protected abstract void doUpdate(float delta, boolean grounded);

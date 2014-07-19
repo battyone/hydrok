@@ -133,7 +133,6 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 		// check for game over
 		terminator.update(delta);
 		if (terminator.isGameOver()) {
-		    HydrokGame.log("GAME OVER!!");
 		    if (!debug) {
 		        game.setScreen(new GameOverScreen(game, (int) player.getPosition().x));
 		        return;
