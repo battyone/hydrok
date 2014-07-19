@@ -37,9 +37,6 @@ public class ChunkLayer extends TiledMapTileLayer {
 
     public void setCell(int x, int y, WorldCell cell) {
         super.setCell(x, y, cell);
-        if (cell.hasBody()) {
-            addBody(cell.getBody());
-        }
     }
 
     @Override

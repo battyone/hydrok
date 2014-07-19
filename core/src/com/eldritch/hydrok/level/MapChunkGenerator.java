@@ -27,7 +27,6 @@ import com.badlogic.gdx.utils.Array;
 import com.eldritch.hydrok.HydrokGame;
 import com.eldritch.hydrok.activator.ObstaclePhaseActivator;
 import com.eldritch.hydrok.activator.ObstaclePhaseActivator.Fireball;
-import com.eldritch.hydrok.activator.ObstaclePhaseActivator.IceShard;
 import com.eldritch.hydrok.activator.ObstaclePhaseActivator.WaterDroplet;
 import com.eldritch.hydrok.activator.PhaseActivator;
 import com.eldritch.hydrok.activator.TiledPhaseActivator.GasActivator;
@@ -107,7 +106,7 @@ public class MapChunkGenerator {
                     if (Math.random() < 0.1) {
                         ObstaclePhaseActivator a = new Fireball(x + worldX, y + worldY, world);
                         WorldCell cell = new WorldCell(a.getTile(), x, y, a.getX(), a.getY(),
-                                world, Type.Activator);
+                                Type.Activator);
                         layer.setCell(x, y, cell);
                         layer.addBody(a.getBody());
                     }
@@ -115,23 +114,23 @@ public class MapChunkGenerator {
                     if (Math.random() < 0.1) {
                         ObstaclePhaseActivator a = new WaterDroplet(x + worldX, y + worldY, world);
                         WorldCell cell = new WorldCell(a.getTile(), x, y, a.getX(), a.getY(),
-                                world, Type.Activator);
+                                Type.Activator);
                         layer.setCell(x, y, cell);
                         layer.addBody(a.getBody());
                     }
                 } else if (down == null) {
                     if (Math.random() < 0.025) {
-//                         ObstaclePhaseActivator a = new IceShard(x + worldX, y + worldY, world);
-//                         WorldCell cell = new WorldCell(a.getTile(), x, y, a.getX(), a.getY(),
-//                         world, Type.Activator);
-//                         layer.setCell(x, y, cell);
-//                         layer.addBody(a.getBody());
+                        // ObstaclePhaseActivator a = new IceShard(x + worldX, y + worldY, world);
+                        // WorldCell cell = new WorldCell(a.getTile(), x, y, a.getX(), a.getY(),
+                        // world, Type.Activator);
+                        // layer.setCell(x, y, cell);
+                        // layer.addBody(a.getBody());
 
                         TiledMapTile tile = getTile("object/cloud2");
                         Body body = createBody(tile, world, x + worldX, y + worldY);
                         PhaseActivator a = new SolidActivator(tile, x + worldX, y + worldY, body);
                         WorldCell cell = new WorldCell(tile, x, y, a.getX(), a.getY(),
-                                world, Type.Activator);
+                                Type.Activator);
                         layer.setCell(x, y, cell);
                         layer.addBody(body);
                     }
@@ -139,15 +138,15 @@ public class MapChunkGenerator {
             }
         }
     }
-    
+
     private static Body createBody(TiledMapTile tile, World world, int x, int y) {
         return createBody(tile, world, x, y, 1);
     }
-    
+
     private static Body createBody(TiledMapTile tile, World world, int x, int y, float heightScale) {
         float halfWidth = (tile.getTextureRegion().getRegionWidth() / 2.0f) * SCALE;
         float halfHeight = (heightScale * tile.getTextureRegion().getRegionHeight() / 2.0f) * SCALE;
-        
+
         // create our body definition
         BodyDef groundBodyDef = new BodyDef();
         groundBodyDef.position.set(new Vector2(x + halfWidth, y + halfHeight));
@@ -156,7 +155,7 @@ public class MapChunkGenerator {
         // create a polygon shape
         PolygonShape groundBox = new PolygonShape();
         groundBox.setAsBox(halfWidth, halfHeight);
-        
+
         // create the fixture
         FixtureDef def = new FixtureDef();
         def.shape = groundBox;
@@ -212,20 +211,22 @@ public class MapChunkGenerator {
                             PhaseActivator activator;
                             if (isLiquid) {
                                 TiledMapTile tile = getTile("water/top");
-                                Body body = createBody(tile, world, point.x + worldX, point.y + worldY, 0.5f);
-                                activator = new LiquidActivator(tile, point.x
-                                        + worldX, point.y + worldY, body);
+                                Body body = createBody(tile, world, point.x + worldX, point.y
+                                        + worldY, 0.5f);
+                                activator = new LiquidActivator(tile, point.x + worldX, point.y
+                                        + worldY, body);
                             } else {
                                 TiledMapTile tile = getTile("lava/top");
-                                Body body = createBody(tile, world, point.x + worldX, point.y + worldY, 0.5f);
-                                activator = new GasActivator(tile, point.x + worldX,
-                                        point.y + worldY, body);
+                                Body body = createBody(tile, world, point.x + worldX, point.y
+                                        + worldY, 0.5f);
+                                activator = new GasActivator(tile, point.x + worldX, point.y
+                                        + worldY, body);
                             }
 
                             int tileX = activator.getX() - worldX;
                             int tileY = activator.getY() - worldY;
                             WorldCell cell = new WorldCell(activator.getTile(), tileX, tileY,
-                                    activator.getX(), activator.getY(), world, Type.Activator);
+                                    activator.getX(), activator.getY(), Type.Activator);
                             setCell(cell, cell.getLocalX(), cell.getLocalY(), chunkI, chunkJ, layer);
                             layer.addBody(activator.getBody());
                         }
@@ -243,17 +244,19 @@ public class MapChunkGenerator {
                     continue;
                 }
 
-                if (worldY > 0) {
+                WorldCell down = getCell(layer, x, y - 1, chunkI, chunkJ);
+                WorldCell left = getCell(layer, x - 1, y, chunkI, chunkJ);
+                WorldCell right = getCell(layer, x + 1, y, chunkI, chunkJ);
+                if (down == null && left == null && right == null) {
                     // sky
                     if (Math.random() < 0.025) {
-                        // TiledMapTile tile = getTile("object/cloud2");
-                        // PhaseActivator a = new SolidActivator(tile, x + worldX, y + worldY,
-                        // world);
-                        // WorldCell cell = new WorldCell(getTile("object/cloud2"), x, y, worldX +
-                        // x,
-                        // worldY + y, world, Type.Activator);
-                        // layer.setCell(x, y, cell);
-                        // layer.addBody(a.getBody());
+                        // bridge
+                        TiledMapTile tile = getTile("grass/bridge-logs");
+                        WorldCell cell = new WorldCell(tile, x, y, worldX + x, worldY + y,
+                                Type.Platform);
+                        Platform platform = new Platform(cell, world, 0.35f);
+                        layer.setCell(x, y, cell);
+                        layer.addBody(platform.getBody());
                     }
                 } else {
                     // underground
@@ -280,7 +283,7 @@ public class MapChunkGenerator {
                         } else if (up.getSlope() > 0) {
                             tile = getTile("grass/hill-left2");
                         }
-                        WorldCell cell = new WorldCell(tile, x, y, worldX + x, worldY + y, world,
+                        WorldCell cell = new WorldCell(tile, x, y, worldX + x, worldY + y,
                                 Type.Filler);
                         layer.setCell(x, y, cell);
                     }
@@ -308,7 +311,7 @@ public class MapChunkGenerator {
         if (lastTerrain == null) {
             if (worldX == 0 && worldY == 0) {
                 // seed the first cell
-                lastTerrain = new WorldCell(getTile("grass/mid"), 0, 0, 0, 0, world, Type.Terrain);
+                lastTerrain = new WorldCell(getTile("grass/mid"), 0, 0, 0, 0, Type.Terrain);
                 layer.setCell(0, 0, lastTerrain);
                 terrainCells.add(lastTerrain);
                 vertexCount++;
@@ -341,15 +344,15 @@ public class MapChunkGenerator {
                 // add variation to the terrain
                 if (lastTerrain.matchesSlope(-1, worldY + y2)) {
                     candidates.add(new WorldCell(getTile("grass/hill-right1"), x2, y2, worldX + x2,
-                            worldY + y2, world, Type.Terrain, -1));
+                            worldY + y2, Type.Terrain, -1));
                 }
                 if (lastTerrain.matchesSlope(1, worldY + y2)) {
                     candidates.add(new WorldCell(getTile("grass/hill-left1"), x2, y2, worldX + x2,
-                            worldY + y2, world, Type.Terrain, 1));
+                            worldY + y2, Type.Terrain, 1));
                 }
                 if (lastTerrain.matchesSlope(0, worldY + y2)) {
                     candidates.add(new WorldCell(getTile("grass/mid"), x2, y2, worldX + x2, worldY
-                            + y2, world, Type.Terrain));
+                            + y2, Type.Terrain));
                 }
             }
 
