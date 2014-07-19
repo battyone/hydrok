@@ -104,19 +104,19 @@ public class MapChunkGenerator {
                 WorldCell down = getCell(layer, x, y - 1, chunkI, chunkJ);
                 if (!isNullOrEmpty(down) && down.getType() == Type.Terrain) {
                     if (Math.random() < 0.1) {
-                        ObstaclePhaseActivator a = new Fireball(x + worldX, y + worldY, world);
-                        WorldCell cell = new WorldCell(a.getTile(), x, y, a.getX(), a.getY(),
-                                Type.Activator);
-                        layer.setCell(x, y, cell);
-                        layer.addBody(a.getBody());
+//                        ObstaclePhaseActivator a = new Fireball(x + worldX, y + worldY, world);
+//                        WorldCell cell = new WorldCell(a.getTile(), x, y, a.getX(), a.getY(),
+//                                Type.Activator);
+//                        layer.setCell(x, y, cell);
+//                        layer.addBody(a.getBody());
                     }
                 } else if (!isNullOrEmpty(down) && down.getType() == Type.Platform) {
                     if (Math.random() < 0.1) {
-                        ObstaclePhaseActivator a = new WaterDroplet(x + worldX, y + worldY, world);
-                        WorldCell cell = new WorldCell(a.getTile(), x, y, a.getX(), a.getY(),
-                                Type.Activator);
-                        layer.setCell(x, y, cell);
-                        layer.addBody(a.getBody());
+//                        ObstaclePhaseActivator a = new WaterDroplet(x + worldX, y + worldY, world);
+//                        WorldCell cell = new WorldCell(a.getTile(), x, y, a.getX(), a.getY(),
+//                                Type.Activator);
+//                        layer.setCell(x, y, cell);
+//                        layer.addBody(a.getBody());
                     }
                 } else if (down == WorldCell.EMPTY) {
                     if (Math.random() < 0.025) {
@@ -203,7 +203,7 @@ public class MapChunkGenerator {
                     }
 
                     // liquid or lava
-                    boolean isLiquid = Math.random() < 0.8;
+                    boolean isLiquid = Math.random() < 0.6;
 
                     // only add cells if we finished, otherwise we have an incomplete valley
                     if (finished) {
@@ -263,6 +263,7 @@ public class MapChunkGenerator {
                         right = getCell(layer, localX + 1, localY, chunkI, chunkJ);
                     }
                     
+                    // add a body for the platform if empty space was found
                     int dx = localX - x;
                     if (dx > 0) {
                         Platform platform = new Platform(tile, worldX + x, worldY + y,
