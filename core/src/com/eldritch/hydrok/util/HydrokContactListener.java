@@ -3,11 +3,13 @@ package com.eldritch.hydrok.util;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
+import com.eldritch.hydrok.HydrokGame;
 import com.eldritch.hydrok.activator.Activator;
 import com.eldritch.hydrok.player.Player;
 
@@ -56,6 +58,12 @@ public class HydrokContactListener implements ContactListener {
 
         checkEndContact(fa);
         checkEndContact(fb);
+    }
+    
+    public void endContact(Body body) {
+        for (Fixture fixture : body.getFixtureList()) {
+            groundContacts.remove(fixture);
+        }
     }
     
     private void checkBeginContact(Fixture fixture) {

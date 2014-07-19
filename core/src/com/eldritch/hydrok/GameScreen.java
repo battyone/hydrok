@@ -63,7 +63,7 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 		contactListener = new HydrokContactListener(player);
         world.setContactListener(contactListener);
 		
-		map = new ProceduralTiledMap(world, CHUNK_WIDTH, CHUNK_HEIGHT);
+		map = new ProceduralTiledMap(contactListener, world, CHUNK_WIDTH, CHUNK_HEIGHT);
 		renderer = new ProceduralTiledMapRenderer(map, SCALE);
 		
 		// game ends when terminator hits the player

@@ -30,6 +30,7 @@ import com.eldritch.hydrok.activator.TiledPhaseActivator.GasActivator;
 import com.eldritch.hydrok.activator.TiledPhaseActivator.LiquidActivator;
 import com.eldritch.hydrok.activator.TiledPhaseActivator.SolidActivator;
 import com.eldritch.hydrok.level.WorldCell.Type;
+import com.eldritch.hydrok.util.HydrokContactListener;
 import com.eldritch.hydrok.util.Settings;
 import com.eldritch.hydrok.util.TilePoint;
 import com.google.common.cache.CacheBuilder;
@@ -41,6 +42,7 @@ public class MapChunkGenerator {
             Gdx.files.internal("image-atlases/environment.atlas"));
 
     private final TiledMap[][] chunks;
+    private final HydrokContactListener contactListener;
     private final World world;
     private final int width;
     private final int height;
@@ -59,8 +61,9 @@ public class MapChunkGenerator {
                 }
             });
 
-    public MapChunkGenerator(TiledMap[][] chunks, World world, int width, int height) {
+    public MapChunkGenerator(HydrokContactListener contactListener, TiledMap[][] chunks, World world, int width, int height) {
         this.chunks = chunks;
+        this.contactListener = contactListener;
         this.world = world;
         this.width = width;
         this.height = height;
@@ -395,6 +398,7 @@ public class MapChunkGenerator {
             fd.filter.maskBits = Type.Terrain.getMaskBits();
 
             if (chainBody != null) {
+                contactListener.endContact(chainBody);
                 world.destroyBody(chainBody);
             }
             chainBody = world.createBody(bdef);
