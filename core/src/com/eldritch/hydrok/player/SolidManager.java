@@ -1,5 +1,6 @@
 package com.eldritch.hydrok.player;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -7,10 +8,10 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
-import com.eldritch.hydrok.HydrokGame;
 import com.eldritch.hydrok.util.Settings;
 
 public class SolidManager extends AbstractPhaseManager {
+    private static final Color NO_JUMP_COLOR = new Color(1, 1, 1, 0.7f);
 	private static final int MAX_VELOCITY = 8;
 	private static final int MAX_VELOCITY_JUMP = 10;
 	private static final float JUMP = 2.75f;
@@ -61,8 +62,10 @@ public class SolidManager extends AbstractPhaseManager {
 		
 		Batch batch = renderer.getSpriteBatch();
 		batch.begin();
+		if (!getPlayer().canJump) batch.setColor(NO_JUMP_COLOR);
 		batch.draw(texture, position.x - width / 2, position.y - height / 2, width / 2, height / 2,
 				width, height, 1f, 1f, (float) (body.getAngle() * 180 / Math.PI));
+		batch.setColor(Color.WHITE);
 		batch.end();
 	}
 }
