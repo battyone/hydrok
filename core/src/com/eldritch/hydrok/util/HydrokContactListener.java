@@ -1,6 +1,9 @@
 package com.eldritch.hydrok.util;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import com.badlogic.gdx.physics.box2d.Body;
@@ -15,7 +18,7 @@ import com.eldritch.hydrok.player.Player;
 
 public class HydrokContactListener implements ContactListener {
     private final Player player;
-    private final Set<Fixture> groundContacts = new HashSet<Fixture>();
+    private final Map<Fixture, Integer> groundContacts = new HashMap<Fixture, Integer>();
     
     public HydrokContactListener(Player player) {
         this.player = player;
@@ -71,7 +74,7 @@ public class HydrokContactListener implements ContactListener {
         if (userData != null) {
             // ground
             if (userData.equals("ground")) {
-                groundContacts.add(fixture);
+                addContact(fixture);
                 player.markGrounded();
             }
             
@@ -85,9 +88,37 @@ public class HydrokContactListener implements ContactListener {
         if (userData != null) {
             // ground
             if (userData.equals("ground")) {
-                groundContacts.remove(fixture);
+                removeContact(fixture);
             }
         }
+    }
+    
+    private void addContact(Fixture fixture) {
+        if (!groundContacts.containsKey(fixture)) {
+            groundContacts.put(fixture, 0);
+        }
+        groundContacts.put(fixture, groundContacts.get(fixture) + 1);
+    }
+    
+    private void removeContact(Fixture fixture) {
+        if (!groundContacts.containsKey(fixture)) {
+            return;
+        }
+        
+        int contacts = groundContacts.get(fixture);
+        if (contacts <= 1) {
+            groundContacts.remove(fixture);
+        } else {
+            groundContacts.put(fixture, contacts - 1);
+        }
+    }
+    
+    private int getContactCount() {
+        int count = 0;
+        for (Entry<Fixture, Integer> entry : groundContacts.entrySet()) {
+            count += entry.getValue();
+        }
+        return count;
     }
 
     @Override
