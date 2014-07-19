@@ -1,6 +1,6 @@
 package com.eldritch.hydrok.entity;
 
-import static com.eldritch.hydrok.util.Settings.ALL_BITS;
+import static com.eldritch.hydrok.util.Settings.BIT_SOLID;
 import static com.eldritch.hydrok.util.Settings.SCALE;
 
 import com.badlogic.gdx.graphics.Texture;
@@ -32,8 +32,9 @@ public class Bird implements Entity {
         bodyDef.position.set(x, y);
         body = world.createBody(bodyDef);
 
+        float d = Math.min(texture.getRegionWidth(), texture.getRegionHeight());
         CircleShape circle = new CircleShape();
-        circle.setRadius(22f * SCALE);
+        circle.setRadius(d * SCALE);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = circle;
         fixtureDef.density = 1.0f;
@@ -45,11 +46,11 @@ public class Bird implements Entity {
 
         Filter filter = fixture.getFilterData();
         filter.categoryBits = 0x0001;
-        filter.maskBits = ALL_BITS;
+        filter.maskBits = BIT_SOLID;
         fixture.setFilterData(filter);
 
-        width = circle.getRadius() * 2;
-        height = circle.getRadius() * 2;
+        width = texture.getRegionWidth() * SCALE;
+        height = texture.getRegionHeight() * SCALE;
 
         circle.dispose();
     }
@@ -65,7 +66,7 @@ public class Bird implements Entity {
         Vector2 position = body.getPosition();
         Batch batch = renderer.getSpriteBatch();
         batch.begin();
-        batch.draw(texture, position.x - width / 2, position.y - height / 2, width / 2, height / 2);
+        batch.draw(texture, position.x - width / 2, position.y - height / 2, width, height);
         batch.end();
     }
 }
