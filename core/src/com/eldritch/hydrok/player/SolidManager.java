@@ -24,7 +24,7 @@ public class SolidManager extends AbstractPhaseManager {
 	}
 	
 	@Override
-	public void applyImpulse(float x, float y) {
+	public void applyImpulseFrom(float x, float y) {
 	    if (getPlayer().canJump) {
     	    // jump
     	    Vector2 pos = getBody().getPosition();

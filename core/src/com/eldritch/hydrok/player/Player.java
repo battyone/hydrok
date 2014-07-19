@@ -124,7 +124,12 @@ public class Player {
 	}
 	
 	public void applyImpulseFrom(float x, float y) {
-	    managers.get(phase).applyImpulse(x, y);
+	    managers.get(phase).applyImpulseFrom(x, y);
+	}
+	
+	public void applyImpulse(float x, float y) {
+	    Vector2 pos = body.getPosition();
+	    body.applyLinearImpulse(x, y, pos.x, pos.y, true);
 	}
 	
 	public void transition(Phase nextPhase) {
@@ -170,6 +175,6 @@ public class Player {
 		
 		void setActive();
 		
-		void applyImpulse(float x, float y);
+		void applyImpulseFrom(float x, float y);
 	}
 }

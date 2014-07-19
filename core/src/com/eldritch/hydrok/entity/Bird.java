@@ -16,6 +16,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.eldritch.hydrok.player.Player;
 
 public class Bird implements Entity {
     private static final float V = -1.5f;
@@ -78,5 +79,15 @@ public class Bird implements Entity {
     @Override
     public Vector2 getPosition() {
         return body.getPosition();
+    }
+
+    @Override
+    public void activate(Player player) {
+        player.applyImpulse(-5, 0);
+    }
+
+    @Override
+    public Body getBody() {
+        return body;
     }
 }
