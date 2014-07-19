@@ -93,10 +93,13 @@ public class MapChunkGenerator {
 
         generateTerrain(terrain, chunkI, chunkJ, worldX, worldY);
         generateBackground(terrain, chunkI, chunkJ, worldX, worldY);
-        generateWater(background, terrain, chunkI, chunkJ, worldX, worldY);
-        generateObstacles(terrain, chunkI, chunkJ, worldX, worldY);
-        generateActivators(terrain, chunkI, chunkJ, worldX, worldY);
-        generateEntities(terrain, chunkI, chunkJ, worldX, worldY);
+        
+        if (worldX > Settings.CHUNK_WIDTH * 2) {
+            generateWater(background, terrain, chunkI, chunkJ, worldX, worldY);
+            generateObstacles(terrain, chunkI, chunkJ, worldX, worldY);
+            generateActivators(terrain, chunkI, chunkJ, worldX, worldY);
+            generateEntities(terrain, chunkI, chunkJ, worldX, worldY);
+        }
 
         map.getLayers().add(background);
         map.getLayers().add(terrain);
