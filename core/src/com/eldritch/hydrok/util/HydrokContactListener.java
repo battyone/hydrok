@@ -5,6 +5,7 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
+import com.eldritch.hydrok.HydrokGame;
 import com.eldritch.hydrok.activator.Activator;
 import com.eldritch.hydrok.player.Player;
 
@@ -29,21 +30,8 @@ public class HydrokContactListener implements ContactListener {
             return;
         }
         
-        checkUserData(fa.getUserData());
-        checkUserData(fb.getUserData());
-    }
-    
-    private void checkUserData(Object userData) {
-        if (userData != null) {
-            // ground
-            if (userData.equals("ground")) {
-                groundContacts++;
-                player.markGrounded();
-            }
-            
-            // activator
-            checkActivation(userData);
-        }
+        checkBeginContact(fa.getUserData());
+        checkBeginContact(fb.getUserData());
     }
     
     private boolean checkActivation(Object userData) {
@@ -64,12 +52,29 @@ public class HydrokContactListener implements ContactListener {
             return;
         }
 
-        if (fa.getUserData() != null && fa.getUserData().equals("player")) {
-            groundContacts--;
+        checkEndContact(fa.getUserData());
+        checkEndContact(fb.getUserData());
+    }
+    
+    private void checkBeginContact(Object userData) {
+        if (userData != null) {
+            // ground
+            if (userData.equals("ground")) {
+                groundContacts++;
+                player.markGrounded();
+            }
+            
+            // activator
+            checkActivation(userData);
         }
-
-        if (fb.getUserData() != null && fb.getUserData().equals("player")) {
-            groundContacts--;
+    }
+    
+    private void checkEndContact(Object userData) {
+        if (userData != null) {
+            // ground
+            if (userData.equals("ground")) {
+                groundContacts--;
+            }
         }
     }
 

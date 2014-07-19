@@ -36,7 +36,7 @@ public class Platform {
 
         // Create a fixture from our polygon shape and add it to our ground body
         Fixture fixture = body.createFixture(groundBox, 0.0f);
-        body.setUserData("ground");
+        fixture.setUserData("ground");
 
         // set collision masks
         Filter filter = fixture.getFilterData();
