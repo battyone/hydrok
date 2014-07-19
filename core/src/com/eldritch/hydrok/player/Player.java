@@ -72,6 +72,21 @@ public class Player {
         // BodyDef and FixtureDef don't need disposing, but shapes do.
         circle.dispose();
         
+        // add foot sensor fixture
+//        bodyDef = new BodyDef();
+//        bodyDef.type = BodyType.KinematicBody;
+//        bodyDef.position.set(x, y);
+//        footBody = world.createBody(bodyDef);
+//        
+//        PolygonShape polygon = new PolygonShape();;
+//        polygon.setAsBox(0.1f, 0.25f, new Vector2(0, -0.5f), 0);
+//        fixtureDef = new FixtureDef();
+//        fixtureDef.shape = polygon;
+//        fixtureDef.isSensor = true;
+//        fixture = body.createFixture(fixtureDef);
+//        fixture.setUserData("foot");
+//        polygon.dispose();
+        
         // create phase managers
 		managers = new EnumMap<Phase, PhaseManager>(Phase.class);
 		managers.put(Phase.Solid, new SolidManager(this, world, x, y, width, height));

@@ -33,6 +33,7 @@ import com.eldritch.hydrok.activator.TiledPhaseActivator.GasActivator;
 import com.eldritch.hydrok.activator.TiledPhaseActivator.LiquidActivator;
 import com.eldritch.hydrok.activator.TiledPhaseActivator.SolidActivator;
 import com.eldritch.hydrok.level.WorldCell.Type;
+import com.eldritch.hydrok.util.Settings;
 import com.eldritch.hydrok.util.TilePoint;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -358,7 +359,7 @@ public class MapChunkGenerator {
                     candidates.add(new WorldCell(getTile("grass/hill-right1"), x2, y2, worldX + x2,
                             worldY + y2, Type.Terrain, -1));
                 }
-                if (lastTerrain.matchesSlope(1, worldY + y2)) {
+                if (worldX > Settings.CHUNK_WIDTH * 2 && lastTerrain.matchesSlope(1, worldY + y2)) {
                     candidates.add(new WorldCell(getTile("grass/hill-left1"), x2, y2, worldX + x2,
                             worldY + y2, Type.Terrain, 1));
                 }
