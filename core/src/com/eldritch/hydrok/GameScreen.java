@@ -5,6 +5,7 @@ import static com.eldritch.hydrok.util.Settings.CHUNK_HEIGHT;
 import static com.eldritch.hydrok.util.Settings.SCALE;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
@@ -132,6 +133,14 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
         }
 		
 		// bookkeeping
+		Iterator<Entity> it = entities.iterator();
+		while (it.hasNext()) {
+		    Entity entity = it.next();
+		    if (map.getOriginX() > entity.getPosition().x) {
+		        entity.dispose(world);
+		        it.remove();
+		    }
+		}
 		map.addEntitiesTo(entities);
 		
 		// updates

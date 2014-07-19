@@ -69,4 +69,14 @@ public class Bird implements Entity {
         batch.draw(texture, position.x - width / 2, position.y - height / 2, width, height);
         batch.end();
     }
+
+    @Override
+    public void dispose(World world) {
+        world.destroyBody(body);
+    }
+
+    @Override
+    public Vector2 getPosition() {
+        return body.getPosition();
+    }
 }
