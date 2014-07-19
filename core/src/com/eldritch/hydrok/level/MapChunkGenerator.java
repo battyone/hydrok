@@ -244,26 +244,29 @@ public class MapChunkGenerator {
                     continue;
                 }
 
-                int localX = x;
-                int localY = y;
-                WorldCell down = getCell(layer, x, y - 1, chunkI, chunkJ);
-                WorldCell left = getCell(layer, x - 1, y, chunkI, chunkJ);
-                WorldCell right = getCell(layer, x + 1, y, chunkI, chunkJ);
-                if (down == WorldCell.EMPTY && left == WorldCell.EMPTY && right == WorldCell.EMPTY) {
-                    // sky
-                    if (Math.random() < 0.025) {
+                if (Math.random() < 0.025) {
+                    TiledMapTile tile = getTile("grass/bridge-logs");
+                    int localX = x;
+                    int localY = y;
+                    WorldCell down = getCell(layer, localX, localY - 1, chunkI, chunkJ);
+                    WorldCell left = getCell(layer, localX - 1, localY, chunkI, chunkJ);
+                    WorldCell right = getCell(layer, localX + 1, localY, chunkI, chunkJ);
+                    while (down == WorldCell.EMPTY && left == WorldCell.EMPTY 
+                            && right == WorldCell.EMPTY && Math.random() < 0.75) {
                         // bridge
-                        TiledMapTile tile = getTile("grass/bridge-logs");
-                        
-                        down = getCell(layer, x, y - 1, chunkI, chunkJ);
-                        left = getCell(layer, x - 1, y, chunkI, chunkJ);
-                        right = getCell(layer, x + 1, y, chunkI, chunkJ);
-//                        while (down == WorldCell.EMPTY && left == WorldCell.EMPTY && right == WorldCell.EMPTY) {
-//                        }
-                        WorldCell cell = new WorldCell(tile, x, y, worldX + x, worldY + y,
+                        WorldCell cell = new WorldCell(tile, localX, localY, worldX + localX, worldY + localY,
                                 Type.Platform);
-                        Platform platform = new Platform(cell, world, 0.35f);
-                        layer.setCell(x, y, cell);
+                        layer.setCell(localX, localY, cell);
+                        
+                        localX++;
+                        down = getCell(layer, localX, localY - 1, chunkI, chunkJ);
+                        right = getCell(layer, localX + 1, localY, chunkI, chunkJ);
+                    }
+                    
+                    int dx = localX - x;
+                    if (dx > 0) {
+                        Platform platform = new Platform(tile, worldX + x, worldY + y,
+                                Type.Platform.getMaskBits(), world, dx, 0.35f);
                         layer.addBody(platform.getBody());
                     }
                 } else {

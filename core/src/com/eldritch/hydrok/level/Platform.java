@@ -16,14 +16,17 @@ public class Platform {
     private final Body body;
     
     public Platform(WorldCell cell, World world, float scaleY) {
-        TiledMapTile tile = cell.getTile();
-        float halfWidth = (tile.getTextureRegion().getRegionWidth() / 2.0f) * SCALE;
+        this(cell.getTile(), cell.getWorldX(), cell.getWorldY(), cell.getType().getMaskBits(), world, 1, scaleY);
+    }
+    
+    public Platform(TiledMapTile tile, int worldX, int worldY, short maskBits, World world, float scaleX, float scaleY) {
+        float halfWidth = (scaleX * tile.getTextureRegion().getRegionWidth() / 2.0f) * SCALE;
         float halfHeight = (scaleY * tile.getTextureRegion().getRegionHeight() / 2.0f) * SCALE;
         
         // Create our body definition
         BodyDef groundBodyDef = new BodyDef();
         // Set its world position
-        groundBodyDef.position.set(new Vector2(cell.getWorldX() + halfWidth, cell.getWorldY() + halfHeight));
+        groundBodyDef.position.set(new Vector2(worldX + halfWidth, worldY + halfHeight));
 
         // Create a body from the defintion and add it to the world
         body = world.createBody(groundBodyDef);
@@ -41,7 +44,7 @@ public class Platform {
         // set collision masks
         Filter filter = fixture.getFilterData();
         filter.categoryBits = 0x0001;
-        filter.maskBits = cell.getType().getMaskBits();
+        filter.maskBits = maskBits;
         fixture.setFilterData(filter);
 
         // Clean up after ourselves
