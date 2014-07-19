@@ -101,4 +101,6 @@ public class WorldCell extends Cell {
             return maskBits;
         }
     }
+    
+    public static final WorldCell EMPTY = new WorldCell(null, -1, -1, -1, -1, Type.Filler);
 }

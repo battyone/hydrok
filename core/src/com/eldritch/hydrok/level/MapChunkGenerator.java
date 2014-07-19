@@ -96,13 +96,13 @@ public class MapChunkGenerator {
     private void generateActivators(ChunkLayer layer, int chunkI, int chunkJ, int worldX, int worldY) {
         for (int x = 0; x < layer.getWidth(); x++) {
             for (int y = 0; y < layer.getHeight(); y++) {
-                if (layer.getCell(x, y) != null) {
+                if (!isNullOrEmpty(layer.getCell(x, y))) {
                     // already has cell
                     continue;
                 }
 
                 WorldCell down = getCell(layer, x, y - 1, chunkI, chunkJ);
-                if (down != null && down.getType() == Type.Terrain) {
+                if (!isNullOrEmpty(down) && down.getType() == Type.Terrain) {
                     if (Math.random() < 0.1) {
                         ObstaclePhaseActivator a = new Fireball(x + worldX, y + worldY, world);
                         WorldCell cell = new WorldCell(a.getTile(), x, y, a.getX(), a.getY(),
@@ -110,7 +110,7 @@ public class MapChunkGenerator {
                         layer.setCell(x, y, cell);
                         layer.addBody(a.getBody());
                     }
-                } else if (down != null && down.getType() == Type.Platform) {
+                } else if (!isNullOrEmpty(down) && down.getType() == Type.Platform) {
                     if (Math.random() < 0.1) {
                         ObstaclePhaseActivator a = new WaterDroplet(x + worldX, y + worldY, world);
                         WorldCell cell = new WorldCell(a.getTile(), x, y, a.getX(), a.getY(),
@@ -118,7 +118,7 @@ public class MapChunkGenerator {
                         layer.setCell(x, y, cell);
                         layer.addBody(a.getBody());
                     }
-                } else if (down == null) {
+                } else if (down == WorldCell.EMPTY) {
                     if (Math.random() < 0.025) {
                         // ObstaclePhaseActivator a = new IceShard(x + worldX, y + worldY, world);
                         // WorldCell cell = new WorldCell(a.getTile(), x, y, a.getX(), a.getY(),
@@ -174,7 +174,7 @@ public class MapChunkGenerator {
             int worldX, int worldY) {
         for (int x = 0; x < layer.getWidth(); x++) {
             for (int y = 0; y < layer.getHeight(); y++) {
-                if (layer.getCell(x, y) != null) {
+                if (!isNullOrEmpty(layer.getCell(x, y))) {
                     // already has cell
                     continue;
                 }
@@ -187,12 +187,12 @@ public class MapChunkGenerator {
                     int localX = current.getLocalX();
                     int localY = current.getLocalY();
                     boolean finished = false;
-                    while (down != null && !finished) {
+                    while (!isNullOrEmpty(down) && !finished) {
                         points.add(TilePoint.of(localX, localY));
 
                         // set to new current
                         current = getCell(terrain, localX, localY, chunkI, chunkJ);
-                        if (current != null && current.getSlope() < 0) {
+                        if (!isNullOrEmpty(current) && current.getSlope() < 0) {
                             // found the other end
                             finished = true;
                         }
@@ -239,19 +239,27 @@ public class MapChunkGenerator {
     private void generateObstacles(ChunkLayer layer, int chunkI, int chunkJ, int worldX, int worldY) {
         for (int x = 0; x < layer.getWidth(); x++) {
             for (int y = 0; y < layer.getHeight(); y++) {
-                if (layer.getCell(x, y) != null) {
+                if (!isNullOrEmpty(layer.getCell(x, y))) {
                     // already has cell
                     continue;
                 }
 
+                int localX = x;
+                int localY = y;
                 WorldCell down = getCell(layer, x, y - 1, chunkI, chunkJ);
                 WorldCell left = getCell(layer, x - 1, y, chunkI, chunkJ);
                 WorldCell right = getCell(layer, x + 1, y, chunkI, chunkJ);
-                if (down == null && left == null && right == null) {
+                if (down == WorldCell.EMPTY && left == WorldCell.EMPTY && right == WorldCell.EMPTY) {
                     // sky
                     if (Math.random() < 0.025) {
                         // bridge
                         TiledMapTile tile = getTile("grass/bridge-logs");
+                        
+                        down = getCell(layer, x, y - 1, chunkI, chunkJ);
+                        left = getCell(layer, x - 1, y, chunkI, chunkJ);
+                        right = getCell(layer, x + 1, y, chunkI, chunkJ);
+//                        while (down == WorldCell.EMPTY && left == WorldCell.EMPTY && right == WorldCell.EMPTY) {
+//                        }
                         WorldCell cell = new WorldCell(tile, x, y, worldX + x, worldY + y,
                                 Type.Platform);
                         Platform platform = new Platform(cell, world, 0.35f);
@@ -269,13 +277,13 @@ public class MapChunkGenerator {
         for (int x = 0; x < layer.getWidth(); x++) {
             // top -> bottom
             for (int y = layer.getHeight() - 1; y >= 0; y--) {
-                if (layer.getCell(x, y) != null) {
+                if (!isNullOrEmpty(layer.getCell(x, y))) {
                     // already has cell
                     continue;
                 }
 
                 WorldCell up = getCell(layer, x, y + 1, chunkI, chunkJ);
-                if (up != null) {
+                if (!isNullOrEmpty(up)) {
                     if (up.getType() == Type.Terrain || up.getType() == Type.Filler) {
                         StaticTiledMapTile tile = getTile("grass/center");
                         if (up.getSlope() < 0) {
@@ -293,7 +301,7 @@ public class MapChunkGenerator {
     }
 
     private boolean isTerrain(WorldCell cell) {
-        return cell != null && cell.getType() == Type.Terrain;
+        return cell != null && cell != WorldCell.EMPTY && cell.getType() == Type.Terrain;
     }
 
     private boolean outsideLayer(WorldCell lastTerrain, ChunkLayer layer, int worldY) {
@@ -411,6 +419,10 @@ public class MapChunkGenerator {
             layer.setCell(cell.getLocalX(), cell.getLocalY(), cell);
         }
     }
+    
+    private boolean isNullOrEmpty(WorldCell cell) {
+        return cell == null || cell == WorldCell.EMPTY;
+    }
 
     private WorldCell getCell(ChunkLayer layer, int x, int y, int chunkI, int chunkJ) {
         // get the updated chunk
@@ -435,7 +447,8 @@ public class MapChunkGenerator {
         // return the cell within chunk
         int tileX = x - (chunkX - chunkJ) * width;
         int tileY = y - (chunkY - chunkI) * height;
-        return layer.getCell(tileX, tileY);
+        WorldCell cell = layer.getCell(tileX, tileY);
+        return cell != null ? cell : WorldCell.EMPTY;
     }
 
     private void setCell(WorldCell cell, int x, int y, int chunkI, int chunkJ, ChunkLayer layer) {
