@@ -102,7 +102,10 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 		// draw background image
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
-		batch.draw(bg, camera.position.x - camera.viewportWidth / 2, camera.position.y - camera.viewportHeight / 2, camera.viewportWidth, camera.viewportHeight);
+		batch.draw(bg,
+		        camera.position.x - camera.viewportWidth / 2,
+		        camera.position.y - camera.viewportHeight / 2,
+		        camera.viewportWidth, camera.viewportHeight);
 		batch.end();
 		
 		if (Gdx.input.isKeyPressed(Keys.A)) {    
