@@ -20,6 +20,10 @@ public class Platform {
     }
     
     public Platform(TiledMapTile tile, int worldX, int worldY, short maskBits, World world, float scaleX, float scaleY) {
+        this(tile, worldX, worldY, maskBits, world, scaleX, scaleY, "ground");
+    }
+    
+    public Platform(TiledMapTile tile, int worldX, int worldY, short maskBits, World world, float scaleX, float scaleY, String userData) {
         float halfWidth = (scaleX * tile.getTextureRegion().getRegionWidth() / 2.0f) * SCALE;
         float halfHeight = (scaleY * tile.getTextureRegion().getRegionHeight() / 2.0f) * SCALE;
         
@@ -39,7 +43,7 @@ public class Platform {
 
         // Create a fixture from our polygon shape and add it to our ground body
         Fixture fixture = body.createFixture(groundBox, 0.0f);
-        fixture.setUserData("ground");
+        fixture.setUserData(userData);
 
         // set collision masks
         Filter filter = fixture.getFilterData();

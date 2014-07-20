@@ -327,7 +327,7 @@ public class MapChunkGenerator {
                             worldY + localY, Type.Platform);
                     layer.setCell(localX, localY, cell);
                     Platform platform = new Platform(tile, worldX + x, worldY + y,
-                            ALL_BITS, world, 1, 1);
+                            ALL_BITS, world, 1, 1, "water");
                     layer.addBody(platform.getBody());
                 }
             }

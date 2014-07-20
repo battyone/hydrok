@@ -7,7 +7,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.eldritch.hydrok.player.Player.PhaseManager;
 
 public abstract class AbstractPhaseManager implements PhaseManager {
-    private final Player player;
+    protected final Player player;
     private final float width;
     private final float height;
     private final float density;
@@ -29,9 +29,9 @@ public abstract class AbstractPhaseManager implements PhaseManager {
     }
     
     @Override
-    public void update(float delta, boolean grounded) {
+    public void update(float delta) {
         stateTime += delta;
-        doUpdate(delta, grounded);
+        doUpdate(delta);
     }
     
     public float getStateTime() {
@@ -77,5 +77,5 @@ public abstract class AbstractPhaseManager implements PhaseManager {
         getBody().setAngularVelocity(0);
     }
     
-    protected abstract void doUpdate(float delta, boolean grounded);
+    protected abstract void doUpdate(float delta);
 }

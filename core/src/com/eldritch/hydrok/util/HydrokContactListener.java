@@ -16,9 +16,14 @@ import com.eldritch.hydrok.player.Player;
 public class HydrokContactListener implements ContactListener {
     private final Player player;
     private final Map<Fixture, Integer> groundContacts = new HashMap<Fixture, Integer>();
+    private final Map<Fixture, Integer> waterContacts = new HashMap<Fixture, Integer>();
     
     public HydrokContactListener(Player player) {
         this.player = player;
+    }
+    
+    public boolean isWaterGrounded() {
+        return !waterContacts.isEmpty();
     }
 
     public boolean isGrounded() {
@@ -79,8 +84,13 @@ public class HydrokContactListener implements ContactListener {
         if (userData != null) {
             // ground
             if (userData.equals("ground")) {
-                addContact(fixture);
+                addContact(groundContacts, fixture);
                 player.markGrounded();
+            }
+            
+            // water
+            if (userData.equals("water")) {
+                addContact(waterContacts, fixture);
             }
             
             // activator
@@ -93,28 +103,33 @@ public class HydrokContactListener implements ContactListener {
         if (userData != null) {
             // ground
             if (userData.equals("ground")) {
-                removeContact(fixture);
+                removeContact(groundContacts, fixture);
+            }
+            
+            // water
+            if (userData.equals("water")) {
+                removeContact(waterContacts, fixture);
             }
         }
     }
     
-    private void addContact(Fixture fixture) {
-        if (!groundContacts.containsKey(fixture)) {
-            groundContacts.put(fixture, 0);
+    private void addContact(Map<Fixture, Integer> contacts, Fixture fixture) {
+        if (!contacts.containsKey(fixture)) {
+            contacts.put(fixture, 0);
         }
-        groundContacts.put(fixture, groundContacts.get(fixture) + 1);
+        contacts.put(fixture, contacts.get(fixture) + 1);
     }
     
-    private void removeContact(Fixture fixture) {
-        if (!groundContacts.containsKey(fixture)) {
+    private void removeContact(Map<Fixture, Integer> contacts, Fixture fixture) {
+        if (!contacts.containsKey(fixture)) {
             return;
         }
         
-        int contacts = groundContacts.get(fixture);
-        if (contacts <= 1) {
-            groundContacts.remove(fixture);
+        int count = contacts.get(fixture);
+        if (count <= 1) {
+            contacts.remove(fixture);
         } else {
-            groundContacts.put(fixture, contacts - 1);
+            contacts.put(fixture, count - 1);
         }
     }
 

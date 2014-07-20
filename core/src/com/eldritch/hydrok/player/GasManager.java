@@ -45,7 +45,7 @@ public class GasManager extends AbstractPhaseManager {
     }
 	
 	@Override
-	public void doUpdate(float delta, boolean grounded) {
+	public void doUpdate(float delta) {
 		// apply upwards impulse, but only if max velocity is not reached yet
 		Body body = getBody();
 		Vector2 pos = body.getPosition();

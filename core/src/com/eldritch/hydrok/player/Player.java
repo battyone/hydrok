@@ -14,12 +14,14 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.eldritch.hydrok.util.HydrokContactListener;
 
 public class Player {
     private final Body body;
     private final float width;
     private final float height;
 	private final EnumMap<Phase, PhaseManager> managers;
+	private final HydrokContactListener contactListener;
 	float lastGround = 0;
 	boolean grounded = true;
 	boolean canJump = true;
@@ -94,17 +96,31 @@ public class Player {
 		managers.put(Phase.Gas, new GasManager(this, world, x ,y, width * 2, height * 2));
 		managers.put(Phase.Plasma, new PlasmaManager(this, world, x ,y, width * 2, height * 2));
 		managers.get(phase).setActive();
+		
+		contactListener = new HydrokContactListener(this);
+	}
+	
+	public HydrokContactListener getContactListener() {
+	    return contactListener;
+	}
+	
+	public boolean isGrounded() {
+	    return contactListener.isGrounded();
+	}
+	
+	public boolean isWaterGrounded() {
+	    return contactListener.isWaterGrounded();
 	}
 
-	public void update(float delta, boolean grounded) {
-	    this.grounded = grounded;
+	public void update(float delta) {
+	    this.grounded = contactListener.isGrounded();
 	    if (grounded && phase != Phase.Gas) {
             lastGround = 0;
         }
 	    lastGround += delta;
 	    
 	    // update phase manager
-		managers.get(phase).update(delta, grounded);
+		managers.get(phase).update(delta);
 	}
 
 	public void render(OrthogonalTiledMapRenderer renderer) {
@@ -165,7 +181,7 @@ public class Player {
 	}
 
 	public static interface PhaseManager {
-		void update(float delta, boolean grounded);
+		void update(float delta);
 
 		void render(OrthogonalTiledMapRenderer renderer);
 		

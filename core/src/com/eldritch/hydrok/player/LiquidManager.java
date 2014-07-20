@@ -38,10 +38,10 @@ public class LiquidManager extends AbstractPhaseManager {
     }
 
     @Override
-    public void doUpdate(float delta, boolean grounded) {
+    public void doUpdate(float delta) {
         // apply right impulse, but only if on the ground max velocity is not reached yet
         Vector2 pos = getBody().getPosition();
-        if (grounded && getBody().getLinearVelocity().x < MAX_VELOCITY_X) {
+        if (player.isGrounded() && getBody().getLinearVelocity().x < MAX_VELOCITY_X) {
             getBody().applyLinearImpulse(0.075f, 0, pos.x, pos.y, true);
         }
     }

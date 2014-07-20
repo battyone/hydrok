@@ -164,7 +164,7 @@ public class ProceduralTiledMap extends TiledMap {
                 // destroy the last row
                 for (MapLayer layer : chunks[chunks.length - 1][j].getLayers()) {
                     ((ChunkLayer) layer).destroy();
-                    }
+                }
 
                 for (int i = chunks.length - 1; i >= 1; i--) {
                     // shift up

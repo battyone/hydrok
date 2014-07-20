@@ -66,7 +66,7 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 		world = new World(new Vector2(0, -10), true);
 		player = new Player(world, 11, 3);
 		
-		contactListener = new HydrokContactListener(player);
+		contactListener = player.getContactListener();
         world.setContactListener(contactListener);
 		
 		map = new ProceduralTiledMap(contactListener, world, CHUNK_WIDTH, CHUNK_HEIGHT);
@@ -148,7 +148,7 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 		for (Entity entity : entities) {
             entity.update(delta);
         }
-		player.update(delta, contactListener.isGrounded());
+		player.update(delta);
 		map.update(player);
 		
 		// check for game over

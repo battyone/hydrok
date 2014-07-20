@@ -30,7 +30,7 @@ public class PlasmaManager extends AbstractPhaseManager {
     }
     
     @Override
-    public void doUpdate(float delta, boolean grounded) {
+    public void doUpdate(float delta) {
         // apply right impulse, but only if max velocity is not reached yet
         Vector2 pos = getBody().getPosition();
         if (getBody().getLinearVelocity().x < MAX_VELOCITY) {  
