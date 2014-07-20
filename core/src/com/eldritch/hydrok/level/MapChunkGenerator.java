@@ -376,7 +376,7 @@ public class MapChunkGenerator {
                 if (!isNullOrEmpty(up) && up.getTile() == getTile("grass/bridge-logs") && Math.random() < 0.25) {
                     // log bridge -> build ropes
                     TiledMapTile tile = getTile("grass/rope-attached");
-                    while (getCell(layer, localX, localY, chunkI, chunkJ) == WorldCell.EMPTY) {
+                    while (getCell(layer, localX, localY, chunkI, chunkJ) == WorldCell.EMPTY && Math.random() < 0.9) {
                         WorldCell cell = new WorldCell(tile, localX, localY, worldX + localX,
                                 worldY + localY, Type.Platform);
                         layer.setCell(localX, localY, cell);

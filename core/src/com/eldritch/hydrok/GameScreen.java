@@ -95,7 +95,6 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 	
 	@Override
 	public void render(float delta) {
-//		Gdx.gl.glClearColor(0.8157f, 0.9568f, 0.9686f, 1);
 		Gdx.gl.glClearColor(0.7f, 0.7f, 1.0f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
@@ -168,14 +167,14 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 		    }
 		}
 		
+		// update camera position
 		Vector2 position = player.getPosition();
 		float scale = 50 * camera.zoom / SCALE;
         camera.position.x = Math.round((position.x + 5) * scale) / scale;
         camera.position.y = Math.round(position.y * scale) / scale;
         camera.update();
 		
-		// set the tile map renderer view based on what the
-		// camera sees and render the map
+		// set the tile map renderer view based on what the camera sees and render the map
         player.render(renderer);
 		renderer.setView(camera);
 		renderer.render();
@@ -196,6 +195,7 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 		// HUD comes last
 		drawHud();
 		
+		// update physics state
 		world.step(delta, 6, 2);
 	}
 	
@@ -203,13 +203,13 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
         batch.begin();
         font.draw(batch,
                 "Elevation: " + (int) Math.round(player.getPosition().y),
-                10, getHeight() - 10);
+                camera.position.x + 10, getHeight() - 10);
         font.draw(batch,
                 "Distance: " + (int) Math.round(player.getPosition().x),
-                10, getHeight() - 30);
+                camera.position.x + 10, getHeight() - 30);
         font.draw(batch,
                 "Danger: " + (int) Math.round(player.getPosition().x - terminator.getPosition().x),
-                10, getHeight() - 50);
+                camera.position.x + 10, getHeight() - 50);
         batch.end();
     }
 	
@@ -217,7 +217,7 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 	    batch.begin();
         font.draw(batch,
                 "FPS: " + Gdx.graphics.getFramesPerSecond(),
-                10, getHeight() - 70);
+                camera.position.x + 10, getHeight() - 70);
         batch.end();
 	}
 	
