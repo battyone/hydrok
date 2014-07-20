@@ -373,15 +373,24 @@ public class MapChunkGenerator {
                 int localX = x;
                 int localY = y;
                 WorldCell up = getCell(layer, localX, localY + 1, chunkI, chunkJ);
-                if (!isNullOrEmpty(up) && up.getTile() == getTile("grass/bridge-logs") && Math.random() < 0.2) {
+                if (!isNullOrEmpty(up) && up.getTile() == getTile("grass/bridge-logs") && Math.random() < 0.25) {
                     // log bridge -> build ropes
                     TiledMapTile tile = getTile("grass/rope-attached");
-                    WorldCell cell = new WorldCell(tile, x, y, worldX + x,
-                            worldY + y, Type.Platform);
-                    layer.setCell(localX, localY, cell);
-                    Platform platform = new Platform(tile, worldX + x + 0.5f, worldY + y,
-                            BIT_LIQUID, world, 0, 1, "water");
-                    layer.addBody(platform.getBody());
+                    while (getCell(layer, localX, localY, chunkI, chunkJ) == WorldCell.EMPTY) {
+                        WorldCell cell = new WorldCell(tile, localX, localY, worldX + localX,
+                                worldY + localY, Type.Platform);
+                        layer.setCell(localX, localY, cell);
+                        
+                        tile = getTile("grass/rope-vertical");
+                        localY--;
+                    }
+                    
+                    int dy = y - localY;
+                    if (dy > 0) {
+                        Platform platform = new Platform(tile, worldX + localX + 0.5f, worldY + localY + 1,
+                                BIT_LIQUID, world, 0, dy, "water");
+                        layer.addBody(platform.getBody());
+                    }
                 }
             }
         }

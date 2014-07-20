@@ -94,6 +94,13 @@ grass/rope-attached
   orig: 70, 70
   offset: 0, 0
   index: 0
+grass/rope-vertical
+  rotate: false
+  xy: 360, 864
+  size: 70, 70
+  orig: 70, 70
+  offset: 0, 0
+  index: 0
 grass/hill-large
   rotate: false
   xy: 842, 720
