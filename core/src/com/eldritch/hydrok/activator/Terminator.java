@@ -17,7 +17,7 @@ import com.eldritch.hydrok.level.ProceduralTiledMap;
 import com.eldritch.hydrok.player.Player;
 
 public class Terminator implements Activator {
-    private static final float V = 2.5f;
+    private static final float V = 3.0f;
     
     private final TextureRegion region;
     private final Body body;

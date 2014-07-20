@@ -18,14 +18,14 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.eldritch.hydrok.player.Player;
 
-public class Bird implements Entity {
+public class Fly implements Entity {
     private static final float V = -1.5f;
     private final Body body;
     private final float width;
     private final float height;
     private final TextureRegion texture;
     
-    public Bird(int x, int y, World world) {
+    public Fly(int x, int y, World world) {
         texture = new TextureRegion(new Texture("sprite/fly.png"));
         
         BodyDef bodyDef = new BodyDef();
