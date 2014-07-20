@@ -15,6 +15,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -100,9 +101,12 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		// draw background image
-		batch.begin();
-		batch.draw(bg, 0, 0);
-		batch.end();
+		float aspect = ((float) bg.getRegionWidth()) / bg.getRegionHeight();
+		Vector2 pos = player.getPosition();
+		Batch b = renderer.getSpriteBatch();
+		b.begin();
+		b.draw(bg, pos.x - map.getChunkWidth(), pos.y - map.getChunkHeight(), map.getWidth(), map.getWidth() / aspect);
+		b.end();
 		
 		if (Gdx.input.isKeyPressed(Keys.A)) {    
 			player.transition(Phase.Gas);
@@ -121,22 +125,18 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
         }
 		
 		if (Gdx.input.isKeyPressed(Keys.LEFT)) {
-		    Vector2 pos = player.getPosition();
 		    player.getBody().applyLinearImpulse(-0.2f, 0, pos.x, pos.y, true);
         }
 		
 		if (Gdx.input.isKeyPressed(Keys.UP)) {
-            Vector2 pos = player.getPosition();
             player.getBody().applyLinearImpulse(0, 0.2f, pos.x, pos.y, true);
         }
 		
 		if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
-            Vector2 pos = player.getPosition();
             player.getBody().applyLinearImpulse(0.2f, 0, pos.x, pos.y, true);
         }
 		
 		if (Gdx.input.isKeyPressed(Keys.SPACE)) {
-		    Vector2 pos = player.getPosition();
 		    player.applyImpulseFrom(pos.x, pos.y - 1);
         }
 		
