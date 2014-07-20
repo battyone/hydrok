@@ -20,7 +20,7 @@ import com.eldritch.hydrok.GameScreen;
 import com.eldritch.hydrok.player.Player;
 
 public class Blower implements Entity {
-    private static final float V = 1.5f;
+    private static final float V = 2.5f;
     private final Particle[] particles = new Particle[6];
     private final Body body;
     private final float width;
@@ -101,7 +101,7 @@ public class Blower implements Entity {
 
     @Override
     public void activate(Player player) {
-        player.applyImpulse(velocity .x * V, velocity.y * SCALE);
+        player.applyImpulse(velocity .x * V, velocity.y * V);
     }
 
     @Override
