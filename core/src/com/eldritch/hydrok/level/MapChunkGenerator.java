@@ -31,6 +31,7 @@ import com.eldritch.hydrok.HydrokGame;
 import com.eldritch.hydrok.activator.PhaseActivator;
 import com.eldritch.hydrok.activator.TiledPhaseActivator.GasActivator;
 import com.eldritch.hydrok.activator.TiledPhaseActivator.LiquidActivator;
+import com.eldritch.hydrok.activator.TiledPhaseActivator.PlasmaActivator;
 import com.eldritch.hydrok.activator.TiledPhaseActivator.SolidActivator;
 import com.eldritch.hydrok.entity.Fly;
 import com.eldritch.hydrok.entity.Entity;
@@ -165,10 +166,18 @@ public class MapChunkGenerator {
                                     Type.Activator);
                             layer.setCell(x, y, cell);
                             layer.addBody(body);
-                        } else {
+                        } else if (Math.random() < 0.95) {
                             TiledMapTile tile = getTile("object/cloud2");
                             Body body = createBody(tile, world, x + worldX, y + worldY);
                             PhaseActivator a = new LiquidActivator(tile, x + worldX, y + worldY, body);
+                            WorldCell cell = new WorldCell(tile, x, y, a.getX(), a.getY(),
+                                    Type.Activator);
+                            layer.setCell(x, y, cell);
+                            layer.addBody(body);
+                        } else {
+                            TiledMapTile tile = getTile("object/lightning-cloud2");
+                            Body body = createBody(tile, world, x + worldX, y + worldY);
+                            PhaseActivator a = new PlasmaActivator(tile, x + worldX, y + worldY, body);
                             WorldCell cell = new WorldCell(tile, x, y, a.getX(), a.getY(),
                                     Type.Activator);
                             layer.setCell(x, y, cell);

@@ -26,4 +26,10 @@ public abstract class TiledPhaseActivator extends PhaseActivator {
             super(Phase.Gas, tile, x, y, body);
         }
     }
+    
+    public static class PlasmaActivator extends TiledPhaseActivator {
+        public PlasmaActivator(TiledMapTile tile, int x, int y, Body body) {
+            super(Phase.Plasma, tile, x, y, body);
+        }
+    }
 }

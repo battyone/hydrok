@@ -188,3 +188,29 @@ object/storm-cloud3
   orig: 129, 71
   offset: 0, 0
   index: 0
+
+objects3-atlas.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+object/lightning-cloud1
+  rotate: false
+  xy: 0, 146
+  size: 129, 71
+  orig: 129, 71
+  offset: 0, 0
+  index: 0
+object/lightning-cloud2
+  rotate: false
+  xy: 0, 73
+  size: 129, 71
+  orig: 129, 71
+  offset: 0, 0
+  index: 0
+object/lightning-cloud3
+  rotate: false
+  xy: 0, 0
+  size: 129, 71
+  orig: 129, 71
+  offset: 0, 0
+  index: 0
