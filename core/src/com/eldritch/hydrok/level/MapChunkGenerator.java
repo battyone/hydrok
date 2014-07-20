@@ -292,12 +292,18 @@ public class MapChunkGenerator {
                     // add a bridge
                     TiledMapTile tile;
                     short maskBits;
+                    float scaleY;
+                    boolean multiPart;
                     if (Math.random() < 0.5) {
                         tile = getTile("grass/bridge-logs");
                         maskBits = BIT_SOLID;
+                        scaleY = 0.35f;
+                        multiPart = false;
                     } else {
-                        tile = getTile("grass/bridge");
+                        tile = getTile("grass/half-mid");
                         maskBits = ALL_BITS;
+                        scaleY = 1.0f;
+                        multiPart = true;
                     }
                     
                     WorldCell left = getCell(layer, localX - 1, localY, chunkI, chunkJ);
@@ -317,8 +323,18 @@ public class MapChunkGenerator {
                     int dx = localX - x;
                     if (dx > 0) {
                         Platform platform = new Platform(tile, worldX + x, worldY + y,
-                                maskBits, world, dx, 0.35f);
+                                maskBits, world, dx, scaleY);
                         layer.addBody(platform.getBody());
+                        
+                        // update tiles
+                        if (multiPart) {
+                            if (dx > 1) {
+                                getCell(layer, x, y, chunkI, chunkJ).setTile(getTile("grass/half-left"));
+                                getCell(layer, localX - 1, y, chunkI, chunkJ).setTile(getTile("grass/half-right"));
+                            } else {
+                                getCell(layer, x, y, chunkI, chunkJ).setTile(getTile("grass/half"));
+                            }
+                        }
                     }
                 } else if (isTerrain(down) && down.getSlope() == 0 && Math.random() < 0.075) {
                     // add a wall

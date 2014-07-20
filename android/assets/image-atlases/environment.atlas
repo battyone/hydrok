@@ -45,6 +45,34 @@ grass/hill-right2
   orig: 70, 70
   offset: 0, 0
   index: 0
+grass/half
+  rotate: false
+  xy: 576, 432
+  size: 70, 40
+  orig: 70, 70
+  offset: 0, 0
+  index: 0
+grass/half-left
+  rotate: false
+  xy: 576, 360
+  size: 70, 40
+  orig: 70, 70
+  offset: 0, 0
+  index: 0
+grass/half-mid
+  rotate: false
+  xy: 576, 288
+  size: 70, 40
+  orig: 70, 70
+  offset: 0, 0
+  index: 0
+grass/half-right
+  rotate: false
+  xy: 576, 216
+  size: 70, 40
+  orig: 70, 70
+  offset: 0, 0
+  index: 0
 grass/bridge
   rotate: false
   xy: 216, 72
