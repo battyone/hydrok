@@ -1,6 +1,7 @@
 package com.eldritch.hydrok.level;
 
 import static com.eldritch.hydrok.util.Settings.ALL_BITS;
+import static com.eldritch.hydrok.util.Settings.BIT_SOLID;
 import static com.eldritch.hydrok.util.Settings.CHUNKS;
 import static com.eldritch.hydrok.util.Settings.SCALE;
 import static com.eldritch.hydrok.util.Settings.TILE_HEIGHT;
@@ -285,7 +286,16 @@ public class MapChunkGenerator {
                 }
 
                 if (Math.random() < 0.025) {
-                    TiledMapTile tile = getTile("grass/bridge-logs");
+                    TiledMapTile tile;
+                    short maskBits;
+                    if (Math.random() < 0.5) {
+                        tile = getTile("grass/bridge-logs");
+                        maskBits = BIT_SOLID;
+                    } else {
+                        tile = getTile("grass/bridge");
+                        maskBits = ALL_BITS;
+                    }
+                    
                     int localX = x;
                     int localY = y;
                     WorldCell down = getCell(layer, localX, localY - 1, chunkI, chunkJ);
@@ -307,7 +317,7 @@ public class MapChunkGenerator {
                     int dx = localX - x;
                     if (dx > 0) {
                         Platform platform = new Platform(tile, worldX + x, worldY + y,
-                                Type.Platform.getMaskBits(), world, dx, 0.35f);
+                                maskBits, world, dx, 0.35f);
                         layer.addBody(platform.getBody());
                     }
                 } else {

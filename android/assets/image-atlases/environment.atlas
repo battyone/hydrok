@@ -45,6 +45,13 @@ grass/hill-right2
   orig: 70, 70
   offset: 0, 0
   index: 0
+grass/bridge
+  rotate: false
+  xy: 216, 72
+  size: 70, 70
+  orig: 70, 70
+  offset: 0, 0
+  index: 0
 grass/bridge-logs
   rotate: false
   xy: 288, 720
