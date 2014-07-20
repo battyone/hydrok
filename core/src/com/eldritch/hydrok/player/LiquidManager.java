@@ -27,7 +27,7 @@ public class LiquidManager extends AbstractPhaseManager {
         
         float dx = dir.x * JUMP;
         float dy = dir.y * JUMP;
-        if (dy > 0 || Math.abs(getBody().getLinearVelocity().y) > MAX_VELOCITY_JUMP) {
+        if (!canJump(dy) || Math.abs(getBody().getLinearVelocity().y) > MAX_VELOCITY_JUMP) {
             // can't jump as liquid
             dy = 0;
         }
@@ -35,6 +35,10 @@ public class LiquidManager extends AbstractPhaseManager {
             dx = 0;
         }
         getBody().applyLinearImpulse(dx, dy, pos.x, pos.y, true);
+    }
+    
+    private boolean canJump(float dy) {
+        return dy <= 0 || player.isWaterGrounded();
     }
 
     @Override

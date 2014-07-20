@@ -47,7 +47,7 @@ public class SolidManager extends AbstractPhaseManager {
 	public void doUpdate(float delta) {
 		// apply right impulse, but only if on the ground and max velocity is not reached yet
 		Vector2 pos = getBody().getPosition();
-		if (player.isGrounded() && getBody().getLinearVelocity().x < MAX_VELOCITY) {  
+		if (player.isGrounded() && getBody().getLinearVelocity().x < MAX_VELOCITY) {
 			getBody().applyLinearImpulse(0.15f, 0, pos.x, pos.y, true);
 		}
 	}
