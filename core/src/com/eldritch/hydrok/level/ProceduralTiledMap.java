@@ -123,6 +123,10 @@ public class ProceduralTiledMap extends TiledMap {
 
                 // regen last column
                 int j = chunks.length - 1;
+                chunks[i][j] = null;
+            }
+            for (int i = CHUNKS - 1; i >= 0; i--) {
+                int j = chunks.length - 1;
                 chunks[i][j] = generate(i, j, chunkX, currentY);
             }
 
@@ -145,6 +149,10 @@ public class ProceduralTiledMap extends TiledMap {
 
                 // regen last row
                 int i = chunks.length - 1;
+                chunks[i][j] = null;
+            }
+            for (int j = 0; j < chunks.length; j++) {
+                int i = chunks.length - 1;
                 chunks[i][j] = generate(i, j, currentX, chunkY);
             }
 
@@ -153,22 +161,21 @@ public class ProceduralTiledMap extends TiledMap {
         } else if (position.y < thresholdDown) {
             // down
             for (int j = 0; j < chunks.length; j++) {
-                // destroy the last two rows
-                for (int offset = 0; offset <= 0; offset++) {
-                    for (MapLayer layer : chunks[chunks.length - 1 - offset][j].getLayers()) {
-                        ((ChunkLayer) layer).destroy();
+                // destroy the last row
+                for (MapLayer layer : chunks[chunks.length - 1][j].getLayers()) {
+                    ((ChunkLayer) layer).destroy();
                     }
-                }
 
                 for (int i = chunks.length - 1; i >= 1; i--) {
                     // shift up
                     chunks[i][j] = chunks[i - 1][j];
                 }
 
-                // regen first two rows
-                for (int offset = 0; offset <= 0; offset++) {
-                    chunks[offset][j] = generate(offset, j, currentX, chunkY);
-                }
+                // regen first row
+                chunks[0][j] = null;
+            }
+            for (int j = 0; j < chunks.length; j++) {
+                chunks[0][j] = generate(0, j, currentX, chunkY);
             }
 
             // reset min y position

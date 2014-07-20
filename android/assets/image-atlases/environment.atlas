@@ -59,6 +59,20 @@ grass/bridge-logs
   orig: 70, 70
   offset: 0, 0
   index: 0
+grass/hill-large
+  rotate: false
+  xy: 842, 720
+  size: 48, 146
+  orig: 48, 146
+  offset: 0, 0
+  index: 0
+grass/hill-large2
+  rotate: false
+  xy: 864, 0
+  size: 48, 146
+  orig: 48, 146
+  offset: 0, 0
+  index: 0
 snow/mid
   rotate: false
   xy: 144, 792
