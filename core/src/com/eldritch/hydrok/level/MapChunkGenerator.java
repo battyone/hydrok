@@ -285,7 +285,11 @@ public class MapChunkGenerator {
                     continue;
                 }
 
-                if (Math.random() < 0.025) {
+                int localX = x;
+                int localY = y;
+                WorldCell down = getCell(layer, localX, localY - 1, chunkI, chunkJ);
+                if (down == WorldCell.EMPTY && Math.random() < 0.025) {
+                    // add a bridge
                     TiledMapTile tile;
                     short maskBits;
                     if (Math.random() < 0.5) {
@@ -296,14 +300,10 @@ public class MapChunkGenerator {
                         maskBits = ALL_BITS;
                     }
                     
-                    int localX = x;
-                    int localY = y;
-                    WorldCell down = getCell(layer, localX, localY - 1, chunkI, chunkJ);
                     WorldCell left = getCell(layer, localX - 1, localY, chunkI, chunkJ);
                     WorldCell right = getCell(layer, localX + 1, localY, chunkI, chunkJ);
                     while (down == WorldCell.EMPTY && left == WorldCell.EMPTY 
                             && right == WorldCell.EMPTY && Math.random() < 0.75) {
-                        // bridge
                         WorldCell cell = new WorldCell(tile, localX, localY, worldX + localX, worldY + localY,
                                 Type.Platform);
                         layer.setCell(localX, localY, cell);
@@ -320,8 +320,15 @@ public class MapChunkGenerator {
                                 maskBits, world, dx, 0.35f);
                         layer.addBody(platform.getBody());
                     }
-                } else {
-                    // underground
+                } else if (isTerrain(down) && down.getSlope() == 0 && Math.random() < 0.075) {
+                    // add a wall
+                    TiledMapTile tile = getTile("grass/hill-large");
+                    WorldCell cell = new WorldCell(tile, localX, localY, worldX + localX,
+                            worldY + localY, Type.Platform);
+                    layer.setCell(localX, localY, cell);
+                    Platform platform = new Platform(tile, worldX + x, worldY + y,
+                            ALL_BITS, world, 1, 1);
+                    layer.addBody(platform.getBody());
                 }
             }
         }
