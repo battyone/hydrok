@@ -29,10 +29,10 @@ public class LiquidManager extends AbstractPhaseManager {
         float dy = dir.y * JUMP;
         if (!canJump(dy) || Math.abs(getBody().getLinearVelocity().y) > MAX_VELOCITY_JUMP) {
             // can't jump as liquid
-            dy = 0;
+            dy = 0.5f;
         }
         if (Math.abs(getBody().getLinearVelocity().x) > MAX_VELOCITY_JUMP) {
-            dx = 0;
+            dx = 0.5f;
         }
         getBody().applyLinearImpulse(dx, dy, pos.x, pos.y, true);
     }
