@@ -11,6 +11,7 @@ public class ChunkLayer extends TiledMapTileLayer {
     private final Set<Body> bodies = new HashSet<Body>();
     private final World world;
     private final int z;
+    private int terrainLimit = -1;
 
     public ChunkLayer(World world, int width, int height, int tileWidth, int tileHeight, int z) {
         super(width, height, tileWidth, tileHeight);
@@ -24,6 +25,14 @@ public class ChunkLayer extends TiledMapTileLayer {
 
     public void addBody(Body body) {
         bodies.add(body);
+    }
+    
+    public void updateTerrainLimit(int y) {
+        terrainLimit = Math.max(terrainLimit, y);
+    }
+    
+    public int getTerrainLimit() {
+        return terrainLimit;
     }
     
     @Override

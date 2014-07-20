@@ -120,7 +120,7 @@ public class MapChunkGenerator {
                 
                 if (Math.random() < 0.025) {
                     newEntities.add(new Fly(x + worldX, y + worldY, world));
-                } else if (Math.random() < 0.05) {
+                } else if (y > layer.getTerrainLimit() && Math.random() < 0.01) {
                     newEntities.add(new Blower(x + worldX, y + worldY, world));
                 }
             }
@@ -411,6 +411,7 @@ public class MapChunkGenerator {
                 layer.setCell(0, 0, lastTerrain);
                 terrainCells.add(lastTerrain);
                 vertexCount++;
+                layer.updateTerrainLimit(0);
             }
         }
 
@@ -457,6 +458,7 @@ public class MapChunkGenerator {
                 layer.setCell(cell.getLocalX(), cell.getLocalY(), cell);
                 terrainCells.add(cell);
                 vertexCount++;
+                layer.updateTerrainLimit(cell.getLocalY());
 
                 lastTerrain = cell;
             }
@@ -506,6 +508,7 @@ public class MapChunkGenerator {
             }
 
             layer.setCell(cell.getLocalX(), cell.getLocalY(), cell);
+            layer.updateTerrainLimit(cell.getLocalY());
         }
     }
     
