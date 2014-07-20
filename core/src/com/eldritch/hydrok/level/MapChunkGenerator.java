@@ -33,6 +33,7 @@ import com.eldritch.hydrok.activator.TiledPhaseActivator.GasActivator;
 import com.eldritch.hydrok.activator.TiledPhaseActivator.LiquidActivator;
 import com.eldritch.hydrok.activator.TiledPhaseActivator.PlasmaActivator;
 import com.eldritch.hydrok.activator.TiledPhaseActivator.SolidActivator;
+import com.eldritch.hydrok.entity.Blower;
 import com.eldritch.hydrok.entity.Fly;
 import com.eldritch.hydrok.entity.Entity;
 import com.eldritch.hydrok.level.WorldCell.Type;
@@ -118,8 +119,9 @@ public class MapChunkGenerator {
                 }
                 
                 if (Math.random() < 0.025) {
-                    Entity entity = new Fly(x + worldX, y + worldY, world);
-                    newEntities.add(entity);
+                    newEntities.add(new Fly(x + worldX, y + worldY, world));
+                } else if (Math.random() < 0.05) {
+                    newEntities.add(new Blower(x + worldX, y + worldY, world));
                 }
             }
         }
