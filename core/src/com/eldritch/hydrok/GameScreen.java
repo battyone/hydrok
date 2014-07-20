@@ -52,6 +52,7 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 	private ShapeRenderer shapeRenderer;
 	private BitmapFont font;
 	private SpriteBatch batch;
+	private TextureRegion bg;
 	
 	private boolean debug = false;
 
@@ -86,6 +87,7 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 		shapeRenderer = new ShapeRenderer();
 		font = new BitmapFont();
 		batch = new SpriteBatch();
+		bg = new TextureRegion(new Texture("background/grasslands.png"));
 		
 		Gdx.input.setInputProcessor(this);
 		HydrokGame.log("start");
@@ -96,6 +98,11 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 //		Gdx.gl.glClearColor(0.8157f, 0.9568f, 0.9686f, 1);
 		Gdx.gl.glClearColor(0.7f, 0.7f, 1.0f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		
+		// draw background image
+		batch.begin();
+		batch.draw(bg, 0, 0);
+		batch.end();
 		
 		if (Gdx.input.isKeyPressed(Keys.A)) {    
 			player.transition(Phase.Gas);
