@@ -19,11 +19,11 @@ public class Platform {
         this(cell.getTile(), cell.getWorldX(), cell.getWorldY(), cell.getType().getMaskBits(), world, 1, scaleY);
     }
     
-    public Platform(TiledMapTile tile, int worldX, int worldY, short maskBits, World world, float scaleX, float scaleY) {
+    public Platform(TiledMapTile tile, float worldX, float worldY, short maskBits, World world, float scaleX, float scaleY) {
         this(tile, worldX, worldY, maskBits, world, scaleX, scaleY, "ground");
     }
     
-    public Platform(TiledMapTile tile, int worldX, int worldY, short maskBits, World world, float scaleX, float scaleY, String userData) {
+    public Platform(TiledMapTile tile, float worldX, float worldY, short maskBits, World world, float scaleX, float scaleY, String userData) {
         float halfWidth = (scaleX * tile.getTextureRegion().getRegionWidth() / 2.0f) * SCALE;
         float halfHeight = (scaleY * tile.getTextureRegion().getRegionHeight() / 2.0f) * SCALE;
         

@@ -1,6 +1,7 @@
 package com.eldritch.hydrok.level;
 
 import static com.eldritch.hydrok.util.Settings.ALL_BITS;
+import static com.eldritch.hydrok.util.Settings.BIT_LIQUID;
 import static com.eldritch.hydrok.util.Settings.BIT_SOLID;
 import static com.eldritch.hydrok.util.Settings.CHUNKS;
 import static com.eldritch.hydrok.util.Settings.SCALE;
@@ -339,6 +340,7 @@ public class MapChunkGenerator {
                         
                         // update tiles
                         if (multiPart) {
+                            // solid bridge
                             if (dx > 1) {
                                 getCell(layer, x, y, chunkI, chunkJ).setTile(getTile("grass/half-left"));
                                 getCell(layer, localX - 1, y, chunkI, chunkJ).setTile(getTile("grass/half-right"));
@@ -355,6 +357,30 @@ public class MapChunkGenerator {
                     layer.setCell(localX, localY, cell);
                     Platform platform = new Platform(tile, worldX + x, worldY + y,
                             ALL_BITS, world, 1, 1, "water");
+                    layer.addBody(platform.getBody());
+                }
+            }
+        }
+        
+        // second pass
+        for (int x = 0; x < layer.getWidth(); x++) {
+            for (int y = 0; y < layer.getHeight(); y++) {
+                if (!isNullOrEmpty(layer.getCell(x, y))) {
+                    // already has cell
+                    continue;
+                }
+                
+                int localX = x;
+                int localY = y;
+                WorldCell up = getCell(layer, localX, localY + 1, chunkI, chunkJ);
+                if (!isNullOrEmpty(up) && up.getTile() == getTile("grass/bridge-logs") && Math.random() < 0.2) {
+                    // log bridge -> build ropes
+                    TiledMapTile tile = getTile("grass/rope-attached");
+                    WorldCell cell = new WorldCell(tile, x, y, worldX + x,
+                            worldY + y, Type.Platform);
+                    layer.setCell(localX, localY, cell);
+                    Platform platform = new Platform(tile, worldX + x + 0.5f, worldY + y,
+                            BIT_LIQUID, world, 0, 1, "water");
                     layer.addBody(platform.getBody());
                 }
             }

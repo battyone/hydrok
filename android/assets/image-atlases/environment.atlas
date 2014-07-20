@@ -87,6 +87,13 @@ grass/bridge-logs
   orig: 70, 70
   offset: 0, 0
   index: 0
+grass/rope-attached
+  rotate: false
+  xy: 432, 72
+  size: 70, 70
+  orig: 70, 70
+  offset: 0, 0
+  index: 0
 grass/hill-large
   rotate: false
   xy: 842, 720
