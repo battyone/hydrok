@@ -377,10 +377,18 @@ public class MapChunkGenerator {
                     // log bridge -> build ropes
                     TiledMapTile tile = getTile("grass/rope-attached");
                     while (getCell(layer, localX, localY, chunkI, chunkJ) == WorldCell.EMPTY && Math.random() < 0.9) {
+                        // sanity check: make sure the tile below is not an uphill slope, or else the player can get stuck
+                        WorldCell down = getCell(layer, localX, localY - 1, chunkI, chunkJ);
+                        if (!isNullOrEmpty(down) && down.getSlope() > 0) {
+                            break;
+                        }
+                        
+                        // place the next rope
                         WorldCell cell = new WorldCell(tile, localX, localY, worldX + localX,
                                 worldY + localY, Type.Platform);
                         layer.setCell(localX, localY, cell);
                         
+                        // only use the attached rope for the first piece
                         tile = getTile("grass/rope-vertical");
                         localY--;
                     }
