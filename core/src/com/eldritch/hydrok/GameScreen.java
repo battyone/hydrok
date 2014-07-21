@@ -76,10 +76,11 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 		// game ends when terminator hits the player
 		terminator = new Terminator(world, map);
 
-		float w = 30;
-		float h = 20;
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false, w, h);
+		float w = Gdx.graphics.getWidth();
+        float h = Gdx.graphics.getHeight();
+
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, (w / h) * 20, 20);
 		camera.zoom = ZOOM;
 		camera.update();
 
@@ -92,6 +93,11 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 		Gdx.input.setInputProcessor(this);
 		HydrokGame.log("start");
 	}
+	
+	@Override
+    public void resize(int width, int height) {
+	    super.resize(width, height);
+    }
 	
 	@Override
 	public void render(float delta) {

@@ -16,8 +16,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
  */
 public abstract class AbstractScreen implements Screen {
 	// the fixed viewport dimensions (ratio: 1.6)
-	public static final int GAME_VIEWPORT_WIDTH = 400, GAME_VIEWPORT_HEIGHT = 240;
-	public static int MENU_VIEWPORT_WIDTH = 800, MENU_VIEWPORT_HEIGHT = 480;
 
 	protected final HydrokGame game;
 	protected final Stage stage;
@@ -34,8 +32,8 @@ public abstract class AbstractScreen implements Screen {
 	public AbstractScreen(HydrokGame game) {
 		this.game = game;
 		this.stage = new Stage();
-		width = (isGameScreen() ? GAME_VIEWPORT_WIDTH : MENU_VIEWPORT_WIDTH);
-		height = (isGameScreen() ? GAME_VIEWPORT_HEIGHT : MENU_VIEWPORT_HEIGHT);
+		width = Gdx.graphics.getWidth();
+		height = Gdx.graphics.getHeight();
 		stage.getViewport().update(width, height);
 	}
 
@@ -111,6 +109,7 @@ public abstract class AbstractScreen implements Screen {
 				+ width + " x " + height);
 		this.width = width;
 		this.height = height;
+		stage.getViewport().update(width, height);
 	}
 
 	@Override
