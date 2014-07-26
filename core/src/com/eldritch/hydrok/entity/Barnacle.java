@@ -25,14 +25,25 @@ public class Barnacle implements Entity {
     private final float width;
     private final float height;
     private final TextureRegion texture;
+    private final boolean up;
+    private final int sign;
     
-    public Barnacle(int x, int y, float offsetY, World world) {
+    public Barnacle(int x, int y, float offsetY, boolean up, World world) {
         texture = new TextureRegion(new Texture("sprite/barnacle.png"));
+        this.up = up;
+        this.sign = up ? 1 : -1;
+        
         float h = texture.getRegionHeight() * SCALE * 0.5f;
+        float worldY = y - h;
+        if (up) {
+            worldY += offsetY / 2;
+        } else {
+            worldY -= offsetY + h;
+        }
         
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyType.StaticBody;
-        bodyDef.position.set(x, y - h + (offsetY / 2));
+        bodyDef.position.set(x, worldY);
         body = world.createBody(bodyDef);
 
         float r = (Math.min(texture.getRegionWidth(), texture.getRegionHeight()) / 2) * SCALE;
@@ -62,10 +73,16 @@ public class Barnacle implements Entity {
     
     @Override
     public void render(OrthogonalTiledMapRenderer renderer) {
+        float rotation = up ? 0 : 180;
         Vector2 position = body.getPosition();
         Batch batch = renderer.getSpriteBatch();
         batch.begin();
-        batch.draw(texture, position.x - width / 2, position.y - height / 2, width, height);
+        batch.draw(texture,
+                position.x - width / 2, position.y - height / 2, // position
+                width / 2, height / 2, // origin
+                width, height, // size
+                1, 1, // scale
+                rotation);
         batch.end();
     }
 
@@ -82,7 +99,7 @@ public class Barnacle implements Entity {
     @Override
     public void activate(Player player) {
         player.stop();
-        player.applyImpulse(0, V);
+        player.applyImpulse(0, sign * V);
     }
 
     @Override
