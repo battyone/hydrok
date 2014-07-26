@@ -2,6 +2,8 @@ package com.eldritch.hydrok.level;
 
 import java.util.Random;
 
+import com.eldritch.hydrok.HydrokGame;
+
 public class Randomizer {
     private final Random rand = new Random();
     private float x;
@@ -11,6 +13,7 @@ public class Randomizer {
     }
     
     public boolean flip(double baseProbability) {
+        HydrokGame.log("base: %f dist: %f total %f", baseProbability, getDistanceBias(), baseProbability * getDistanceBias());
         return getRandom() < baseProbability * getDistanceBias();
     }
     
@@ -19,6 +22,6 @@ public class Randomizer {
     }
     
     public double getDistanceBias() {
-        return x / (1 + Math.abs(x));
+        return x / (500 + Math.abs(x));
     }
 }
