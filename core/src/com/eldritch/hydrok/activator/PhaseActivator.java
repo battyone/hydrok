@@ -26,9 +26,7 @@ public abstract class PhaseActivator implements Activator {
 
     @Override
     public void activate(Player player) {
-        if (player.getPhase() != phase) {
-            player.setPhase(phase);
-        }
+        player.setPhase(phase);
     }
 
     @Override
