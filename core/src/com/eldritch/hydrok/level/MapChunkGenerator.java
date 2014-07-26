@@ -39,6 +39,7 @@ import com.eldritch.hydrok.entity.Blower;
 import com.eldritch.hydrok.entity.Fly;
 import com.eldritch.hydrok.entity.Entity;
 import com.eldritch.hydrok.entity.Ladybug;
+import com.eldritch.hydrok.entity.Springboard;
 import com.eldritch.hydrok.level.WorldCell.Type;
 import com.eldritch.hydrok.util.HydrokContactListener;
 import com.eldritch.hydrok.util.Settings;
@@ -146,8 +147,16 @@ public class MapChunkGenerator {
                     // barnacle
                     boolean up = Math.random() < 0.5;
                     newEntities.add(new Barnacle(worldX, worldY, down.getWorldHeight(), up, world));
-                } else if (isTerrain(down) && rand.flip(0.05)) {
-//                    newEntities.add(new Slime(worldX, worldY + 1, world));
+                } else if (isTerrain(down) && down.getSlope() == 0) {
+                    if (isTerrain(left) && isTerrain(right) && rand.flip(0.5)) {
+                        // springboard
+                        TiledMapTile downTile = getTile("object/spring-down");
+                        TiledMapTile upTile = getTile("object/spring-up");
+                        Springboard spring = new Springboard(
+                                downTile.getTextureRegion(), upTile.getTextureRegion(),
+                                worldX, worldY, 0, world);
+                        newEntities.add(spring);
+                    }
                 }
             }
         }
@@ -353,15 +362,17 @@ public class MapChunkGenerator {
                             }
                         }
                     }
-                } else if (isTerrain(down) && down.getSlope() == 0 && rand.flip(0.075)) {
-                    // add a wall
-                    TiledMapTile tile = getTile("grass/hill-large");
-                    WorldCell cell = new WorldCell(tile, localX, localY, worldX + localX,
-                            worldY + localY, Type.Platform);
-                    layer.setCell(localX, localY, cell);
-                    Platform platform = new Platform(tile, worldX + x, worldY + y,
-                            ALL_BITS, world, 1, 1, "water");
-                    layer.addBody(platform.getBody());
+                } else if (isTerrain(down) && down.getSlope() == 0) {
+                    if (rand.flip(0.075)) {
+                        // add a wall
+                        TiledMapTile tile = getTile("grass/hill-large");
+                        WorldCell cell = new WorldCell(tile, localX, localY, worldX + localX,
+                                worldY + localY, Type.Platform);
+                        layer.setCell(localX, localY, cell);
+                        Platform platform = new Platform(tile, worldX + x, worldY + y,
+                                ALL_BITS, world, 1, 1, "water");
+                        layer.addBody(platform.getBody());
+                    }
                 }
             }
         }
