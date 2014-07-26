@@ -17,6 +17,8 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.eldritch.hydrok.util.HydrokContactListener;
 
 public class Player {
+    private static final int TEMP_SCALE = 10;
+    
     private final Body body;
     private final float width;
     private final float height;
@@ -25,6 +27,7 @@ public class Player {
 	float lastGround = 0;
 	boolean grounded = true;
 	boolean canJump = true;
+	float temperature = 0;
 	
 	// mutable state
 	private Phase phase = Phase.Solid;
@@ -113,6 +116,14 @@ public class Player {
 	}
 
 	public void update(float delta) {
+	    // update temperature
+	    temperature = Math.max(temperature - TEMP_SCALE * delta, phase.getTemperature());
+	    Phase next = phase.next();
+	    if (next != null && temperature >= next.getTemperature()) {
+	        transition(next);
+	    }
+	    
+	    // update grounded state
 	    this.grounded = contactListener.isGrounded();
 	    if (grounded && phase != Phase.Gas) {
             lastGround = 0;
@@ -140,6 +151,7 @@ public class Player {
 	}
 	
 	public void applyImpulseFrom(float x, float y) {
+	    temperature += TEMP_SCALE;
 	    managers.get(phase).applyImpulseFrom(x, y);
 	}
 	
@@ -160,6 +172,7 @@ public class Player {
 		
 		this.phase = phase;
 		managers.get(phase).setActive();
+		temperature = phase.getTemperature();
 	}
 	
 	public Phase getPhase() {
@@ -167,7 +180,7 @@ public class Player {
 	}
 	
 	public enum Phase {
-		Solid(0), Liquid(1), Gas(2), Plasma(5);
+		Solid(0), Liquid(50), Gas(100), Plasma(300);
 		
 		private final int temperature;
 		
@@ -177,6 +190,13 @@ public class Player {
 		
 		public int getTemperature() {
 		    return temperature;
+		}
+		
+		public Phase next() {
+		    if (ordinal() == Phase.values().length) {
+		        return null;
+		    }
+		    return Phase.values()[ordinal() + 1];
 		}
 	}
 
