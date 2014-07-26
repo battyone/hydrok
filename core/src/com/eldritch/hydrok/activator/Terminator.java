@@ -53,7 +53,7 @@ public class Terminator implements Activator {
     }
     
     public void update(float delta) {
-        float nextX = body.getPosition().x + delta * V;
+        float nextX = body.getPosition().x + delta * getVelocity();
         if (map.getMinX() != lastX) {
             nextX = Math.max(map.getMinX(), nextX);
             lastX = map.getMinX();
@@ -75,6 +75,15 @@ public class Terminator implements Activator {
                 width,
                 height);
         batch.end();
+    }
+    
+    /**
+     * Starts at 3, scales up to 10 over time.
+     */
+    private float getVelocity() {
+        float x = body.getPosition().x;
+        float bonus = 7 * x / (5000 + Math.abs(x));
+        return V + bonus;
     }
     
     public boolean isGameOver() {
