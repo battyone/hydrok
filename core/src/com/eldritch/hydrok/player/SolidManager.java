@@ -66,6 +66,6 @@ public class SolidManager extends AbstractPhaseManager {
 	}
 	
 	private float getAlpha() {
-	    return 1 - player.getTemperaturePercent();
+	    return Math.min(1 - player.getTemperaturePercent() + 0.25f, 1);
 	}
 }

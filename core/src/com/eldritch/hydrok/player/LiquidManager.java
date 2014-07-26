@@ -1,5 +1,6 @@
 package com.eldritch.hydrok.player;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -56,10 +57,17 @@ public class LiquidManager extends AbstractPhaseManager {
         
         float width = getWidth();
         float height = getHeight();
+        float intensity = getIntensity();
 
         Batch batch = renderer.getSpriteBatch();
         batch.begin();
+        batch.setColor(intensity, intensity, intensity, 1);
         batch.draw(texture, position.x - width / 2, position.y - height / 2, width, height);
+        batch.setColor(Color.WHITE);
         batch.end();
+    }
+    
+    private float getIntensity() {
+        return Math.min(1 - player.getTemperaturePercent() + 0.25f, 1);
     }
 }
