@@ -30,6 +30,10 @@ public class SolidManager extends AbstractPhaseManager {
 	    
 	    float dx = dir.x * JUMP;
         float dy = dir.y * JUMP;
+        if (!player.canJump && dy > 0) {
+            // scale down jump when not on the ground
+            dy *= 0.25f;
+        }
 	    if (Math.abs(getBody().getLinearVelocity().y) > MAX_VELOCITY_JUMP) {
             dy = 0;
         }
@@ -37,6 +41,7 @@ public class SolidManager extends AbstractPhaseManager {
             dx = 0;
         }
 	    getBody().applyLinearImpulse(dx, dy, pos.x, pos.y, true);
+	    player.canJump = false;
 	}
 	
 	@Override
