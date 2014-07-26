@@ -167,6 +167,10 @@ public class Player {
 	    managers.get(phase).applyImpulseFrom(x, y);
 	}
 	
+	public void stop() {
+	    body.setLinearVelocity(0, 0);
+	}
+	
 	public void applyImpulse(float x, float y) {
 	    Vector2 pos = body.getPosition();
 	    body.applyLinearImpulse(x, y, pos.x, pos.y, true);

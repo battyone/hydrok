@@ -34,6 +34,7 @@ import com.eldritch.hydrok.activator.TiledPhaseActivator.GasActivator;
 import com.eldritch.hydrok.activator.TiledPhaseActivator.LiquidActivator;
 import com.eldritch.hydrok.activator.TiledPhaseActivator.PlasmaActivator;
 import com.eldritch.hydrok.activator.TiledPhaseActivator.SolidActivator;
+import com.eldritch.hydrok.entity.Barnacle;
 import com.eldritch.hydrok.entity.Blower;
 import com.eldritch.hydrok.entity.Fly;
 import com.eldritch.hydrok.entity.Entity;
@@ -122,10 +123,17 @@ public class MapChunkGenerator {
                     continue;
                 }
                 
+                WorldCell down = getCell(layer, x, y - 1, chunkI, chunkJ);
                 if (rand.flip(0.025)) {
+                    // fly
                     newEntities.add(new Fly(x + worldX, y + worldY, world));
                 } else if (y > layer.getTerrainLimit() && rand.flip(0.01)) {
+                    // blower
                     newEntities.add(new Blower(x + worldX, y + worldY, world));
+                } else if (isPlatform(down) && rand.flip(1.1)) {
+                    // barnacle
+                    newEntities.add(new Barnacle(x + worldX, y + worldY, world));
+                    HydrokGame.log("BARNACLE");
                 }
             }
         }
@@ -436,6 +444,10 @@ public class MapChunkGenerator {
 
     private boolean isTerrain(WorldCell cell) {
         return cell != null && cell != WorldCell.EMPTY && cell.getType() == Type.Terrain;
+    }
+    
+    private boolean isPlatform(WorldCell cell) {
+        return cell != null && cell != WorldCell.EMPTY && cell.getType() == Type.Platform;
     }
 
     private boolean outsideLayer(WorldCell lastTerrain, ChunkLayer layer, int worldY) {
