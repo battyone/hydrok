@@ -178,13 +178,13 @@ public class Player {
 	}
 	
 	public void setPhase(Phase phase) {
+	    temperature = phase.getTemperature();
 		if (this.phase == phase) {
 			return;
 		}
 		
 		this.phase = phase;
 		managers.get(phase).setActive();
-		temperature = phase.getTemperature();
 	}
 	
 	public Phase getPhase() {

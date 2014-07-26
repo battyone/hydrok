@@ -61,17 +61,22 @@ public class SolidManager extends AbstractPhaseManager {
 		
 		float width = getWidth();
         float height = getHeight();
+        float intensity = getIntensity();
 		
 		Batch batch = renderer.getSpriteBatch();
 		batch.begin();
-		batch.setColor(1, 1, 1, getAlpha());
+		batch.setColor(intensity, intensity, intensity, getAlpha());
 		batch.draw(texture, position.x - width / 2, position.y - height / 2, width / 2, height / 2,
 				width, height, 1f, 1f, (float) (body.getAngle() * 180 / Math.PI));
 		batch.setColor(Color.WHITE);
 		batch.end();
 	}
 	
-	private float getAlpha() {
+	private float getIntensity() {
 	    return Math.min(1 - player.getTemperaturePercent() + 0.25f, 1);
+    }
+	
+	private float getAlpha() {
+	    return player.canJump ? 1 : 0.7f;
 	}
 }
