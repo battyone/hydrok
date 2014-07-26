@@ -138,6 +138,18 @@ public class Player {
 		managers.get(phase).render(renderer);
 	}
 	
+	public float getRelativeTemperature() {
+	    return temperature - phase.getTemperature();
+	}
+	
+	public float getTemperaturePercent() {
+	    Phase next = phase.next();
+	    if (next == null) {
+	        return 0;
+	    }
+	    return getRelativeTemperature() / (next.getTemperature() - phase.getTemperature());
+	}
+	
 	public Vector2 getPosition() {
 		return getBody().getPosition();
 	}

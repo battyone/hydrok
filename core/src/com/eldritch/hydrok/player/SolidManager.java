@@ -11,7 +11,6 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.eldritch.hydrok.util.Settings;
 
 public class SolidManager extends AbstractPhaseManager {
-    private static final Color NO_JUMP_COLOR = new Color(1, 1, 1, 0.7f);
 	private static final int MAX_VELOCITY = 8;
 	private static final int MAX_VELOCITY_JUMP = 10;
 	private static final float JUMP = 2.75f;
@@ -25,22 +24,19 @@ public class SolidManager extends AbstractPhaseManager {
 	
 	@Override
 	public void applyImpulseFrom(float x, float y) {
-	    if (getPlayer().canJump) {
-    	    // jump
-    	    Vector2 pos = getBody().getPosition();
-    	    Vector2 dir = new Vector2(pos.x, pos.y).sub(x, y).nor();
-    	    
-    	    float dx = dir.x * JUMP;
-            float dy = dir.y * JUMP;
-    	    if (Math.abs(getBody().getLinearVelocity().y) > MAX_VELOCITY_JUMP) {
-                dy = 0;
-            }
-            if (Math.abs(getBody().getLinearVelocity().x) > MAX_VELOCITY_JUMP) {
-                dx = 0;
-            }
-    	    getBody().applyLinearImpulse(dx, dy, pos.x, pos.y, true);
-    	    getPlayer().canJump = false;
-	    }
+	    // jump
+	    Vector2 pos = getBody().getPosition();
+	    Vector2 dir = new Vector2(pos.x, pos.y).sub(x, y).nor();
+	    
+	    float dx = dir.x * JUMP;
+        float dy = dir.y * JUMP;
+	    if (Math.abs(getBody().getLinearVelocity().y) > MAX_VELOCITY_JUMP) {
+            dy = 0;
+        }
+        if (Math.abs(getBody().getLinearVelocity().x) > MAX_VELOCITY_JUMP) {
+            dx = 0;
+        }
+	    getBody().applyLinearImpulse(dx, dy, pos.x, pos.y, true);
 	}
 	
 	@Override
@@ -62,10 +58,14 @@ public class SolidManager extends AbstractPhaseManager {
 		
 		Batch batch = renderer.getSpriteBatch();
 		batch.begin();
-		if (!getPlayer().canJump) batch.setColor(NO_JUMP_COLOR);
+		batch.setColor(1, 1, 1, getAlpha());
 		batch.draw(texture, position.x - width / 2, position.y - height / 2, width / 2, height / 2,
 				width, height, 1f, 1f, (float) (body.getAngle() * 180 / Math.PI));
 		batch.setColor(Color.WHITE);
 		batch.end();
+	}
+	
+	private float getAlpha() {
+	    return 1 - player.getTemperaturePercent();
 	}
 }
