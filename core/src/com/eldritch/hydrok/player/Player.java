@@ -205,7 +205,7 @@ public class Player {
 		}
 		
 		public Phase next() {
-		    if (ordinal() == Phase.values().length) {
+		    if (ordinal() == Phase.values().length - 1) {
 		        return null;
 		    }
 		    return Phase.values()[ordinal() + 1];
