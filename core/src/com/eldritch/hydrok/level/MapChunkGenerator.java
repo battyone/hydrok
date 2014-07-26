@@ -38,6 +38,7 @@ import com.eldritch.hydrok.entity.Barnacle;
 import com.eldritch.hydrok.entity.Blower;
 import com.eldritch.hydrok.entity.Fly;
 import com.eldritch.hydrok.entity.Entity;
+import com.eldritch.hydrok.entity.Slime;
 import com.eldritch.hydrok.level.WorldCell.Type;
 import com.eldritch.hydrok.util.HydrokContactListener;
 import com.eldritch.hydrok.util.Settings;
@@ -115,7 +116,7 @@ public class MapChunkGenerator {
         return map;
     }
     
-    private void generateEntities(ChunkLayer layer, int chunkI, int chunkJ, int worldX, int worldY) {
+    private void generateEntities(ChunkLayer layer, int chunkI, int chunkJ, int minX, int minY) {
         for (int x = 0; x < layer.getWidth(); x++) {
             for (int y = 0; y < layer.getHeight(); y++) {
                 if (!isNullOrEmpty(layer.getCell(x, y))) {
@@ -123,20 +124,27 @@ public class MapChunkGenerator {
                     continue;
                 }
                 
+                int worldX = x + minX;
+                int worldY = y + minY;
+                
                 WorldCell down = getCell(layer, x, y - 1, chunkI, chunkJ);
                 WorldCell left = getCell(layer, x - 1, y - 1, chunkI, chunkJ);
                 WorldCell right = getCell(layer, x + 1, y - 1, chunkI, chunkJ);
                 
                 if (rand.flip(0.025)) {
                     // fly
-                    newEntities.add(new Fly(x + worldX, y + worldY, world));
-                } else if (y > layer.getTerrainLimit() && rand.flip(0.01)) {
+                    newEntities.add(new Fly(worldX, worldY, world));
+                } 
+                
+                if (y > layer.getTerrainLimit() && rand.flip(0.01)) {
                     // blower
-                    newEntities.add(new Blower(x + worldX, y + worldY, world));
+                    newEntities.add(new Blower(worldX, worldY, world));
                 } else if (isPlatform(down) && isPlatform(left) && isPlatform(right) && rand.flip(0.5)) {
                     // barnacle
                     boolean up = Math.random() < 0.5;
-                    newEntities.add(new Barnacle(x + worldX, y + worldY, down.getWorldHeight(), up, world));
+                    newEntities.add(new Barnacle(worldX, worldY, down.getWorldHeight(), up, world));
+                } else if (isTerrain(down)) {
+//                    newEntities.add(new Slime(worldX, worldY + 1, world));
                 }
             }
         }

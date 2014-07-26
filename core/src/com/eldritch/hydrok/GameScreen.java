@@ -52,6 +52,7 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 	private ShapeRenderer shapeRenderer;
 	private BitmapFont font;
 	private SpriteBatch batch;
+	private SpriteBatch textBatch;
 	private TextureRegion bg;
 	
 	private boolean debug = false;
@@ -88,6 +89,7 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 		shapeRenderer = new ShapeRenderer();
 		font = new BitmapFont();
 		batch = new SpriteBatch();
+		textBatch = new SpriteBatch();
 		bg = new TextureRegion(new Texture("background/grasslands.png"));
 		
 		Gdx.input.setInputProcessor(this);
@@ -224,11 +226,11 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
     }
 	
 	private void drawFps() {
-	    batch.begin();
-        font.draw(batch,
+	    textBatch.begin();
+        font.draw(textBatch,
                 "FPS: " + Gdx.graphics.getFramesPerSecond(),
-                camera.position.x + 10, getHeight() - 70);
-        batch.end();
+                10, getHeight() - 10);
+        textBatch.end();
 	}
 	
 	public static TextureRegion[][] getRegions(String assetName, int w, int h) {
