@@ -38,6 +38,7 @@ import com.eldritch.hydrok.entity.Barnacle;
 import com.eldritch.hydrok.entity.Blower;
 import com.eldritch.hydrok.entity.Fly;
 import com.eldritch.hydrok.entity.Entity;
+import com.eldritch.hydrok.entity.Ladybug;
 import com.eldritch.hydrok.level.WorldCell.Type;
 import com.eldritch.hydrok.util.HydrokContactListener;
 import com.eldritch.hydrok.util.Settings;
@@ -133,7 +134,10 @@ public class MapChunkGenerator {
                 if (rand.flip(0.025)) {
                     // fly
                     newEntities.add(new Fly(worldX, worldY, world));
-                } 
+                } else if (rand.flip(0.01)) {
+                    // ladybug
+                    newEntities.add(new Ladybug(worldX, worldY, world));
+                }
                 
                 if (y > layer.getTerrainLimit() && rand.flip(0.01)) {
                     // blower
