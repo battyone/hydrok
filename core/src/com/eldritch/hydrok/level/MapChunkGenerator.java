@@ -124,13 +124,16 @@ public class MapChunkGenerator {
                 }
                 
                 WorldCell down = getCell(layer, x, y - 1, chunkI, chunkJ);
+                WorldCell left = getCell(layer, x - 1, y - 1, chunkI, chunkJ);
+                WorldCell right = getCell(layer, x + 1, y - 1, chunkI, chunkJ);
+                
                 if (rand.flip(0.025)) {
                     // fly
                     newEntities.add(new Fly(x + worldX, y + worldY, world));
                 } else if (y > layer.getTerrainLimit() && rand.flip(0.01)) {
                     // blower
                     newEntities.add(new Blower(x + worldX, y + worldY, world));
-                } else if (isPlatform(down) && rand.flip(1.1)) {
+                } else if (isPlatform(down) && isPlatform(left) && isPlatform(right) && rand.flip(1.1)) {
                     // barnacle
                     newEntities.add(new Barnacle(x + worldX, y + worldY, down.getWorldHeight(), world));
                 }
