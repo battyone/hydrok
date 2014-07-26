@@ -133,7 +133,7 @@ public class MapChunkGenerator {
                 } else if (y > layer.getTerrainLimit() && rand.flip(0.01)) {
                     // blower
                     newEntities.add(new Blower(x + worldX, y + worldY, world));
-                } else if (isPlatform(down) && isPlatform(left) && isPlatform(right) && rand.flip(10.5)) {
+                } else if (isPlatform(down) && isPlatform(left) && isPlatform(right) && rand.flip(0.5)) {
                     // barnacle
                     boolean up = Math.random() < 0.5;
                     newEntities.add(new Barnacle(x + worldX, y + worldY, down.getWorldHeight(), up, world));
