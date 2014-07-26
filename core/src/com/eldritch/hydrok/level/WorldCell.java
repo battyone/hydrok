@@ -2,6 +2,7 @@ package com.eldritch.hydrok.level;
 
 import static com.eldritch.hydrok.util.Settings.ALL_BITS;
 import static com.eldritch.hydrok.util.Settings.BIT_SOLID;
+import static com.eldritch.hydrok.util.Settings.SCALE;
 
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
@@ -14,22 +15,36 @@ public class WorldCell extends Cell {
     private final int localY;
     private final int worldX;
     private final int worldY;
+    private final float worldHeight;
     private final Vector2 terrainVector;
     private WorldCell next = null;
-
+    
     public WorldCell(TiledMapTile tile, int localX, int localY, int worldX, int worldY, Type type) {
         this(tile, localX, localY, worldX, worldY, type, 0);
     }
 
+    public WorldCell(TiledMapTile tile, int localX, int localY, int worldX, int worldY, Type type, float scaleY) {
+        this(tile, localX, localY, worldX, worldY, type, 0, scaleY);
+    }
+
     public WorldCell(TiledMapTile tile, int localX, int localY, int worldX, int worldY, Type type, int slope) {
+        this(tile, localX, localY, worldX, worldY, type, slope, 1);
+    }
+    
+    public WorldCell(TiledMapTile tile, int localX, int localY, int worldX, int worldY, Type type, int slope, float scaleY) {
         this.type = type;
         this.slope = slope;
         this.localX = localX;
         this.localY = localY;
         this.worldX = worldX;
         this.worldY = worldY;
+        this.worldHeight = tile != null ? tile.getTextureRegion().getRegionHeight() * SCALE * scaleY : 0;
         terrainVector = type == Type.Terrain ? new Vector2(worldX, worldY + vy()) : Vector2.Zero;
         setTile(tile);
+    }
+    
+    public float getWorldHeight() {
+        return worldHeight;
     }
     
     public int getLocalX() {

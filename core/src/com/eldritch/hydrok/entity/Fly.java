@@ -33,7 +33,7 @@ public class Fly implements Entity {
         bodyDef.position.set(x, y);
         body = world.createBody(bodyDef);
 
-        float d = Math.min(texture.getRegionWidth(), texture.getRegionHeight());
+        float d = Math.min(texture.getRegionWidth(), texture.getRegionHeight()) / 2;
         CircleShape circle = new CircleShape();
         circle.setRadius(d * SCALE);
         FixtureDef fixtureDef = new FixtureDef();

@@ -132,8 +132,7 @@ public class MapChunkGenerator {
                     newEntities.add(new Blower(x + worldX, y + worldY, world));
                 } else if (isPlatform(down) && rand.flip(1.1)) {
                     // barnacle
-                    newEntities.add(new Barnacle(x + worldX, y + worldY, world));
-                    HydrokGame.log("BARNACLE");
+                    newEntities.add(new Barnacle(x + worldX, y + worldY, down.getWorldHeight(), world));
                 }
             }
         }
@@ -148,30 +147,8 @@ public class MapChunkGenerator {
                 }
 
                 WorldCell down = getCell(layer, x, y - 1, chunkI, chunkJ);
-                if (!isNullOrEmpty(down) && down.getType() == Type.Terrain) {
-                    if (Math.random() < 0.1) {
-//                        ObstaclePhaseActivator a = new Fireball(x + worldX, y + worldY, world);
-//                        WorldCell cell = new WorldCell(a.getTile(), x, y, a.getX(), a.getY(),
-//                                Type.Activator);
-//                        layer.setCell(x, y, cell);
-//                        layer.addBody(a.getBody());
-                    }
-                } else if (!isNullOrEmpty(down) && down.getType() == Type.Platform) {
-                    if (Math.random() < 0.1) {
-//                        ObstaclePhaseActivator a = new WaterDroplet(x + worldX, y + worldY, world);
-//                        WorldCell cell = new WorldCell(a.getTile(), x, y, a.getX(), a.getY(),
-//                                Type.Activator);
-//                        layer.setCell(x, y, cell);
-//                        layer.addBody(a.getBody());
-                    }
-                } else if (down == WorldCell.EMPTY) {
+                if (down == WorldCell.EMPTY) {
                     if (Math.random() < 0.025) {
-                        // ObstaclePhaseActivator a = new IceShard(x + worldX, y + worldY, world);
-                        // WorldCell cell = new WorldCell(a.getTile(), x, y, a.getX(), a.getY(),
-                        // world, Type.Activator);
-                        // layer.setCell(x, y, cell);
-                        // layer.addBody(a.getBody());
-
                         if (Math.random() < 0.7) {
                             TiledMapTile tile = getTile("object/storm-cloud2");
                             Body body = createBody(tile, world, x + worldX, y + worldY);
@@ -272,17 +249,18 @@ public class MapChunkGenerator {
                     // only add cells if we finished, otherwise we have an incomplete valley
                     if (finished) {
                         for (TilePoint point : points) {
+                            float scaleY = 0.5f;
                             PhaseActivator activator;
                             if (isLiquid) {
                                 TiledMapTile tile = getTile("water/top");
                                 Body body = createBody(tile, world, point.x + worldX, point.y
-                                        + worldY, 0.5f);
+                                        + worldY, scaleY);
                                 activator = new LiquidActivator(tile, point.x + worldX, point.y
                                         + worldY, body);
                             } else {
                                 TiledMapTile tile = getTile("lava/top");
                                 Body body = createBody(tile, world, point.x + worldX, point.y
-                                        + worldY, 0.5f);
+                                        + worldY, scaleY);
                                 activator = new GasActivator(tile, point.x + worldX, point.y
                                         + worldY, body);
                             }
@@ -290,7 +268,7 @@ public class MapChunkGenerator {
                             int tileX = activator.getX() - worldX;
                             int tileY = activator.getY() - worldY;
                             WorldCell cell = new WorldCell(activator.getTile(), tileX, tileY,
-                                    activator.getX(), activator.getY(), Type.Activator);
+                                    activator.getX(), activator.getY(), Type.Activator, scaleY);
                             setCell(cell, cell.getLocalX(), cell.getLocalY(), chunkI, chunkJ, layer);
                             layer.addBody(activator.getBody());
                         }
@@ -334,7 +312,7 @@ public class MapChunkGenerator {
                     while (down == WorldCell.EMPTY && left == WorldCell.EMPTY 
                             && right == WorldCell.EMPTY && Math.random() < 0.75) {
                         WorldCell cell = new WorldCell(tile, localX, localY, worldX + localX, worldY + localY,
-                                Type.Platform);
+                                Type.Platform, scaleY);
                         layer.setCell(localX, localY, cell);
                         
                         localX++;

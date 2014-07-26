@@ -26,17 +26,18 @@ public class Barnacle implements Entity {
     private final float height;
     private final TextureRegion texture;
     
-    public Barnacle(int x, int y, World world) {
+    public Barnacle(int x, int y, float offsetY, World world) {
         texture = new TextureRegion(new Texture("sprite/barnacle.png"));
+        float h = texture.getRegionHeight() * SCALE * 0.5f;
         
         BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyType.KinematicBody;
-        bodyDef.position.set(x, y);
+        bodyDef.type = BodyType.StaticBody;
+        bodyDef.position.set(x, y - h + (offsetY / 2));
         body = world.createBody(bodyDef);
 
-        float d = Math.min(texture.getRegionWidth(), texture.getRegionHeight()) / 2;
+        float r = (Math.min(texture.getRegionWidth(), texture.getRegionHeight()) / 2) * SCALE;
         CircleShape circle = new CircleShape();
-        circle.setRadius(d * SCALE);
+        circle.setRadius(r);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = circle;
         fixtureDef.isSensor = true;

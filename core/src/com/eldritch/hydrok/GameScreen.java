@@ -142,6 +142,10 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
             player.getBody().applyLinearImpulse(0.2f, 0, pos.x, pos.y, true);
         }
 		
+		if (Gdx.input.isKeyPressed(Keys.DOWN)) {
+            player.getBody().applyLinearImpulse(0, -0.2f, pos.x, pos.y, true);
+        }
+		
 		if (Gdx.input.isKeyPressed(Keys.SPACE)) {
 		    player.applyImpulseFrom(pos.x, pos.y - 1);
         }
