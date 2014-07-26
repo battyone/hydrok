@@ -49,6 +49,7 @@ public class MapChunkGenerator {
     private final TextureAtlas atlas = new TextureAtlas(
             Gdx.files.internal("image-atlases/environment.atlas"));
 
+    private final Randomizer rand = new Randomizer();
     private final List<Entity> newEntities = new ArrayList<Entity>();
     private final TiledMap[][] chunks;
     private final HydrokContactListener contactListener;
@@ -91,6 +92,8 @@ public class MapChunkGenerator {
     }
 
     public TiledMap generate(int chunkI, int chunkJ, int worldX, int worldY) {
+        rand.update(worldX);
+        
         TiledMap map = new TiledMap();
         ChunkLayer background = new ChunkLayer(world, width, height, TILE_WIDTH, TILE_HEIGHT, 0);
         ChunkLayer terrain = new ChunkLayer(world, width, height, TILE_WIDTH, TILE_HEIGHT, 1);
@@ -119,9 +122,9 @@ public class MapChunkGenerator {
                     continue;
                 }
                 
-                if (Math.random() < 0.025) {
+                if (rand.flip(0.025)) {
                     newEntities.add(new Fly(x + worldX, y + worldY, world));
-                } else if (y > layer.getTerrainLimit() && Math.random() < 0.01) {
+                } else if (y > layer.getTerrainLimit() && rand.flip(0.01)) {
                     newEntities.add(new Blower(x + worldX, y + worldY, world));
                 }
             }
@@ -349,7 +352,7 @@ public class MapChunkGenerator {
                             }
                         }
                     }
-                } else if (isTerrain(down) && down.getSlope() == 0 && Math.random() < 0.075) {
+                } else if (isTerrain(down) && down.getSlope() == 0 && rand.flip(0.075)) {
                     // add a wall
                     TiledMapTile tile = getTile("grass/hill-large");
                     WorldCell cell = new WorldCell(tile, localX, localY, worldX + localX,
