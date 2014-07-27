@@ -48,6 +48,19 @@ public class GameOverScreen extends AbstractScreen {
 				game.setScreen(new GameScreen(game));
 			}
 		});
-		table.add(startGameButton);
+		table.add(startGameButton).spaceBottom(15);
+        table.row();
+        
+        TextButton menuButton = new TextButton("Menu", getSkin());
+        menuButton.addListener(new DefaultInputListener() {
+            @Override
+            public void touchUp(InputEvent event, float x, float y,
+                    int pointer, int button) {
+                super.touchUp(event, x, y, pointer, button);
+                //game.getSoundManager().play(TyrianSound.CLICK);
+                game.setScreen(new MenuScreen(game));
+            }
+        });
+        table.add(menuButton);
 	}
 }
