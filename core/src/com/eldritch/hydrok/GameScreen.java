@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -57,6 +58,8 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 	private SpriteBatch batch;
 	private SpriteBatch textBatch;
 	private TextureRegion bg;
+	private int startX;
+	private int distance;
 	
 	private boolean debug = false;
 
@@ -100,6 +103,8 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 		batch = new SpriteBatch();
 		textBatch = new SpriteBatch();
 		bg = new TextureRegion(new Texture("background/grasslands.png"));
+		startX = (int) player.getPosition().x;
+		distance = 0;
 		
 		Gdx.input.setInputProcessor(this);
 		HydrokGame.log("start");
@@ -171,6 +176,7 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 		    }
 		}
 		map.addEntitiesTo(entities);
+		distance = Math.max((int) player.getPosition().x - startX, distance);
 		
 		// updates
 		for (Entity entity : entities) {
@@ -183,7 +189,7 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 		terminator.update(delta);
 		if (terminator.isGameOver()) {
 		    if (!debug) {
-		        game.setScreen(new GameOverScreen(game, (int) player.getPosition().x));
+		        game.setScreen(new GameOverScreen(game, getDistance()));
 		        return;
 		    }
 		}
@@ -220,18 +226,17 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 		world.step(delta, 6, 2);
 	}
 	
+	private int getDistance() {
+	    return distance;
+	}
+	
 	private void drawHud() {
-        batch.begin();
-        font.draw(batch,
-                "Elevation: " + (int) Math.round(player.getPosition().y),
-                camera.position.x + 10, getHeight() - 10);
-        font.draw(batch,
-                "Distance: " + (int) Math.round(player.getPosition().x),
-                camera.position.x + 10, getHeight() - 30);
-        font.draw(batch,
-                "Danger: " + (int) Math.round(player.getPosition().x - terminator.getPosition().x),
-                camera.position.x + 10, getHeight() - 50);
-        batch.end();
+        textBatch.begin();
+        font.drawMultiLine(textBatch,
+                getDistance() + "",
+                0, getHeight() - 10,
+                getWidth(), HAlignment.CENTER);
+        textBatch.end();
     }
 	
 	private void drawFps() {
