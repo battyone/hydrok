@@ -3,10 +3,13 @@ package com.eldritch.hydrok;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -18,8 +21,8 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
  * The base class for all game screens.
  */
 public abstract class AbstractScreen implements Screen {
-	// the fixed viewport dimensions (ratio: 1.6)
-
+    private final Color headingColor = new Color(125 / 255f, 177 / 255f, 45 / 255f, 1f);
+    
 	protected final HydrokGame game;
 	protected final Stage stage;
 
@@ -28,6 +31,7 @@ public abstract class AbstractScreen implements Screen {
 	private Skin skin;
 	private TextureAtlas atlas;
 	private Table table;
+	private TextureRegion bg;
 	
 	private int width;
 	private int height;
@@ -46,6 +50,10 @@ public abstract class AbstractScreen implements Screen {
 
 	protected boolean isGameScreen() {
 		return false;
+	}
+	
+	public Color getHeadingColor() {
+	    return headingColor;
 	}
 
 	// Lazily loaded collaborators
@@ -114,6 +122,8 @@ public abstract class AbstractScreen implements Screen {
 
 		// set the stage as the input processor
 		Gdx.input.setInputProcessor(stage);
+		
+		bg = new TextureRegion(new Texture("background/grasslands.png"));
 	}
 
 	@Override
@@ -135,8 +145,13 @@ public abstract class AbstractScreen implements Screen {
 		// (2) draw the result
 
 		// clear the screen with the given RGB color (black)
-		Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
+		Gdx.gl.glClearColor(125 / 255f, 177 / 255f, 45 / 255f, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		
+		getBatch();
+		batch.begin();
+        batch.draw(bg, 0, 0, getWidth(), getHeight());
+        batch.end();
 
 		// draw the actors
 		stage.draw();

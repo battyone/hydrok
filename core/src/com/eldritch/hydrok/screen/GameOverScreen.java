@@ -1,6 +1,5 @@
 package com.eldritch.hydrok.screen;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -27,7 +26,7 @@ public class GameOverScreen extends AbstractScreen {
 		Table table = super.getTable();
 		table.center();
 		
-		LabelStyle headingStyle = new LabelStyle(getFont(), Color.WHITE);
+		LabelStyle headingStyle = new LabelStyle(getFont(), getHeadingColor());
         Label heading = new Label("Game Over!!", headingStyle);
         heading.setFontScale(2);
         

@@ -40,7 +40,7 @@ selection
   offset: 0, 0
   index: -1
 
-blueskin.png
+yellowskin.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none

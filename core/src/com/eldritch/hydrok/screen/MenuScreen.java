@@ -1,7 +1,6 @@
 package com.eldritch.hydrok.screen;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -25,7 +24,7 @@ public class MenuScreen extends AbstractScreen {
 		Table table = super.getTable();
 		
 		// create heading
-		LabelStyle headingStyle = new LabelStyle(getFont(), Color.WHITE);
+		LabelStyle headingStyle = new LabelStyle(getFont(), getHeadingColor());
 		Label heading = new Label("Hydrok", headingStyle);
 		heading.setFontScale(2);
 		
