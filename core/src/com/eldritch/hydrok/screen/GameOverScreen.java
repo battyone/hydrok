@@ -1,8 +1,11 @@
 package com.eldritch.hydrok.screen;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.eldritch.hydrok.AbstractScreen;
 import com.eldritch.hydrok.GameScreen;
 import com.eldritch.hydrok.HydrokGame;
@@ -24,8 +27,12 @@ public class GameOverScreen extends AbstractScreen {
 		Table table = super.getTable();
 		table.center();
 		
-		table.add("Game Over!!").spaceBottom(20);
-		table.row();
+		LabelStyle headingStyle = new LabelStyle(getFont(), Color.WHITE);
+        Label heading = new Label("Game Over!!", headingStyle);
+        heading.setFontScale(2);
+        
+        table.add(heading).spaceBottom(100);
+        table.row();
 		
 		table.add("Distance: " + distance).spaceBottom(50);
         table.row();
@@ -41,6 +48,6 @@ public class GameOverScreen extends AbstractScreen {
 				game.setScreen(new GameScreen(game));
 			}
 		});
-		table.add(startGameButton).uniform().fill();
+		table.add(startGameButton);
 	}
 }
