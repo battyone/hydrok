@@ -72,6 +72,17 @@ public class Terminator implements Activator {
                 region,
                 position.x - map.getChunkWidth() / 2 - width / 2,
                 position.y - map.getChunkHeight() / 2, 
+                0,
+                height / 2,
+                width,
+                height,
+                1,
+                1,
+                180);
+        batch.draw(
+                region,
+                position.x - map.getChunkWidth() / 2 - width / 2,
+                position.y - map.getChunkHeight() / 2, 
                 width,
                 height);
         batch.end();
