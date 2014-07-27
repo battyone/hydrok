@@ -203,7 +203,7 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 		// update camera position
 		Vector2 position = player.getPosition();
 		float scale = 50 * camera.zoom / SCALE;
-        camera.position.x = Math.round((position.x + 5) * scale) / scale;
+        camera.position.x = Math.round((position.x + 3) * scale) / scale;
         camera.position.y = Math.round(position.y * scale) / scale;
         camera.update();
 		
