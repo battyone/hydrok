@@ -31,10 +31,10 @@ public class GameOverScreen extends AbstractScreen {
         Label heading = new Label("Game Over!!", headingStyle);
         heading.setFontScale(2);
         
-        table.add(heading).spaceBottom(100);
+        table.add(heading).spaceBottom(75);
         table.row();
 		
-		table.add("Distance: " + distance).spaceBottom(50);
+		table.add("Distance: " + distance).spaceBottom(75);
         table.row();
 
 		// register the button "start game"

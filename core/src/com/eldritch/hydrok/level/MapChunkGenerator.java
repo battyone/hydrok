@@ -145,7 +145,7 @@ public class MapChunkGenerator {
                     newEntities.add(new Blower(worldX, worldY, world));
                 } else if (isPlatform(down) && isPlatform(left) && isPlatform(right) && rand.flip(0.5)) {
                     // barnacle
-                    boolean up = Math.random() < 0.5;
+                    boolean up = rand.fairFlip(0.5);
                     newEntities.add(new Barnacle(worldX, worldY, down.getWorldHeight(), up, world));
                 } else if (isTerrain(down) && down.getSlope() == 0) {
                     if (isTerrain(left) && isTerrain(right) && rand.flip(0.5)) {
@@ -172,8 +172,8 @@ public class MapChunkGenerator {
 
                 WorldCell down = getCell(layer, x, y - 1, chunkI, chunkJ);
                 if (down == WorldCell.EMPTY) {
-                    if (Math.random() < 0.025) {
-                        if (Math.random() < 0.7) {
+                    if (rand.fairFlip(0.025)) {
+                        if (rand.fairFlip(0.7)) {
                             TiledMapTile tile = getTile("object/storm-cloud2");
                             Body body = createBody(tile, world, x + worldX, y + worldY);
                             PhaseActivator a = new SolidActivator(tile, x + worldX, y + worldY, body);
@@ -181,7 +181,7 @@ public class MapChunkGenerator {
                                     Type.Activator);
                             layer.setCell(x, y, cell);
                             layer.addBody(body);
-                        } else if (Math.random() < 0.95) {
+                        } else if (rand.fairFlip(0.95)) {
                             TiledMapTile tile = getTile("object/cloud2");
                             Body body = createBody(tile, world, x + worldX, y + worldY);
                             PhaseActivator a = new LiquidActivator(tile, x + worldX, y + worldY, body);
@@ -268,7 +268,7 @@ public class MapChunkGenerator {
                     }
 
                     // liquid or lava
-                    boolean isLiquid = Math.random() < 0.6;
+                    boolean isLiquid = rand.fairFlip(0.6);
 
                     // only add cells if we finished, otherwise we have an incomplete valley
                     if (finished) {
@@ -313,13 +313,13 @@ public class MapChunkGenerator {
                 int localX = x;
                 int localY = y;
                 WorldCell down = getCell(layer, localX, localY - 1, chunkI, chunkJ);
-                if (down == WorldCell.EMPTY && Math.random() < 0.025) {
+                if (down == WorldCell.EMPTY && rand.fairFlip(0.025)) {
                     // add a bridge
                     TiledMapTile tile;
                     short maskBits;
                     float scaleY;
                     boolean multiPart;
-                    if (Math.random() < 0.5) {
+                    if (rand.fairFlip(0.5)) {
                         tile = getTile("grass/bridge-logs");
                         maskBits = BIT_SOLID;
                         scaleY = 0.35f;
@@ -334,7 +334,7 @@ public class MapChunkGenerator {
                     WorldCell left = getCell(layer, localX - 1, localY, chunkI, chunkJ);
                     WorldCell right = getCell(layer, localX + 1, localY, chunkI, chunkJ);
                     while (down == WorldCell.EMPTY && left == WorldCell.EMPTY 
-                            && right == WorldCell.EMPTY && Math.random() < 0.75) {
+                            && right == WorldCell.EMPTY && rand.fairFlip(0.75)) {
                         WorldCell cell = new WorldCell(tile, localX, localY, worldX + localX, worldY + localY,
                                 Type.Platform, scaleY);
                         layer.setCell(localX, localY, cell);
@@ -388,10 +388,10 @@ public class MapChunkGenerator {
                 int localX = x;
                 int localY = y;
                 WorldCell up = getCell(layer, localX, localY + 1, chunkI, chunkJ);
-                if (!isNullOrEmpty(up) && up.getTile() == getTile("grass/bridge-logs") && Math.random() < 0.25) {
+                if (!isNullOrEmpty(up) && up.getTile() == getTile("grass/bridge-logs") && rand.fairFlip(0.25)) {
                     // log bridge -> build ropes
                     TiledMapTile tile = getTile("grass/rope-attached");
-                    while (getCell(layer, localX, localY, chunkI, chunkJ) == WorldCell.EMPTY && Math.random() < 0.9) {
+                    while (getCell(layer, localX, localY, chunkI, chunkJ) == WorldCell.EMPTY && rand.fairFlip(0.9)) {
                         // sanity check: make sure the tile below is not an uphill slope, or else the player can get stuck
                         WorldCell down = getCell(layer, localX, localY - 1, chunkI, chunkJ);
                         if (!isNullOrEmpty(down) && down.getSlope() > 0) {

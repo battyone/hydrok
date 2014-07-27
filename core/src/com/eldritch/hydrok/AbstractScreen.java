@@ -96,7 +96,7 @@ public abstract class AbstractScreen implements Screen {
 		if (table == null) {
 			table = new Table(getSkin());
 			table.setFillParent(true);
-			table.debug();
+//			table.debug();
 			stage.addActor(table);
 		}
 		return table;
@@ -142,7 +142,7 @@ public abstract class AbstractScreen implements Screen {
 		stage.draw();
 
 		// draw the table debug lines
-	    Table.drawDebug(stage);
+//	    Table.drawDebug(stage);
 	}
 
 	@Override
