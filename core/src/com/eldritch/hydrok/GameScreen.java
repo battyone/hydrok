@@ -12,11 +12,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -25,6 +25,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.eldritch.hydrok.activator.Terminator;
 import com.eldritch.hydrok.entity.Entity;
@@ -58,6 +60,7 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 	private SpriteBatch batch;
 	private SpriteBatch textBatch;
 	private TextureRegion bg;
+	private Label distanceLabel;
 	private int startX;
 	private int distance;
 	
@@ -75,8 +78,6 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 	
 	@Override
 	public void show() {
-		super.show();
-
 		world = new World(new Vector2(0, -10), true);
 		player = new Player(world, 11, 3);
 		
@@ -105,6 +106,10 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 		bg = new TextureRegion(new Texture("background/grasslands.png"));
 		startX = (int) player.getPosition().x;
 		distance = 0;
+		
+		getTable().top();
+        distanceLabel = new Label("Hydrok", new LabelStyle(getFont(), Color.WHITE));
+        getTable().add(distanceLabel);
 		
 		Gdx.input.setInputProcessor(this);
 		HydrokGame.log("start");
@@ -177,6 +182,7 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 		}
 		map.addEntitiesTo(entities);
 		distance = Math.max((int) player.getPosition().x - startX, distance);
+		distanceLabel.setText(getDistance() + "");
 		
 		// updates
 		for (Entity entity : entities) {
@@ -220,7 +226,7 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 		}
 		
 		// HUD comes last
-		drawHud();
+		getStage().draw();
 		
 		// update physics state
 		world.step(delta, 6, 2);
@@ -229,15 +235,6 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 	private int getDistance() {
 	    return distance;
 	}
-	
-	private void drawHud() {
-        textBatch.begin();
-        font.drawMultiLine(textBatch,
-                getDistance() + "",
-                0, getHeight() - 10,
-                getWidth(), HAlignment.CENTER);
-        textBatch.end();
-    }
 	
 	private void drawFps() {
 	    textBatch.begin();
