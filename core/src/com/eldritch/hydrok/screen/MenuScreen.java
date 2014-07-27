@@ -1,5 +1,6 @@
 package com.eldritch.hydrok.screen;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -42,6 +43,20 @@ public class MenuScreen extends AbstractScreen {
 				game.setScreen(new GameScreen(game));
 			}
 		});
-		table.add(startGameButton);
+		table.add(startGameButton).spaceBottom(15);
+		table.row();
+		
+		// register quit button
+		TextButton quitButton = new TextButton("Quit", getSkin());
+		quitButton.addListener(new DefaultInputListener() {
+            @Override
+            public void touchUp(InputEvent event, float x, float y,
+                    int pointer, int button) {
+                super.touchUp(event, x, y, pointer, button);
+                //game.getSoundManager().play(TyrianSound.CLICK);
+                Gdx.app.exit();
+            }
+        });
+        table.add(quitButton);
 	}
 }
