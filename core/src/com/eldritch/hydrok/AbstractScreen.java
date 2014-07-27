@@ -56,6 +56,7 @@ public abstract class AbstractScreen implements Screen {
 		    FreeTypeFontParameter parameter = new FreeTypeFontParameter();
 		    parameter.size = 20;
 		    font = generator.generateFont(parameter);
+		    generator.dispose();
 		}
 		return font;
 	}
@@ -77,8 +78,15 @@ public abstract class AbstractScreen implements Screen {
 
 	protected Skin getSkin() {
 		if (skin == null) {
+			skin = new Skin();
+			skin.add("default-font", getFont(), BitmapFont.class);
+			
 			FileHandle skinFile = Gdx.files.internal("skin/uiskin.json");
-			skin = new Skin(skinFile);
+			FileHandle atlasFile = skinFile.sibling("uiskin.atlas");
+			if (atlasFile.exists()) {
+			    skin.addRegions(new TextureAtlas(atlasFile));
+			}
+			skin.load(skinFile);
 		}
 		return skin;
 	}
@@ -168,12 +176,15 @@ public abstract class AbstractScreen implements Screen {
 		// stage.dispose();
 
 		// as the collaborators are lazily loaded, they may be null
-		if (font != null)
+		if (font != null && skin == null) {
+		    // skin will dispose of the font for us
 			font.dispose();
+		}
 		if (batch != null)
 			batch.dispose();
-		if (skin != null)
+		if (skin != null) {
 			skin.dispose();
+		}
 		if (atlas != null)
 			atlas.dispose();
 	}
