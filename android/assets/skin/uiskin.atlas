@@ -46,8 +46,8 @@ filter: Nearest,Nearest
 repeat: none
 default-button-up
   rotate: false
-  xy: 0, 192
-  size: 190, 45
+  xy: 0, 188
+  size: 190, 49
   split: 5, 5, 5, 5
   orig: 190, 45
   offset: 0, 0
