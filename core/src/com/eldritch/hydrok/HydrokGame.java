@@ -3,10 +3,11 @@ package com.eldritch.hydrok;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.eldritch.hydrok.screen.GameOverScreen;
 
 public class HydrokGame extends Game {
 	public static final String LOG = HydrokGame.class.getSimpleName();
-	public static boolean DEV_MODE = true;
+	public static boolean DEV_MODE = false;
 	
 	@Override
 	public void create() {
@@ -42,7 +43,7 @@ public class HydrokGame extends Game {
 			if (DEV_MODE) {
 				setScreen(new GameScreen(this));
 			} else {
-//				setScreen(new SplashScreen(this));
+				setScreen(new GameOverScreen(this, 0));
 			}
 		}
 	}

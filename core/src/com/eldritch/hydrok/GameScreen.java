@@ -87,7 +87,7 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 
 		debugRenderer = new Box2DDebugRenderer();
 		shapeRenderer = new ShapeRenderer();
-		font = new BitmapFont();
+		font = getFont();
 		batch = new SpriteBatch();
 		textBatch = new SpriteBatch();
 		bg = new TextureRegion(new Texture("background/grasslands.png"));

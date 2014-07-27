@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -49,7 +51,11 @@ public abstract class AbstractScreen implements Screen {
 
 	public BitmapFont getFont() {
 		if (font == null) {
-			font = new BitmapFont();
+		    FreeTypeFontGenerator generator = new FreeTypeFontGenerator(
+		            Gdx.files.internal("skin/kenvector_future.ttf"));
+		    FreeTypeFontParameter parameter = new FreeTypeFontParameter();
+		    parameter.size = 20;
+		    font = generator.generateFont(parameter);
 		}
 		return font;
 	}
