@@ -1,6 +1,9 @@
 package com.eldritch.hydrok.screen;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.eldritch.hydrok.AbstractScreen;
@@ -19,9 +22,13 @@ public class MenuScreen extends AbstractScreen {
 
 		// retrieve the default table actor
 		Table table = super.getTable();
-		table.center();
 		
-		table.add("Hydrok").spaceBottom(20);
+		// create heading
+		LabelStyle headingStyle = new LabelStyle(getFont(), Color.WHITE);
+		Label heading = new Label("Hydrok", headingStyle);
+		heading.setFontScale(2);
+		
+		table.add(heading).spaceBottom(100);
 		table.row();
 
 		// register the button "start game"
@@ -35,6 +42,6 @@ public class MenuScreen extends AbstractScreen {
 				game.setScreen(new GameScreen(game));
 			}
 		});
-		table.add(startGameButton).uniform().fill();
+		table.add(startGameButton);
 	}
 }
