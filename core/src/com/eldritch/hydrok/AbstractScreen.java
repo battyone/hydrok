@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 
 /**
  * The base class for all game screens.
@@ -34,9 +35,9 @@ public abstract class AbstractScreen implements Screen {
 	public AbstractScreen(HydrokGame game) {
 		this.game = game;
 		this.stage = new Stage();
-		width = Gdx.graphics.getWidth();
-		height = Gdx.graphics.getHeight();
-		stage.getViewport().update(width, height);
+		width = 800;
+		height = 480;
+		stage.setViewport(new FitViewport(width, height, stage.getViewport().getCamera()));
 	}
 
 	protected String getName() {
@@ -95,7 +96,7 @@ public abstract class AbstractScreen implements Screen {
 		if (table == null) {
 			table = new Table(getSkin());
 			table.setFillParent(true);
-//			table.debug();
+			table.debug();
 			stage.addActor(table);
 		}
 		return table;
@@ -121,7 +122,7 @@ public abstract class AbstractScreen implements Screen {
 				+ width + " x " + height);
 		this.width = width;
 		this.height = height;
-		stage.getViewport().update(width, height);
+		stage.getViewport().update(width, height, true);
 	}
 
 	@Override
