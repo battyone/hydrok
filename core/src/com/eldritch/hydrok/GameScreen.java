@@ -29,6 +29,7 @@ import com.eldritch.hydrok.activator.Terminator;
 import com.eldritch.hydrok.entity.Entity;
 import com.eldritch.hydrok.level.ProceduralTiledMap;
 import com.eldritch.hydrok.level.ProceduralTiledMapRenderer;
+import com.eldritch.hydrok.level.Randomizer;
 import com.eldritch.hydrok.player.Player;
 import com.eldritch.hydrok.player.Player.Phase;
 import com.eldritch.hydrok.screen.GameOverScreen;
@@ -41,6 +42,7 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 	public static final AssetManager textureManager = new AssetManager();
 	
 	private final List<Entity> entities = new ArrayList<Entity>();
+	private final Randomizer randomizer;
 	private ProceduralTiledMap map;
 	private OrthographicCamera camera;
 	private Player player;
@@ -59,7 +61,12 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 	private boolean debug = false;
 
 	public GameScreen(HydrokGame game) {
+	    this(game, new Randomizer());
+	}
+	
+	public GameScreen(HydrokGame game, Randomizer randomizer) {
 		super(game);
+		this.randomizer = randomizer;
 		stage.setViewport(new StretchViewport(getWidth(), getHeight()));
 	}
 	
@@ -73,7 +80,7 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 		contactListener = player.getContactListener();
         world.setContactListener(contactListener);
 		
-		map = new ProceduralTiledMap(contactListener, world, CHUNK_WIDTH, CHUNK_HEIGHT);
+		map = new ProceduralTiledMap(contactListener, world, randomizer, CHUNK_WIDTH, CHUNK_HEIGHT);
 		renderer = new ProceduralTiledMapRenderer(map, SCALE);
 		
 		// game ends when terminator hits the player

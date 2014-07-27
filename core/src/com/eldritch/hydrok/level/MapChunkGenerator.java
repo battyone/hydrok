@@ -52,7 +52,7 @@ public class MapChunkGenerator {
     private final TextureAtlas atlas = new TextureAtlas(
             Gdx.files.internal("image-atlases/environment.atlas"));
 
-    private final Randomizer rand = new Randomizer();
+    private final Randomizer rand;
     private final List<Entity> newEntities = new ArrayList<Entity>();
     private final TiledMap[][] chunks;
     private final HydrokContactListener contactListener;
@@ -74,8 +74,9 @@ public class MapChunkGenerator {
                 }
             });
 
-    public MapChunkGenerator(HydrokContactListener contactListener, TiledMap[][] chunks, World world, int width, int height) {
+    public MapChunkGenerator(HydrokContactListener contactListener, TiledMap[][] chunks, World world, Randomizer rand, int width, int height) {
         this.chunks = chunks;
+        this.rand = rand;
         this.contactListener = contactListener;
         this.world = world;
         this.width = width;

@@ -27,10 +27,10 @@ public class ProceduralTiledMap extends TiledMap {
     private int minX = 0;
     private int minY = 0;
 
-    public ProceduralTiledMap(HydrokContactListener listener, World world, int width, int height) {
+    public ProceduralTiledMap(HydrokContactListener listener, World world, Randomizer rand, int width, int height) {
         this.chunkWidth = width;
         this.chunkHeight = height;
-        generator = new MapChunkGenerator(listener, chunks, world, width, height);
+        generator = new MapChunkGenerator(listener, chunks, world, rand, width, height);
 
         // generate initial chunk setup: [0, 0] is bottom left
         for (int j = 0; j < CHUNKS; j++) {

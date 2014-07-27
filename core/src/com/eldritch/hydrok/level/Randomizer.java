@@ -4,14 +4,20 @@ import java.util.Random;
 
 public class Randomizer {
     private final Random rand;
+    private final long seed;
     private float x;
     
     public Randomizer() {
-        rand = new Random();
+        this(new Random().nextLong());
     }
     
-    public Randomizer(int seed) {
+    public Randomizer(long seed) {
         rand = new Random(seed);
+        this.seed = seed;
+    }
+    
+    public long getSeed() {
+        return seed;
     }
     
     public void update(float x) {
