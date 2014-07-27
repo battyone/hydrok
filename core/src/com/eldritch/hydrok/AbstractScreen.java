@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -124,6 +125,7 @@ public abstract class AbstractScreen implements Screen {
 		Gdx.input.setInputProcessor(stage);
 		
 		bg = new TextureRegion(new Texture("background/grasslands.png"));
+		getStage().addActor(new Image(bg));
 	}
 
 	@Override
@@ -147,11 +149,6 @@ public abstract class AbstractScreen implements Screen {
 		// clear the screen with the given RGB color (black)
 		Gdx.gl.glClearColor(125 / 255f, 177 / 255f, 45 / 255f, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
-		getBatch();
-		batch.begin();
-        batch.draw(bg, 0, 0, getWidth(), getHeight());
-        batch.end();
 
 		// draw the actors
 		stage.draw();
