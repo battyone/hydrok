@@ -54,7 +54,7 @@ public abstract class AbstractScreen implements Screen {
 		    FreeTypeFontGenerator generator = new FreeTypeFontGenerator(
 		            Gdx.files.internal("skin/kenvector_future.ttf"));
 		    FreeTypeFontParameter parameter = new FreeTypeFontParameter();
-		    parameter.size = 20;
+		    parameter.size = 44;
 		    font = generator.generateFont(parameter);
 		    generator.dispose();
 		}
