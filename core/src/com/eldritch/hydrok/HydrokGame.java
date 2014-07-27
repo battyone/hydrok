@@ -3,7 +3,7 @@ package com.eldritch.hydrok;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.eldritch.hydrok.screen.GameOverScreen;
+import com.eldritch.hydrok.screen.MenuScreen;
 
 public class HydrokGame extends Game {
 	public static final String LOG = HydrokGame.class.getSimpleName();
@@ -41,9 +41,9 @@ public class HydrokGame extends Game {
 		// this approach avoids calling the screen's resize method repeatedly
 		if (getScreen() == null) {
 			if (DEV_MODE) {
-				setScreen(new GameScreen(this));
+			    setScreen(new GameScreen(this));
 			} else {
-				setScreen(new GameOverScreen(this, 0));
+				setScreen(new MenuScreen(this));
 			}
 		}
 	}
