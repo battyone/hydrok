@@ -253,7 +253,7 @@ public class MapChunkGenerator {
                     int localX = current.getLocalX();
                     int localY = current.getLocalY();
                     boolean finished = false;
-                    while (!isNullOrEmpty(down) && !finished) {
+                    while ((isTerrain(down) || isFiller(down)) && !finished) {
                         points.add(TilePoint.of(localX, localY));
 
                         // set to new current
@@ -453,6 +453,10 @@ public class MapChunkGenerator {
     
     private boolean isPlatform(WorldCell cell) {
         return cell != null && cell != WorldCell.EMPTY && cell.getType() == Type.Platform;
+    }
+    
+    private boolean isFiller(WorldCell cell) {
+        return cell != null && cell != WorldCell.EMPTY && cell.getType() == Type.Filler;
     }
 
     private boolean outsideLayer(WorldCell lastTerrain, ChunkLayer layer, int worldY) {
