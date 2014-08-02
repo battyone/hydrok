@@ -17,6 +17,7 @@ public class LiquidManager extends AbstractPhaseManager {
     private static final float JUMP = 3.25f;
 
     private final TextureRegion texture;
+    private final Scaler scaler = new Scaler();
 
     public LiquidManager(Player player, World world, int x, int y, float width, float height) {
         super(player, world, x, y, width, height, 0.35f, 0.0f, Settings.BIT_LIQUID);
@@ -51,14 +52,16 @@ public class LiquidManager extends AbstractPhaseManager {
         if (player.isGrounded() && getBody().getLinearVelocity().x < MAX_VELOCITY_X) {
             getBody().applyLinearImpulse(0.075f, 0, pos.x, pos.y, true);
         }
+        
+        scaler.update(delta);
     }
 
     @Override
     public void render(OrthogonalTiledMapRenderer renderer) {
         Vector2 position = getBody().getPosition();
         
-        float width = texture.getRegionWidth() * SCALE * getScaleX();
-        float height = texture.getRegionHeight() * SCALE * getScaleY();
+        float width = texture.getRegionWidth() * SCALE * scaler.getScaleX();
+        float height = texture.getRegionHeight() * SCALE * scaler.getScaleY();
         float intensity = getIntensity();
         float alpha = getAlpha();
 
@@ -70,30 +73,6 @@ public class LiquidManager extends AbstractPhaseManager {
         batch.end();
     }
     
-    private float getScaleX() {
-        Vector2 velocity = player.getVelocity();
-        if (Math.abs(velocity.x) > Math.abs(velocity.y)) {
-            return scaleComponent(velocity.x);
-        } else {
-            return 2f - scaleComponent(velocity.y);
-        }
-    }
-    
-    private float getScaleY() {
-        Vector2 velocity = player.getVelocity();
-        if (Math.abs(velocity.x) > Math.abs(velocity.y)) {
-            return 2f - scaleComponent(velocity.x);
-        } else {
-            return scaleComponent(velocity.y);
-        }
-    }
-    
-    private float scaleComponent(float c) {
-        float maxV = MAX_VELOCITY_JUMP;
-        float v = Math.min(Math.abs(c), maxV);
-        return Math.min(1 - v / maxV + 0.5f, 1);
-    }
-    
     private float getIntensity() {
         return Math.min(1 - player.getTemperaturePercent() + 0.25f, 1);
     }
@@ -102,7 +81,46 @@ public class LiquidManager extends AbstractPhaseManager {
         return Math.min(1 - player.getPreviousPercent() + 0.25f, 1);
     }
     
-    private static class Scaler {
+    private class Scaler {
+        private float scaleX = 1f;
+        private float scaleY = 1f;
         
+        public void update(float delta) {
+            float scale = 5 * delta;
+            scaleX += (getTargetScaleX() - scaleX) * scale;
+            scaleY += (getTargetScaleY() - scaleY) * scale;
+        }
+        
+        public float getScaleX() {
+            return scaleX;
+        }
+        
+        public float getScaleY() {
+            return scaleY;
+        }
+        
+        public float getTargetScaleX() {
+            Vector2 velocity = player.getVelocity();
+            if (Math.abs(velocity.x) > Math.abs(velocity.y)) {
+                return scaleComponent(velocity.x);
+            } else {
+                return 2f - scaleComponent(velocity.y);
+            }
+        }
+        
+        public float getTargetScaleY() {
+            Vector2 velocity = player.getVelocity();
+            if (Math.abs(velocity.x) > Math.abs(velocity.y)) {
+                return 2f - scaleComponent(velocity.x);
+            } else {
+                return scaleComponent(velocity.y);
+            }
+        }
+        
+        public float scaleComponent(float c) {
+            float maxV = MAX_VELOCITY_JUMP;
+            float v = Math.min(Math.abs(c), maxV);
+            return Math.min(1 - v / maxV + 0.5f, 1);
+        }
     }
 }
