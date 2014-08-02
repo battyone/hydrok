@@ -153,6 +153,14 @@ public class Player {
 	    return getRelativeTemperature() / (next.getTemperature() - phase.getTemperature());
 	}
 	
+	public float getPreviousPercent() {
+	    Phase previous = phase.previous();
+        if (previous == null) {
+            return 0;
+        }
+        return Math.abs(getRelativeTemperature() / (phase.getTemperature() - previous.getTemperature()));
+	}
+	
 	public Vector2 getPosition() {
 		return getBody().getPosition();
 	}

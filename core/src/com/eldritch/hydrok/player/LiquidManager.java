@@ -60,10 +60,11 @@ public class LiquidManager extends AbstractPhaseManager {
         float width = texture.getRegionWidth() * SCALE;
         float height = texture.getRegionHeight() * SCALE;
         float intensity = getIntensity();
+        float alpha = getAlpha();
 
         Batch batch = renderer.getSpriteBatch();
         batch.begin();
-        batch.setColor(intensity, intensity, intensity, 1);
+        batch.setColor(intensity, intensity, intensity, alpha);
         batch.draw(texture, position.x - width / 2, position.y - height / 2, width, height);
         batch.setColor(Color.WHITE);
         batch.end();
@@ -71,5 +72,9 @@ public class LiquidManager extends AbstractPhaseManager {
     
     private float getIntensity() {
         return Math.min(1 - player.getTemperaturePercent() + 0.25f, 1);
+    }
+    
+    private float getAlpha() {
+        return Math.min(1 - player.getPreviousPercent() + 0.25f, 1);
     }
 }
