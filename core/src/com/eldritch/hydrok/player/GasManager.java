@@ -65,14 +65,34 @@ public class GasManager extends AbstractPhaseManager {
         
 		Batch batch = renderer.getSpriteBatch();
 		batch.begin();
-		batch.setColor(getIntensity(), getIntensity(), 1, 1);
+		batch.setColor(getRedIntensity(), getGreenIntensity(), getBlueIntensity(), 1);
 		batch.draw(animation.getKeyFrame(getStateTime()),
 				position.x - width / 2, position.y - height / 2, width, height);
 		batch.setColor(Color.WHITE);
 		batch.end();
 	}
 	
-	private float getIntensity() {
-        return Math.min(1 - player.getPreviousPercent() + 0.25f, 1);
+	private float getRedIntensity() {
+	    if (player.getRelativeTemperature() > 0) {
+	        return 1;
+	    } else {
+	        return Math.min(1 - player.getPreviousPercent() + 0.25f, 1);
+	    }
+    }
+	
+	private float getGreenIntensity() {
+        if (player.getRelativeTemperature() > 0) {
+            return Math.min(1 - player.getTemperaturePercent() + 0.25f, 1);
+        } else {
+            return Math.min(1 - player.getPreviousPercent() + 0.25f, 1);
+        }
+    }
+	
+	private float getBlueIntensity() {
+        if (player.getRelativeTemperature() > 0) {
+            return Math.min(1 - player.getTemperaturePercent() + 0.25f, 1);
+        } else {
+            return 1;
+        }
     }
 }
