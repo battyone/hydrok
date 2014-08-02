@@ -183,6 +183,7 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 		map.addEntitiesTo(entities);
 		distance = Math.max((int) player.getPosition().x - startX, distance);
 		distanceLabel.setText(getDistance() + "");
+		distanceLabel.setColor(1, getIntensity(), getIntensity(), 1);
 		
 		// updates
 		for (Entity entity : entities) {
@@ -231,6 +232,10 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 		// update physics state
 		world.step(delta, 6, 2);
 	}
+	
+	private float getIntensity() {
+        return Math.min(1 - terminator.getDistancePercent(player) + 0.25f, 1);
+    }
 	
 	private int getDistance() {
 	    return distance;

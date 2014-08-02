@@ -61,6 +61,12 @@ public class Terminator implements Activator {
         body.setTransform(nextX, map.getMinY(), 0);
     }
     
+    public float getDistancePercent(Player player) {
+        float terminatorDelta = player.getPosition().x - body.getPosition().x;
+        float mapDelta = player.getPosition().x - map.getMinX();
+        return 1 - terminatorDelta / mapDelta;
+    }
+    
     public void render(OrthogonalTiledMapRenderer renderer) {
         Vector2 position = body.getPosition();
         float width = region.getRegionWidth() * 3 * SCALE;
