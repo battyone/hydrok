@@ -57,8 +57,8 @@ public class LiquidManager extends AbstractPhaseManager {
     public void render(OrthogonalTiledMapRenderer renderer) {
         Vector2 position = getBody().getPosition();
         
-        float width = texture.getRegionWidth() * SCALE;
-        float height = texture.getRegionHeight() * SCALE;
+        float width = texture.getRegionWidth() * SCALE * getScaleX();
+        float height = texture.getRegionHeight() * SCALE * getScaleY();
         float intensity = getIntensity();
         float alpha = getAlpha();
 
@@ -70,11 +70,39 @@ public class LiquidManager extends AbstractPhaseManager {
         batch.end();
     }
     
+    private float getScaleX() {
+        Vector2 velocity = player.getVelocity();
+        if (Math.abs(velocity.x) > Math.abs(velocity.y)) {
+            return scaleComponent(velocity.x);
+        } else {
+            return 2f - scaleComponent(velocity.y);
+        }
+    }
+    
+    private float getScaleY() {
+        Vector2 velocity = player.getVelocity();
+        if (Math.abs(velocity.x) > Math.abs(velocity.y)) {
+            return 2f - scaleComponent(velocity.x);
+        } else {
+            return scaleComponent(velocity.y);
+        }
+    }
+    
+    private float scaleComponent(float c) {
+        float maxV = MAX_VELOCITY_JUMP;
+        float v = Math.min(Math.abs(c), maxV);
+        return Math.min(1 - v / maxV + 0.5f, 1);
+    }
+    
     private float getIntensity() {
         return Math.min(1 - player.getTemperaturePercent() + 0.25f, 1);
     }
     
     private float getAlpha() {
         return Math.min(1 - player.getPreviousPercent() + 0.25f, 1);
+    }
+    
+    private static class Scaler {
+        
     }
 }

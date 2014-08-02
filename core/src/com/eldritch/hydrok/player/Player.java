@@ -162,7 +162,11 @@ public class Player {
 	}
 	
 	public Vector2 getPosition() {
-		return getBody().getPosition();
+		return body.getPosition();
+	}
+	
+	public Vector2 getVelocity() {
+	    return body.getLinearVelocity();
 	}
 
 	public Body getBody() {
