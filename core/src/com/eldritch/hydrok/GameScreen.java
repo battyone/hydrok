@@ -39,7 +39,7 @@ import com.eldritch.hydrok.screen.GameOverScreen;
 import com.eldritch.hydrok.util.HydrokContactListener;
 
 public class GameScreen extends AbstractScreen implements InputProcessor {
-    private static final float ZOOM = 0.6f;
+    private static final float ZOOM = 0.4f;
     private static final float DEBUG_ZOOM = 2.8f;
     
 	public static final AssetManager textureManager = new AssetManager();
@@ -202,7 +202,7 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 		
 		// update camera position
 		Vector2 position = player.getPosition();
-		float scale = 50 * camera.zoom / SCALE;
+		float scale = 500 * camera.zoom / SCALE;
         camera.position.x = Math.round((position.x + 3) * scale) / scale;
         camera.position.y = Math.round(position.y * scale) / scale;
         camera.update();
