@@ -1,5 +1,7 @@
 package com.eldritch.hydrok.player;
 
+import static com.eldritch.hydrok.util.Settings.SCALE;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -55,8 +57,8 @@ public class LiquidManager extends AbstractPhaseManager {
     public void render(OrthogonalTiledMapRenderer renderer) {
         Vector2 position = getBody().getPosition();
         
-        float width = getWidth();
-        float height = getHeight();
+        float width = texture.getRegionWidth() * SCALE;
+        float height = texture.getRegionHeight() * SCALE;
         float intensity = getIntensity();
 
         Batch batch = renderer.getSpriteBatch();
