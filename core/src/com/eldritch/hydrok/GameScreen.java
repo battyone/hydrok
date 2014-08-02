@@ -88,7 +88,7 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 		renderer = new ProceduralTiledMapRenderer(map, SCALE);
 		
 		// game ends when terminator hits the player
-		terminator = new Terminator(world, map);
+		terminator = new Terminator(world, map, player);
 
 		float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();
@@ -234,7 +234,7 @@ public class GameScreen extends AbstractScreen implements InputProcessor {
 	}
 	
 	private float getIntensity() {
-        return Math.min(1 - terminator.getDistancePercent(player) + 0.25f, 1);
+        return Math.min(1 - terminator.getDistancePercent() + 0.25f, 1);
     }
 	
 	private int getDistance() {

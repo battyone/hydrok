@@ -22,13 +22,15 @@ public class Terminator implements Activator {
     private final TextureRegion region;
     private final Body body;
     private final ProceduralTiledMap map;
+    private final Player player;
+    private final float maxDelta;
     private boolean gameOver = false;
-    private int lastX;
     
-    public Terminator(World world, ProceduralTiledMap map) {
+    public Terminator(World world, ProceduralTiledMap map, Player player) {
         region = new TextureRegion(new Texture("fill/terminator.png"));
         this.map = map;
-        lastX = map.getMinX();
+        this.player = player;
+        maxDelta = map.getChunkWidth() / 2;
         
         // create our body definition
         BodyDef groundBodyDef = new BodyDef();
@@ -54,17 +56,13 @@ public class Terminator implements Activator {
     
     public void update(float delta) {
         float nextX = body.getPosition().x + delta * getVelocity();
-        if (map.getMinX() != lastX) {
-            nextX = Math.max(map.getMinX(), nextX);
-            lastX = map.getMinX();
-        }
+        nextX = Math.max(player.getPosition().x - maxDelta, nextX);
         body.setTransform(nextX, map.getMinY(), 0);
     }
     
-    public float getDistancePercent(Player player) {
+    public float getDistancePercent() {
         float terminatorDelta = player.getPosition().x - body.getPosition().x;
-        float mapDelta = player.getPosition().x - map.getMinX();
-        return 1 - terminatorDelta / mapDelta;
+        return 1 - terminatorDelta / maxDelta;
     }
     
     public void render(OrthogonalTiledMapRenderer renderer) {
