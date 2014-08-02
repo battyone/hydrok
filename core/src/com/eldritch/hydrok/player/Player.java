@@ -117,10 +117,13 @@ public class Player {
 
 	public void update(float delta) {
 	    // update temperature
-	    temperature = Math.max(temperature - TEMP_SCALE * delta, phase.getTemperature());
+	    temperature = Math.max(temperature - TEMP_SCALE * delta, 0);
 	    Phase next = phase.next();
+	    Phase previous = phase.previous();
 	    if (next != null && temperature >= next.getTemperature()) {
 	        transition(next);
+	    } else if (previous != null && temperature <= previous.getTemperature()) {
+	        transition(previous);
 	    }
 	    
 	    // update grounded state
@@ -196,7 +199,7 @@ public class Player {
 	}
 	
 	public enum Phase {
-		Solid(0), Liquid(50), Gas(100), Plasma(300);
+		Solid(0), Liquid(30), Gas(60), Plasma(500);
 		
 		private final int temperature;
 		
@@ -214,6 +217,13 @@ public class Player {
 		    }
 		    return Phase.values()[ordinal() + 1];
 		}
+		
+		public Phase previous() {
+            if (ordinal() == 0) {
+                return null;
+            }
+            return Phase.values()[ordinal() - 1];
+        }
 	}
 
 	public static interface PhaseManager {
