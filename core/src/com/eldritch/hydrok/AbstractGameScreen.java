@@ -38,7 +38,7 @@ import com.eldritch.hydrok.player.Player.Phase;
 import com.eldritch.hydrok.screen.GameOverScreen;
 import com.eldritch.hydrok.util.HydrokContactListener;
 
-public class AbstractGameScreen extends AbstractScreen implements InputProcessor {
+public abstract class AbstractGameScreen extends AbstractScreen implements InputProcessor {
     private static final float ZOOM = 0.4f;
     private static final float DEBUG_ZOOM = 2.8f;
     
@@ -178,7 +178,7 @@ public class AbstractGameScreen extends AbstractScreen implements InputProcessor
 		}
 		map.addEntitiesTo(entities);
 		distance = Math.max((int) player.getPosition().x - startX, distance);
-		distanceLabel.setText(getDistance() + "");
+		distanceLabel.setText(getLabelText());
 		distanceLabel.setColor(1, getIntensity(), getIntensity(), 1);
 		
 		// updates
@@ -229,11 +229,13 @@ public class AbstractGameScreen extends AbstractScreen implements InputProcessor
 		world.step(delta, 6, 2);
 	}
 	
+	protected abstract String getLabelText();
+	
 	private float getIntensity() {
         return Math.min(1 - terminator.getDistancePercent() + 0.25f, 1);
     }
 	
-	private int getDistance() {
+	protected int getDistance() {
 	    return distance;
 	}
 	

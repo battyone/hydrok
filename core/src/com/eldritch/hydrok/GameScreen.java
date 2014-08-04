@@ -11,4 +11,9 @@ public class GameScreen extends AbstractGameScreen {
 	public GameScreen(HydrokGame game, Randomizer randomizer) {
 		super(game, new MapChunkGeneratorFactory(randomizer));
 	}
+
+    @Override
+    protected String getLabelText() {
+        return getDistance() + "";
+    }
 }

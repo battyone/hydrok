@@ -11,4 +11,9 @@ public class TutorialScreen extends AbstractGameScreen {
 	public TutorialScreen(HydrokGame game, Randomizer randomizer) {
 		super(game, new TutorialChunkGeneratorFactory(randomizer));
 	}
+	
+	@Override
+    protected String getLabelText() {
+        return "Tutorial";
+    }
 }
