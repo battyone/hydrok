@@ -652,4 +652,17 @@ public class MapChunkGenerator {
             return null;
         }
     }
+    
+    public static class MapChunkGeneratorFactory {
+        protected final Randomizer randomizer;
+        
+        public MapChunkGeneratorFactory(Randomizer randomizer) {
+            this.randomizer = randomizer;
+        }
+        
+        public MapChunkGenerator createGenerator(HydrokContactListener contactListener,
+                TiledMap[][] chunks, World world, int width, int height) {
+            return new MapChunkGenerator(contactListener, chunks, world, randomizer, width, height);
+        }
+    }
 }

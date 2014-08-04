@@ -14,6 +14,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.eldritch.hydrok.entity.Entity;
+import com.eldritch.hydrok.level.MapChunkGenerator.MapChunkGeneratorFactory;
 import com.eldritch.hydrok.player.Player;
 import com.eldritch.hydrok.util.HydrokContactListener;
 
@@ -27,10 +28,10 @@ public class ProceduralTiledMap extends TiledMap {
     private int minX = 0;
     private int minY = 0;
 
-    public ProceduralTiledMap(HydrokContactListener listener, World world, Randomizer rand, int width, int height) {
+    public ProceduralTiledMap(HydrokContactListener listener, World world, MapChunkGeneratorFactory factory, int width, int height) {
         this.chunkWidth = width;
         this.chunkHeight = height;
-        generator = new MapChunkGenerator(listener, chunks, world, rand, width, height);
+        generator = factory.createGenerator(listener, chunks, world, width, height);
 
         // generate initial chunk setup: [0, 0] is bottom left
         for (int j = 0; j < CHUNKS; j++) {

@@ -23,4 +23,15 @@ public class TutorialChunkGenerator extends MapChunkGenerator {
         }
         return vertexCount;
     }
+    
+    public static class TutorialChunkGeneratorFactory extends MapChunkGeneratorFactory {
+        public TutorialChunkGeneratorFactory(Randomizer randomizer) {
+            super(randomizer);
+        }
+        
+        public TutorialChunkGenerator createGenerator(HydrokContactListener contactListener,
+                TiledMap[][] chunks, World world, int width, int height) {
+            return new TutorialChunkGenerator(contactListener, chunks, world, randomizer, width, height);
+        }
+    }
 }
