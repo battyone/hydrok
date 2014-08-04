@@ -59,9 +59,11 @@ public class MapChunkGenerator {
     private final World world;
     private final int width;
     private final int height;
-    final Array<WorldCell> terrainCells = new Array<WorldCell>();
-    private WorldCell lastTerrain = null;
+    
     private Body chainBody = null;
+    
+    protected final Array<WorldCell> terrainCells = new Array<WorldCell>();
+    protected WorldCell lastTerrain = null;
 
     private final LoadingCache<String, StaticTiledMapTile> tiles = CacheBuilder.newBuilder().build(
             new CacheLoader<String, StaticTiledMapTile>() {
@@ -493,6 +495,39 @@ public class MapChunkGenerator {
             return;
         }
 
+        vertexCount += doTerrainGeneration(layer, chunkI, chunkJ, worldX, worldY);
+
+        // check for terrain vertices
+        if (vertexCount >= 2) {
+            // create the body
+            BodyDef bdef = new BodyDef();
+            bdef.type = BodyType.StaticBody;
+
+            ChainShape chain = new ChainShape();
+            Vector2[] vertices = new Vector2[terrainCells.size];
+            for (int i = 0; i < terrainCells.size; i++) {
+                vertices[i] = terrainCells.get(i).getTerrainVector();
+            }
+            chain.createChain(vertices);
+
+            FixtureDef fd = new FixtureDef();
+            fd.shape = chain;
+            fd.filter.categoryBits = 0x0001;
+            fd.filter.maskBits = Type.Terrain.getMaskBits();
+
+            if (chainBody != null) {
+                contactListener.endContact(chainBody);
+                world.destroyBody(chainBody);
+            }
+            chainBody = world.createBody(bdef);
+            Fixture fixture = chainBody.createFixture(fd);
+            fixture.setUserData("ground");
+            chain.dispose();
+        }
+    }
+    
+    protected int doTerrainGeneration(ChunkLayer layer, int chunkI, int chunkJ, int worldX, int worldY) {
+        int vertexCount = 0;
         for (int x2 = lastTerrain.getWorldX() - worldX + 1; x2 < layer.getWidth(); x2++) {
             int y = lastTerrain.getWorldY() - worldY;
 
@@ -530,34 +565,7 @@ public class MapChunkGenerator {
                 lastTerrain = cell;
             }
         }
-
-        // check for terrain vertices
-        if (vertexCount >= 2) {
-            // create the body
-            BodyDef bdef = new BodyDef();
-            bdef.type = BodyType.StaticBody;
-
-            ChainShape chain = new ChainShape();
-            Vector2[] vertices = new Vector2[terrainCells.size];
-            for (int i = 0; i < terrainCells.size; i++) {
-                vertices[i] = terrainCells.get(i).getTerrainVector();
-            }
-            chain.createChain(vertices);
-
-            FixtureDef fd = new FixtureDef();
-            fd.shape = chain;
-            fd.filter.categoryBits = 0x0001;
-            fd.filter.maskBits = Type.Terrain.getMaskBits();
-
-            if (chainBody != null) {
-                contactListener.endContact(chainBody);
-                world.destroyBody(chainBody);
-            }
-            chainBody = world.createBody(bdef);
-            Fixture fixture = chainBody.createFixture(fd);
-            fixture.setUserData("ground");
-            chain.dispose();
-        }
+        return vertexCount;
     }
 
     private void regenerateTerrain(ChunkLayer layer, int chunkI, int chunkJ, int worldX, int worldY) {
@@ -636,7 +644,7 @@ public class MapChunkGenerator {
         layer.setCell(tileX, tileY, cell);
     }
 
-    private StaticTiledMapTile getTile(String key) {
+    protected StaticTiledMapTile getTile(String key) {
         try {
             return tiles.get(key);
         } catch (ExecutionException ex) {
