@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.eldritch.hydrok.AbstractScreen;
 import com.eldritch.hydrok.GameScreen;
 import com.eldritch.hydrok.HydrokGame;
+import com.eldritch.hydrok.TutorialScreen;
 import com.eldritch.hydrok.util.DefaultInputListener;
 
 public class MenuScreen extends AbstractScreen {
@@ -31,7 +32,7 @@ public class MenuScreen extends AbstractScreen {
 		table.add(heading).spaceBottom(100);
 		table.row();
 
-		// register the button "start game"
+		// register the button "play"
 		TextButton startGameButton = new TextButton("Play", getSkin());
 		startGameButton.addListener(new DefaultInputListener() {
 			@Override
@@ -44,6 +45,20 @@ public class MenuScreen extends AbstractScreen {
 		});
 		table.add(startGameButton).spaceBottom(15);
 		table.row();
+		
+		// register the button "tutorial"
+        TextButton tutorialButton = new TextButton("Tutorial", getSkin());
+        tutorialButton.addListener(new DefaultInputListener() {
+            @Override
+            public void touchUp(InputEvent event, float x, float y,
+                    int pointer, int button) {
+                super.touchUp(event, x, y, pointer, button);
+                //game.getSoundManager().play(TyrianSound.CLICK);
+                game.setScreen(new TutorialScreen(game));
+            }
+        });
+        table.add(tutorialButton).spaceBottom(15);
+        table.row();
 		
 		// register quit button
 		TextButton quitButton = new TextButton("Quit", getSkin());
